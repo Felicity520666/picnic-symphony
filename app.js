@@ -316,3 +316,616 @@ function cacheIngredientButtons() {
     visualByIngredient.set(button.dataset.ingredient, button);
   }
 }
+
+/* ===== SCREEN TRANSITIONS ===== */
+function showGuideSelection() {
+  elements.welcomeScreen.classList.add("is-leaving");
+  setTimeout(() => {
+    elements.welcomeScreen.hidden = true;
+    elements.welcomeScreen.classList.remove("is-leaving");
+    elements.guideSelectScreen.hidden = false;
+    elements.guideSelectScreen.classList.add("is-entering");
+    setTimeout(() => elements.guideSelectScreen.classList.remove("is-entering"), 600);
+  }, 500);
+}
+
+function selectGuide(guideId) {
+  state.selectedGuide = guideId;
+
+  for (const card of elements.guideCards) {
+    const isSelected = card.dataset.guide === guideId;
+    card.setAttribute("aria-checked", String(isSelected));
+  }
+
+  elements.startPicnicBtn.disabled = false;
+}
+
+async function startGame() {
+  if (!state.selectedGuide) return;
+
+  // Set up guide art in game
+  const svg = guideSvgTemplates[state.selectedGuide];
+  if (elements.guideArtMain) elements.guideArtMain.innerHTML = svg;
+  if (elements.guideTravelerArt) elements.guideTravelerArt.innerHTML = svg;
+
+  // Transition out guide select
+  elements.guideSelectScreen.classList.add("is-leaving");
+
+  setTimeout(async () => {
+    elements.guideSelectScreen.hidden = true;
+    elements.guideSelectScreen.classList.remove("is-leaving");
+    elements.appShell.hidden = false;
+    state.screen = "game";
+    state.started = true;
+
+    // Create audio
+    if (!state.context) createAudioGraph();
+    setControlsEnabled(true);
+    updateInterface();
+
+    await state.context.resume();
+    startTransport();
+  }, 500);
+}
+
+/* ===== AUDIO ENGINE ===== */
+function createAudioGraph() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  state.context = new AudioContextClass();
+
+  state.compressor = state.context.createDynamicsCompressor();
+  state.compressor.threshold.value = -22;
+  state.compressor.knee.value = 18;
+  state.compressor.ratio.value = 3.5;
+  state.compressor.attack.value = 0.004;
+  state.compressor.release.value = 0.24;
+
+  state.masterGain = state.context.createGain();
+  state.masterGain.gain.value = state.volume;
+  state.masterGain.connect(state.compressor);
+  state.compressor.connect(state.context.destination);
+}
+
+function setControlsEnabled(enabled) {
+  elements.playPauseButton.disabled = !enabled;
+  elements.clearButton.disabled = !enabled;
+  elements.helpButton.disabled = !enabled;
+  elements.volumeSlider.disabled = !enabled;
+  for (const button of elements.ingredientButtons) {
+    button.disabled = !enabled;
+  }
+}
+
+/* ===== TRANSPORT ===== */
+function startTransport() {
+  if (state.playing) return;
+  state.playing = true;
+  state.nextNoteTime = state.context.currentTime + 0.05;
+  state.timerId = window.setInterval(schedulerTick, SCHEDULE_INTERVAL_MS);
+  elements.playPauseButton.textContent = "Pause";
+}
+
+function stopTransport() {
+  if (!state.playing) return;
+  state.playing = false;
+  if (state.timerId !== null) {
+    window.clearInterval(state.timerId);
+    state.timerId = null;
+  }
+  cancelVisualTimers();
+  elements.playPauseButton.textContent = "Play";
+}
+
+function togglePlayback() {
+  if (!state.started) return;
+  if (state.playing) { stopTransport(); return; }
+  state.context.resume().then(() => startTransport());
+}
+
+function schedulerTick() {
+  while (state.nextNoteTime < state.context.currentTime + SCHEDULE_AHEAD_TIME) {
+    scheduleStep(state.currentStep, state.nextNoteTime);
+    state.nextNoteTime += STEP_DURATION;
+    state.currentStep = (state.currentStep + 1) % STEP_COUNT;
+  }
+}
+
+function scheduleStep(stepIndex, time) {
+  const now = state.context.currentTime;
+  const delayMs = Math.max(0, (time - now) * 1000);
+
+  for (const definition of ingredientDefinitions) {
+    if (!state.activeLayers.has(definition.id)) continue;
+    if (!definition.pattern.includes(stepIndex)) continue;
+    definition.play(time, state.context, state.masterGain, stepIndex);
+    queueIngredientVisual(definition.id, delayMs, getVisualDuration(definition.id));
+  }
+}
+
+function queueIngredientVisual(id, delayMs, durationMs) {
+  const timerId = window.setTimeout(() => {
+    const button = visualByIngredient.get(id);
+    if (!button) return;
+    button.classList.add("is-playing");
+    window.setTimeout(() => button.classList.remove("is-playing"), durationMs);
+  }, delayMs);
+  state.scheduledVisualTimers.push(timerId);
+}
+
+function getVisualDuration(id) {
+  if (id === "cheese") return 520;
+  if (id === "grape") return 240;
+  return 300;
+}
+
+function cancelVisualTimers() {
+  for (const t of state.scheduledVisualTimers) window.clearTimeout(t);
+  state.scheduledVisualTimers = [];
+  for (const button of elements.ingredientButtons) button.classList.remove("is-playing");
+}
+
+/* ===== INGREDIENT INTERACTION ===== */
+function toggleIngredient(id) {
+  if (!state.started) return;
+  const button = visualByIngredient.get(id);
+  if (!button) return;
+
+  if (state.activeLayers.has(id)) {
+    state.activeLayers.delete(id);
+    button.classList.remove("is-selected");
+    button.setAttribute("aria-pressed", "false");
+  } else {
+    state.activeLayers.add(id);
+    button.classList.add("is-selected");
+    button.setAttribute("aria-pressed", "true");
+    button.classList.add("is-playing");
+    window.setTimeout(() => button.classList.remove("is-playing"), 260);
+    triggerIngredientPreview(id);
+    advanceRecipeIfMatched(id);
+  }
+
+  state.clearMessageActive = false;
+  updateInterface();
+}
+
+function triggerIngredientPreview(id) {
+  if (!state.context || !state.masterGain) return;
+  const definition = ingredientDefinitions.find((e) => e.id === id);
+  if (!definition) return;
+  definition.play(state.context.currentTime + 0.015, state.context, state.masterGain, state.currentStep);
+}
+
+/* ===== RECIPES ===== */
+function handleRecipeSelect(recipeId) {
+  state.selectedRecipeId = recipeId;
+  state.recipeStepIndex = 0;
+  state.clearMessageActive = false;
+  updateInterface();
+}
+
+function clearRecipeSelection() {
+  state.selectedRecipeId = null;
+  state.recipeStepIndex = 0;
+  updateInterface();
+}
+
+function getSelectedRecipe() {
+  return recipeDefinitions.find((r) => r.id === state.selectedRecipeId) || null;
+}
+
+function getCurrentRecipeStep() {
+  const recipe = getSelectedRecipe();
+  if (!recipe) return null;
+  return recipe.steps[state.recipeStepIndex] || null;
+}
+
+function advanceRecipeIfMatched(ingredientId) {
+  const recipe = getSelectedRecipe();
+  if (!recipe) return;
+  const currentStep = recipe.steps[state.recipeStepIndex];
+  if (!currentStep || currentStep.ingredientId !== ingredientId) return;
+  window.setTimeout(() => {
+    state.recipeStepIndex = Math.min(state.recipeStepIndex + 1, recipe.steps.length);
+    updateInterface();
+  }, 180);
+}
+
+function clearMix() {
+  state.clearMessageActive = true;
+  state.activeLayers.clear();
+  state.recipeStepIndex = 0;
+  for (const button of elements.ingredientButtons) {
+    button.classList.remove("is-selected", "is-playing");
+    button.setAttribute("aria-pressed", "false");
+  }
+  cancelVisualTimers();
+  updateInterface();
+}
+
+function showHelpMessage() {
+  if (!state.started) return;
+  const guide = guideDefinitions[state.selectedGuide];
+  const helpText = "Tap any picnic treat to turn its sound on or off. Play or pause anytime, clear the mix for a fresh basket, and use the volume slider to keep things gentle.";
+  setGuideSpeech(helpText);
+  if (state.helpTimerId !== null) window.clearTimeout(state.helpTimerId);
+  state.helpTimerId = window.setTimeout(() => { state.helpTimerId = null; updateInterface(); }, 6000);
+}
+
+function handleVolumeChange(event) {
+  const value = Number(event.currentTarget.value) / 100;
+  state.volume = value;
+  if (state.masterGain) {
+    state.masterGain.gain.setTargetAtTime(value, state.context.currentTime, 0.02);
+  }
+}
+
+/* ===== UI UPDATE ===== */
+function updateInterface() {
+  updateActiveLayerSummary();
+  updateRecipeStrip();
+  renderRecipeGuide();
+  updateRecipeLabState();
+  updateSceneMood();
+  updateGuideMessage();
+  updateGuidePosition();
+  updateTransportLabel();
+}
+
+function updateTransportLabel() {
+  if (!state.started || !state.playing) {
+    elements.playPauseButton.textContent = "Play";
+  }
+}
+
+function updateActiveLayerSummary() {
+  elements.activeLayerCount.textContent = `${state.activeLayers.size} / 6 sounds`;
+}
+
+function updateRecipeStrip() {
+  elements.recipeStrip.innerHTML = "";
+  if (state.activeLayers.size === 0) {
+    const empty = document.createElement("span");
+    empty.className = "recipe-empty";
+    empty.textContent = "No ingredients yet";
+    elements.recipeStrip.appendChild(empty);
+    return;
+  }
+  for (const definition of ingredientDefinitions) {
+    if (!state.activeLayers.has(definition.id)) continue;
+    const chip = document.createElement("span");
+    chip.className = "recipe-chip";
+    chip.textContent = definition.name;
+    elements.recipeStrip.appendChild(chip);
+  }
+}
+
+function renderRecipeCards() {
+  elements.recipeCards.innerHTML = "";
+  for (const recipe of recipeDefinitions) {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "recipe-card";
+    card.dataset.recipeId = recipe.id;
+    card.setAttribute("aria-pressed", "false");
+    card.innerHTML = `
+      <span class="recipe-card__kicker">${recipe.mood}</span>
+      <strong class="recipe-card__title">${recipe.name}</strong>
+      <span class="recipe-card__copy">${recipe.description}</span>
+      <span class="recipe-card__steps">${recipe.steps.length} steps</span>
+    `;
+    elements.recipeCards.appendChild(card);
+  }
+}
+
+function renderRecipeGuide() {
+  const recipe = getSelectedRecipe();
+  const cards = Array.from(elements.recipeCards.querySelectorAll(".recipe-card"));
+
+  for (const card of cards) {
+    const isSelected = card.dataset.recipeId === state.selectedRecipeId;
+    card.classList.toggle("is-selected", isSelected);
+    card.setAttribute("aria-pressed", String(isSelected));
+  }
+
+  if (!recipe) {
+    elements.selectedRecipeName.textContent = "Choose a recipe";
+    elements.recipeStepPrompt.textContent = "Pick a recipe card above to begin.";
+    elements.recipeSteps.innerHTML = "";
+    elements.recipeResetButton.hidden = true;
+    updateRecommendedIngredient(null);
+    return;
+  }
+
+  const currentStep = getCurrentRecipeStep();
+  const totalSteps = recipe.steps.length;
+
+  elements.selectedRecipeName.textContent = recipe.name;
+  elements.recipeResetButton.hidden = false;
+
+  if (currentStep) {
+    elements.recipeStepPrompt.textContent = `Step ${state.recipeStepIndex + 1} of ${totalSteps}: ${currentStep.note}`;
+  } else {
+    elements.recipeStepPrompt.textContent = `Recipe complete! You built ${recipe.name}. Add extra layers or try a new recipe.`;
+  }
+
+  elements.recipeSteps.innerHTML = "";
+  recipe.steps.forEach((step, index) => {
+    const item = document.createElement("li");
+    item.className = "recipe-step";
+    item.textContent = ingredientById.get(step.ingredientId)?.name || step.ingredientId;
+    item.classList.toggle("is-complete", index < state.recipeStepIndex);
+    item.classList.toggle("is-current", index === state.recipeStepIndex && Boolean(currentStep));
+    elements.recipeSteps.appendChild(item);
+  });
+
+  updateRecommendedIngredient(currentStep?.ingredientId || null);
+}
+
+function updateRecipeLabState() {
+  elements.recipeLab.classList.toggle("is-active", Boolean(getSelectedRecipe()));
+}
+
+function updateRecommendedIngredient(ingredientId) {
+  state.recommendedIngredientId = ingredientId;
+  for (const button of elements.ingredientButtons) {
+    button.classList.toggle("is-recommended", button.dataset.ingredient === ingredientId);
+  }
+}
+
+/* ===== GUIDE MESSAGES ===== */
+function updateGuideMessage() {
+  if (state.helpTimerId !== null) return;
+
+  const guide = guideDefinitions[state.selectedGuide];
+  if (!guide) return;
+
+  const msgs = guide.messages;
+  const recipe = getSelectedRecipe();
+  const count = state.activeLayers.size;
+  let message = msgs.welcome;
+
+  if (state.started) {
+    if (recipe) {
+      const currentStep = getCurrentRecipeStep();
+      if (currentStep) {
+        const ingredientName = ingredientById.get(currentStep.ingredientId)?.name || currentStep.ingredientId;
+        message = msgs.recipeStep(ingredientName, state.recipeStepIndex + 1, recipe.steps.length);
+      } else {
+        message = msgs.recipeDone(recipe.name);
+      }
+    } else if (count === 0 && state.clearMessageActive) {
+      message = msgs.cleared;
+      state.clearMessageActive = false;
+    } else if (count === 0) {
+      message = msgs.idle;
+    } else if (count === 1) {
+      message = msgs.firstAdd;
+    } else if (count === 3) {
+      message = msgs.threeActive;
+    } else if (count >= 5) {
+      message = msgs.fullMix;
+    } else {
+      message = msgs.firstAdd;
+    }
+  }
+
+  setGuideSpeech(message);
+}
+
+function setGuideSpeech(message) {
+  elements.guideSpeech.textContent = message;
+}
+
+/* ===== GUIDE POSITION ===== */
+function updateGuidePosition() {
+  const traveler = elements.guideTraveler;
+  const meadow = elements.meadowScene;
+  if (!traveler || !meadow) return;
+
+  const meadowRect = meadow.getBoundingClientRect();
+  if (meadowRect.width === 0 || meadowRect.height === 0) return;
+
+  let x = 0.16;
+  let y = 0.2;
+
+  if (state.recommendedIngredientId) {
+    const button = visualByIngredient.get(state.recommendedIngredientId);
+    if (button) {
+      const buttonRect = button.getBoundingClientRect();
+      x = ((buttonRect.left + buttonRect.width / 2) - meadowRect.left) / meadowRect.width;
+      y = ((buttonRect.top - 20) - meadowRect.top) / meadowRect.height;
+    }
+  }
+
+  const clampedX = Math.min(0.85, Math.max(0.1, x));
+  const clampedY = Math.min(0.7, Math.max(0.1, y));
+
+  meadow.style.setProperty("--guide-x", `${clampedX * 100}%`);
+  meadow.style.setProperty("--guide-y", `${clampedY * 100}%`);
+
+  // Update beat label
+  const recommended = ingredientById.get(state.recommendedIngredientId);
+  if (recommended) {
+    elements.beatLabel.textContent = `Your fairy points to ${recommended.name}`;
+  } else {
+    elements.beatLabel.textContent = "Follow your fairy to the next treat";
+  }
+}
+
+/* ===== SCENE MOOD ===== */
+function updateSceneMood() {
+  const count = state.activeLayers.size;
+  const scene = elements.meadowScene;
+  if (!scene) return;
+  scene.classList.remove("is-calm", "is-gentle", "is-bloom", "is-notes", "is-full");
+
+  if (count === 0) scene.classList.add("is-calm");
+  else if (count === 1) scene.classList.add("is-gentle");
+  else if (count <= 3) scene.classList.add("is-bloom");
+  else if (count === 4) scene.classList.add("is-notes");
+  else scene.classList.add("is-full");
+}
+
+/* ===== SOUND SYNTHESIS ===== */
+function playWatermelonBounce(time, context, masterGain) {
+  const osc = context.createOscillator();
+  const gain = context.createGain();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(96, time);
+  osc.frequency.exponentialRampToValueAtTime(48, time + 0.16);
+  gain.gain.setValueAtTime(0.0001, time);
+  gain.gain.exponentialRampToValueAtTime(0.14, time + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.34);
+  osc.connect(gain).connect(masterGain);
+  osc.start(time);
+  osc.stop(time + 0.36);
+  osc.onended = () => osc.disconnect();
+}
+
+function playLemonadeSparkle(time, context, masterGain, stepIndex) {
+  const scale = [0, 2, 4, 7, 9, 11, 14];
+  const noteIndex = scale[Math.floor(stepIndex / 2) % scale.length];
+  const note = midiToFrequency(72 + noteIndex);
+
+  const oscA = context.createOscillator();
+  const oscB = context.createOscillator();
+  const gain = context.createGain();
+  const filter = context.createBiquadFilter();
+
+  oscA.type = "triangle";
+  oscB.type = "sine";
+  oscA.frequency.setValueAtTime(note, time);
+  oscB.frequency.setValueAtTime(note * 2, time);
+  oscB.detune.setValueAtTime(-7, time);
+
+  filter.type = "highpass";
+  filter.frequency.setValueAtTime(540, time);
+
+  gain.gain.setValueAtTime(0.0001, time);
+  gain.gain.exponentialRampToValueAtTime(0.085, time + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.26);
+
+  oscA.connect(filter);
+  oscB.connect(filter);
+  filter.connect(gain).connect(masterGain);
+  oscA.start(time);
+  oscB.start(time);
+  oscA.stop(time + 0.28);
+  oscB.stop(time + 0.28);
+  oscA.onended = () => oscA.disconnect();
+  oscB.onended = () => oscB.disconnect();
+}
+
+function playStrawberryMelody(time, context, masterGain, stepIndex) {
+  const melody = [72, 74, 76, 79, 76, 74, 71, 72, 76, 79, 81, 79, 76, 74, 72, 69];
+  const frequency = midiToFrequency(melody[stepIndex % melody.length]);
+  const osc = context.createOscillator();
+  const gain = context.createGain();
+  const filter = context.createBiquadFilter();
+
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(frequency, time);
+  osc.detune.setValueAtTime(-4, time);
+
+  filter.type = "lowpass";
+  filter.frequency.setValueAtTime(2400, time);
+  filter.Q.value = 0.7;
+
+  gain.gain.setValueAtTime(0.0001, time);
+  gain.gain.exponentialRampToValueAtTime(0.11, time + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.34);
+
+  osc.connect(filter).connect(gain).connect(masterGain);
+  osc.start(time);
+  osc.stop(time + 0.36);
+  osc.onended = () => osc.disconnect();
+}
+
+function playCheesyHarmony(time, context, masterGain, stepIndex) {
+  const chordProgression = [
+    [60, 64, 67], [57, 60, 64], [65, 69, 72], [55, 59, 62],
+  ];
+  const chord = chordProgression[Math.floor(stepIndex / 4) % chordProgression.length];
+  const groupGain = context.createGain();
+  groupGain.gain.setValueAtTime(0.0001, time);
+  groupGain.gain.exponentialRampToValueAtTime(0.08, time + 0.06);
+  groupGain.gain.exponentialRampToValueAtTime(0.0001, time + 1.6);
+
+  const filter = context.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.setValueAtTime(1800, time);
+  filter.Q.value = 0.4;
+
+  chord.forEach((midi, voiceIndex) => {
+    const osc = context.createOscillator();
+    osc.type = voiceIndex === 0 ? "triangle" : "sine";
+    osc.frequency.setValueAtTime(midiToFrequency(midi), time);
+    osc.detune.setValueAtTime((voiceIndex - 1) * 6, time);
+    osc.connect(filter);
+    osc.start(time);
+    osc.stop(time + 1.7);
+    osc.onended = () => osc.disconnect();
+  });
+
+  filter.connect(groupGain).connect(masterGain);
+}
+
+function playGrapeShaker(time, context, masterGain) {
+  const buffer = createNoiseBuffer(context, 0.16);
+  const source = context.createBufferSource();
+  source.buffer = buffer;
+
+  const filter = context.createBiquadFilter();
+  filter.type = "highpass";
+  filter.frequency.setValueAtTime(6800, time);
+
+  const gain = context.createGain();
+  gain.gain.setValueAtTime(0.0001, time);
+  gain.gain.exponentialRampToValueAtTime(0.045, time + 0.004);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.11);
+
+  source.connect(filter).connect(gain).connect(masterGain);
+  source.start(time);
+  source.stop(time + 0.14);
+  source.onended = () => source.disconnect();
+}
+
+function playCupcakeWhistle(time, context, masterGain, stepIndex) {
+  const melody = [79, 81, 83, 86, 88, 86, 83, 81, 79, 83, 86, 88, 91, 88, 86, 83];
+  const midi = melody[(stepIndex * 2) % melody.length];
+  const osc = context.createOscillator();
+  const gain = context.createGain();
+  const filter = context.createBiquadFilter();
+
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(midiToFrequency(midi), time);
+  osc.frequency.exponentialRampToValueAtTime(midiToFrequency(midi + 2), time + 0.08);
+
+  filter.type = "lowpass";
+  filter.frequency.setValueAtTime(2200, time);
+
+  gain.gain.setValueAtTime(0.0001, time);
+  gain.gain.exponentialRampToValueAtTime(0.07, time + 0.012);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.26);
+
+  osc.connect(filter).connect(gain).connect(masterGain);
+  osc.start(time);
+  osc.stop(time + 0.28);
+  osc.onended = () => osc.disconnect();
+}
+
+/* ===== UTILITIES ===== */
+function createNoiseBuffer(context, lengthSeconds) {
+  const sampleRate = context.sampleRate;
+  const frameCount = Math.max(1, Math.floor(lengthSeconds * sampleRate));
+  const buffer = context.createBuffer(1, frameCount, sampleRate);
+  const channelData = buffer.getChannelData(0);
+  for (let i = 0; i < frameCount; i++) {
+    channelData[i] = (Math.random() * 2 - 1) * (1 - i / frameCount);
+  }
+  return buffer;
+}
+
+function midiToFrequency(midi) {
+  return 440 * (2 ** ((midi - 69) / 12));
+}
