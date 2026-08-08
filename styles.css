@@ -54,8 +54,11 @@ button, input { font: inherit; }
   position: fixed; inset: 0;
   pointer-events: none; opacity: 0.08;
   background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.8'/%3E%3C/filter%3E%3Crect width='40' height='40' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
-  z-index: 100;
+  z-index: 9999;
 }
+
+/* Force hidden to override display on all screens */
+[hidden] { display: none !important; }
 
 /* ===== SHARED BUTTONS ===== */
 .primary-button, .control-button {
@@ -107,7 +110,7 @@ button, input { font: inherit; }
   transition: opacity 500ms ease, transform 500ms ease;
 }
 
-.welcome-screen[hidden] { display: none !important; }
+
 
 .welcome-screen.is-leaving {
   opacity: 0;
@@ -228,7 +231,7 @@ button, input { font: inherit; }
   transition: opacity 500ms ease, transform 500ms ease;
 }
 
-.guide-select-screen[hidden] { display: none !important; }
+
 
 .guide-select-screen.is-entering {
   animation: fadeUp 600ms ease-out both;
@@ -350,7 +353,7 @@ button, input { font: inherit; }
   animation: fadeUp 500ms ease-out both;
 }
 
-.app-shell[hidden] { display: none !important; }
+
 
 /* ===== TOP BAR ===== */
 .topbar {
