@@ -15,14 +15,74 @@
 
     <section id="introOverlay" class="intro-overlay" aria-labelledby="projectTitle">
       <div class="intro-card">
-        <p class="intro-kicker">Picnic Symphony</p>
-        <h1 id="projectTitle">Picnic Symphony</h1>
-        <p class="intro-subtitle">Pack a basket. Build a beat.</p>
-        <p class="intro-copy">
-          Click illustrated picnic treats to layer a gentle summer groove. Every sound is
-          generated live in your browser.
-        </p>
-        <button id="startButton" class="primary-button" type="button">Start Picnic</button>
+        <div class="intro-card__copy">
+          <p class="intro-kicker">Picnic Symphony</p>
+          <h1 id="projectTitle">Picnic Symphony</h1>
+          <p class="intro-subtitle">Pack a basket. Build a beat.</p>
+          <p class="intro-copy">
+            Click illustrated picnic treats to layer a gentle summer groove. Every sound is
+            generated live in your browser.
+          </p>
+
+          <div class="intro-guide" aria-label="Welcome guide">
+            <div class="intro-guide__stage" aria-hidden="true">
+              <svg viewBox="0 0 280 280" class="intro-guide__mimi" role="img" aria-label="Mimi waving hello">
+                <defs>
+                  <linearGradient id="introMimiWing" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.88" />
+                    <stop offset="100%" stop-color="#e6fbff" stop-opacity="0.16" />
+                  </linearGradient>
+                  <linearGradient id="introMimiHair" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#4fd1cf" />
+                    <stop offset="100%" stop-color="#2e9ca7" />
+                  </linearGradient>
+                  <linearGradient id="introMimiDress" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#ffd6c4" />
+                    <stop offset="100%" stop-color="#efac8b" />
+                  </linearGradient>
+                  <linearGradient id="introMimiLeaf" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#c2e98d" />
+                    <stop offset="100%" stop-color="#79ab59" />
+                  </linearGradient>
+                </defs>
+                <ellipse cx="140" cy="240" rx="74" ry="16" fill="#c8dfbe" opacity="0.35" />
+                <path d="M60 116c18-24 43-39 75-39s57 15 81 39" fill="none" stroke="url(#introMimiWing)" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
+                <path d="M220 116c-18-24-43-39-75-39s-57 15-81 39" fill="none" stroke="url(#introMimiWing)" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
+                <path d="M100 74c-10-19-27-31-47-30 4 19 16 33 31 42" fill="url(#introMimiLeaf)" stroke="#5a8744" stroke-width="4" stroke-linejoin="round" />
+                <path d="M102 80c5-14 14-24 27-30 10 10 12 24 7 36" fill="url(#introMimiLeaf)" stroke="#5a8744" stroke-width="4" stroke-linejoin="round" />
+                <path d="M97 106c15-22 33-34 43-34 10 0 29 12 44 34 12 17 17 36 17 55 0 36-25 61-61 61s-61-25-61-61c0-19 5-38 18-55Z" fill="url(#introMimiHair)" opacity="0.9" />
+                <path d="M95 113c16-22 32-33 50-33 17 0 34 11 50 33 10 14 15 29 15 45 0 29-20 51-65 51s-65-22-65-51c0-16 5-31 15-45Z" fill="#ffe7d8" stroke="#9c704d" stroke-width="4" stroke-linejoin="round" />
+                <path d="M92 98c0-14 6-28 18-40 10 11 13 24 11 39" fill="url(#introMimiHair)" stroke="#277f87" stroke-width="4" stroke-linejoin="round" />
+                <path d="M188 98c0-14-6-28-18-40-10 11-13 24-11 39" fill="url(#introMimiHair)" stroke="#277f87" stroke-width="4" stroke-linejoin="round" />
+                <path d="M118 145c7-13 18-20 32-20s25 7 32 20c6 10 8 21 8 31 0 17-12 30-40 30s-40-13-40-30c0-10 2-21 8-31Z" fill="url(#introMimiDress)" stroke="#9c704d" stroke-width="4" stroke-linejoin="round" />
+                <path d="M117 145c14 6 27 9 33 9 7 0 20-3 34-9" fill="none" stroke="#fff5ee" stroke-width="4" stroke-linecap="round" opacity="0.75" />
+                <circle cx="132" cy="133" r="7" fill="#3f2c27" />
+                <circle cx="156" cy="133" r="7" fill="#3f2c27" />
+                <circle cx="130" cy="131" r="2" fill="#fff8f2" />
+                <circle cx="154" cy="131" r="2" fill="#fff8f2" />
+                <path d="M141 149c6 5 13 5 19 0" fill="none" stroke="#c96f76" stroke-width="4" stroke-linecap="round" />
+                <path d="M106 175c-9 13-13 24-16 39" fill="none" stroke="#9c704d" stroke-width="4" stroke-linecap="round" />
+                <path d="M174 175c13 7 22 18 28 30" fill="none" stroke="#9c704d" stroke-width="4" stroke-linecap="round" />
+                <path d="M122 210c-6 13-15 24-25 30" fill="none" stroke="#9c704d" stroke-width="4" stroke-linecap="round" />
+                <path d="M160 210c6 14 15 25 26 31" fill="none" stroke="#9c704d" stroke-width="4" stroke-linecap="round" />
+                <circle cx="117" cy="138" r="4" fill="#f4c6b2" />
+                <circle cx="165" cy="138" r="4" fill="#f4c6b2" />
+              </svg>
+              <div class="intro-guide__sparkles" aria-hidden="true"></div>
+            </div>
+
+            <div class="intro-guide__bubble">
+              <p class="intro-guide__saying">Hi, I’m Mimi. I’ll guide you through a picnic recipe and turn food into music.</p>
+              <ol class="intro-guide__steps">
+                <li>Choose a recipe menu.</li>
+                <li>Tap the next ingredient Mimi points to.</li>
+                <li>Layer more treats to grow the song.</li>
+              </ol>
+            </div>
+          </div>
+
+          <button id="startButton" class="primary-button" type="button">Start Picnic</button>
+        </div>
       </div>
     </section>
 
@@ -57,10 +117,10 @@
           <strong id="activeLayerCount">0 / 6 sounds</strong>
         </div>
 
-        <div class="status-card status-card--beat">
-          <span class="status-label">Beat</span>
+        <div class="status-card status-card--guide">
+          <span class="status-label">Next up</span>
           <div class="beat-indicator" id="beatIndicator" aria-label="Beat indicator"></div>
-          <strong id="beatLabel">Step 1 of 16</strong>
+          <strong id="beatLabel">Mimi will point to the next treat</strong>
         </div>
 
         <div class="status-card status-card--recipe">
@@ -71,84 +131,86 @@
         </div>
       </section>
 
+      <section class="recipe-lab" aria-labelledby="recipeLabHeading">
+        <div class="recipe-lab__intro">
+          <p class="recipe-lab__kicker">Step-by-step picnic recipes</p>
+          <h2 id="recipeLabHeading">Choose a recipe, then build it like a little food song.</h2>
+          <p>
+            Pick one of the picnic menus below. Mimi will guide you through the ingredients one at a time,
+            and each successful choice adds a new musical layer.
+          </p>
+        </div>
+
+        <div id="recipeCards" class="recipe-cards" role="list" aria-label="Picnic recipe choices"></div>
+
+        <div class="recipe-walkthrough" aria-label="Current recipe walkthrough">
+          <div class="recipe-walkthrough__header">
+            <span>Current recipe</span>
+            <strong id="selectedRecipeName">Choose a recipe</strong>
+            <button id="recipeResetButton" class="text-button" type="button">Change recipe</button>
+          </div>
+          <p id="recipeStepPrompt" class="recipe-walkthrough__prompt">
+            Pick a recipe card above to begin the picnic music-making guide.
+          </p>
+          <ol id="recipeSteps" class="recipe-steps-list"></ol>
+        </div>
+      </section>
+
       <main class="scene-layout">
         <section class="mimi-scene" aria-labelledby="mimiHeading">
           <h2 id="mimiHeading" class="sr-only">Guide Mimi</h2>
           <div class="mimi-card">
             <div class="mimi-art" aria-hidden="true">
-              <svg viewBox="0 0 320 340" role="img" aria-label="Mimi the picnic fairy">
+              <svg viewBox="0 0 340 360" role="img" aria-label="Mimi the picnic fairy">
                 <defs>
                   <linearGradient id="mimiWing" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#f7f2ff" stop-opacity="0.9" />
-                    <stop offset="100%" stop-color="#e6f6ff" stop-opacity="0.25" />
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.88" />
+                    <stop offset="100%" stop-color="#e6fbff" stop-opacity="0.16" />
                   </linearGradient>
                   <linearGradient id="mimiDress" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#ffd8bf" />
-                    <stop offset="100%" stop-color="#f2b693" />
+                    <stop offset="0%" stop-color="#ffd8c2" />
+                    <stop offset="100%" stop-color="#f1a77e" />
+                  </linearGradient>
+                  <linearGradient id="mimiHair" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#4fd1cf" />
+                    <stop offset="100%" stop-color="#2e9ca7" />
+                  </linearGradient>
+                  <linearGradient id="mimiSkin" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#fff0e3" />
+                    <stop offset="100%" stop-color="#fad2b9" />
+                  </linearGradient>
+                  <linearGradient id="mimiLeaf" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#b7de83" />
+                    <stop offset="100%" stop-color="#6f9f57" />
                   </linearGradient>
                   <filter id="mimiShadow" x="-20%" y="-20%" width="140%" height="140%">
                     <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#9a7b4f" flood-opacity="0.22" />
                   </filter>
                 </defs>
                 <g filter="url(#mimiShadow)">
-                  <ellipse cx="160" cy="280" rx="74" ry="18" fill="#b8d1ab" opacity="0.35" />
-                  <path
-                    d="M84 152C116 111 145 96 164 95c18 1 49 15 81 56"
-                    fill="none"
-                    stroke="url(#mimiWing)"
-                    stroke-width="26"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    opacity="0.85"
-                  />
-                  <path
-                    d="M236 152C204 111 175 96 156 95c-18 1-49 15-81 56"
-                    fill="none"
-                    stroke="url(#mimiWing)"
-                    stroke-width="26"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    opacity="0.85"
-                  />
-                  <path
-                    d="M127 206c6-31 28-55 34-55s28 24 34 55c5 25-3 57-34 57s-39-32-34-57Z"
-                    fill="url(#mimiDress)"
-                    stroke="#9c704d"
-                    stroke-width="5"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M127 206c16 8 45 8 68 0"
-                    fill="none"
-                    stroke="#fff4ea"
-                    stroke-width="5"
-                    stroke-linecap="round"
-                    opacity="0.7"
-                  />
-                  <path
-                    d="M116 154c14-26 40-41 44-41 6 0 35 15 49 41"
-                    fill="#f8dbbf"
-                    stroke="#9c704d"
-                    stroke-width="5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M136 113c13-19 27-28 24-35-2-6-11-7-18-3-12 6-12 25-6 38Z"
-                    fill="#9ccf8b"
-                    stroke="#5e7d4b"
-                    stroke-width="5"
-                    stroke-linejoin="round"
-                  />
-                  <circle cx="148" cy="162" r="5" fill="#5a3d33" />
-                  <circle cx="180" cy="162" r="5" fill="#5a3d33" />
-                  <path d="M152 179c8 7 22 7 30 0" fill="none" stroke="#b85f53" stroke-width="5" stroke-linecap="round" />
-                  <path d="M109 199c-10 14-14 31-16 49" fill="none" stroke="#9c704d" stroke-width="5" stroke-linecap="round" />
-                  <path d="M211 199c10 14 14 31 16 49" fill="none" stroke="#9c704d" stroke-width="5" stroke-linecap="round" />
-                  <path d="M141 251c-4 17-15 26-28 33" fill="none" stroke="#9c704d" stroke-width="5" stroke-linecap="round" />
-                  <path d="M179 251c4 17 15 26 28 33" fill="none" stroke="#9c704d" stroke-width="5" stroke-linecap="round" />
-                  <circle cx="114" cy="164" r="6" fill="#f6d6c1" />
-                  <circle cx="196" cy="164" r="6" fill="#f6d6c1" />
+                  <ellipse cx="170" cy="294" rx="86" ry="18" fill="#bdd7b4" opacity="0.35" />
+                  <path d="M84 134c28-28 58-34 86-31 28 3 54 17 82 43" fill="none" stroke="url(#mimiWing)" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" opacity="0.86" />
+                  <path d="M254 134c-28-28-58-34-86-31-28 3-54 17-82 43" fill="none" stroke="url(#mimiWing)" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" opacity="0.86" />
+                  <path d="M98 108c-7-24-23-40-44-41 3 19 13 35 27 46" fill="url(#mimiLeaf)" stroke="#5f8f49" stroke-width="5" stroke-linejoin="round" />
+                  <path d="M110 82c11-18 25-26 42-28 9 13 8 28 0 42" fill="url(#mimiLeaf)" stroke="#5f8f49" stroke-width="5" stroke-linejoin="round" />
+                  <path d="M114 124c17-22 34-32 56-32 22 0 39 10 55 32 13 18 18 37 18 57 0 42-29 73-73 73s-74-31-74-73c0-20 5-39 18-57Z" fill="url(#mimiSkin)" stroke="#9c704d" stroke-width="5" stroke-linejoin="round" />
+                  <path d="M127 171c7-16 25-28 41-28s35 12 42 28c6 13 8 27 8 40 0 20-15 35-50 35s-50-15-50-35c0-13 2-27 9-40Z" fill="url(#mimiDress)" stroke="#9c704d" stroke-width="5" stroke-linejoin="round" />
+                  <path d="M126 171c13 7 26 10 43 10 16 0 30-3 43-10" fill="none" stroke="#fff7ef" stroke-width="5" stroke-linecap="round" opacity="0.75" />
+                  <path d="M112 150c-1-21 6-43 21-57 10 12 14 26 11 41" fill="url(#mimiHair)" stroke="#277f87" stroke-width="5" stroke-linejoin="round" />
+                  <path d="M228 150c1-21-6-43-21-57-10 12-14 26-11 41" fill="url(#mimiHair)" stroke="#277f87" stroke-width="5" stroke-linejoin="round" />
+                  <path d="M135 124c4-11 11-17 19-17s15 6 19 17" fill="none" stroke="#8f5f45" stroke-width="4" stroke-linecap="round" />
+                  <path d="M126 141c4 8 11 12 20 12s16-4 20-12" fill="none" stroke="#8f5f45" stroke-width="4" stroke-linecap="round" />
+                  <circle cx="144" cy="149" r="7" fill="#3d2a25" />
+                  <circle cx="172" cy="149" r="7" fill="#3d2a25" />
+                  <circle cx="142" cy="147" r="2" fill="#fff7ef" />
+                  <circle cx="170" cy="147" r="2" fill="#fff7ef" />
+                  <path d="M151 163c7 6 14 6 21 0" fill="none" stroke="#c76a72" stroke-width="5" stroke-linecap="round" />
+                  <path d="M110 192c-14 12-20 30-22 47" fill="none" stroke="#9c704d" stroke-width="5" stroke-linecap="round" />
+                  <path d="M230 192c14 12 20 30 22 47" fill="none" stroke="#9c704d" stroke-width="5" stroke-linecap="round" />
+                  <path d="M138 249c-6 20-17 33-32 40" fill="none" stroke="#9c704d" stroke-width="5" stroke-linecap="round" />
+                  <path d="M202 249c6 20 17 33 32 40" fill="none" stroke="#9c704d" stroke-width="5" stroke-linecap="round" />
+                  <circle cx="124" cy="152" r="4" fill="#f5c8b5" />
+                  <circle cx="216" cy="152" r="4" fill="#f5c8b5" />
                 </g>
               </svg>
             </div>
@@ -168,69 +230,95 @@
           </div>
           <div class="floating-notes" aria-hidden="true"></div>
           <div class="sparkles" aria-hidden="true"></div>
-
-          <div class="picnic-stage">
-            <div class="basket-wrapper" aria-hidden="true">
-              <svg viewBox="0 0 220 180" class="basket-art">
+          <div class="mimi-traveler" aria-hidden="true">
+            <div class="mimi-traveler__bubble">Tap this one</div>
+            <svg viewBox="0 0 240 280" class="mimi-traveler__art">
                 <defs>
-                  <linearGradient id="basketBody" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#f4c893" />
-                    <stop offset="100%" stop-color="#d99658" />
+                  <linearGradient id="travelerHair" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#51d6d1" />
+                    <stop offset="100%" stop-color="#2f99a5" />
+                  </linearGradient>
+                  <linearGradient id="travelerDress" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#ffe1cf" />
+                    <stop offset="100%" stop-color="#f0a87f" />
+                  </linearGradient>
+                  <linearGradient id="travelerWing" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.88" />
+                    <stop offset="100%" stop-color="#e4fbff" stop-opacity="0.12" />
                   </linearGradient>
                 </defs>
-                <ellipse cx="110" cy="154" rx="68" ry="14" fill="#8caf6e" opacity="0.22" />
-                <path d="M62 75c2-27 25-47 48-47h0c25 0 50 20 48 47l-5 57H67Z" fill="url(#basketBody)" stroke="#946032" stroke-width="6" stroke-linejoin="round" />
-                <path d="M74 84h72M71 103h78M68 122h84" stroke="#9a6b3e" stroke-width="6" stroke-linecap="round" opacity="0.9" />
-                <path d="M83 35c4-26 14-39 27-39 14 0 24 13 28 39" fill="none" stroke="#946032" stroke-width="8" stroke-linecap="round" />
+                <ellipse cx="120" cy="255" rx="56" ry="12" fill="#c8dfbe" opacity="0.34" />
+                <path d="M44 95c18-22 42-35 76-35s58 13 76 35" fill="none" stroke="url(#travelerWing)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" opacity="0.86" />
+                <path d="M196 95c-18-22-42-35-76-35s-58 13-76 35" fill="none" stroke="url(#travelerWing)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" opacity="0.86" />
+                <path d="M64 82c-8-20-21-34-39-36 2 16 11 30 24 41" fill="#b7de83" stroke="#5f8f49" stroke-width="4" stroke-linejoin="round" />
+                <path d="M178 80c8-20 21-34 39-36-2 16-11 30-24 41" fill="#b7de83" stroke="#5f8f49" stroke-width="4" stroke-linejoin="round" />
+                <path d="M72 116c12-30 31-47 48-47 18 0 36 17 48 47 8 20 11 41 11 60 0 31-21 56-59 56s-59-25-59-56c0-19 3-40 11-60Z" fill="#ffe9dd" stroke="#9c704d" stroke-width="4" stroke-linejoin="round" />
+                <path d="M77 118c10-22 24-34 42-34 18 0 34 12 45 34 10 20 13 42 13 60 0 26-18 46-58 46s-58-20-58-46c0-18 3-40 16-60Z" fill="url(#travelerHair)" opacity="0.95" />
+                <path d="M83 122c12-18 24-29 37-29 15 0 28 11 40 29 9 13 13 27 13 41 0 23-16 39-49 39s-49-16-49-39c0-14 3-28 8-41Z" fill="#ffe7d7" stroke="#9c704d" stroke-width="4" stroke-linejoin="round" />
+                <path d="M92 172c5-12 16-20 28-20 13 0 24 8 29 20 5 12 7 22 7 32 0 17-12 29-36 29s-36-12-36-29c0-10 2-20 8-32Z" fill="url(#travelerDress)" stroke="#9c704d" stroke-width="4" stroke-linejoin="round" />
+                <path d="M91 172c9 5 20 8 29 8 10 0 21-3 30-8" fill="none" stroke="#fff8f0" stroke-width="4" stroke-linecap="round" opacity="0.78" />
+                <path d="M85 143c0-11 5-21 13-30 9 9 11 20 8 32" fill="url(#travelerHair)" stroke="#277f87" stroke-width="4" stroke-linejoin="round" />
+                <path d="M154 143c0-11-5-21-13-30-9 9-11 20-8 32" fill="url(#travelerHair)" stroke="#277f87" stroke-width="4" stroke-linejoin="round" />
+                <path d="M100 132c3-10 8-15 15-15s12 5 15 15" fill="none" stroke="#8f5f45" stroke-width="3.5" stroke-linecap="round" />
+                <path d="M96 146c3 7 8 10 15 10 7 0 12-3 15-10" fill="none" stroke="#8f5f45" stroke-width="3.5" stroke-linecap="round" />
+                <circle cx="111" cy="154" r="7" fill="#3b2824" />
+                <circle cx="137" cy="154" r="7" fill="#3b2824" />
+                <circle cx="109" cy="152" r="2" fill="#fff7ef" />
+                <circle cx="135" cy="152" r="2" fill="#fff7ef" />
+                <path d="M115 169c6 5 12 5 18 0" fill="none" stroke="#ca6e76" stroke-width="4" stroke-linecap="round" />
+                <path d="M71 186c-12 12-17 28-19 44" fill="none" stroke="#9c704d" stroke-width="4" stroke-linecap="round" />
+                <path d="M167 186c12 12 17 28 19 44" fill="none" stroke="#9c704d" stroke-width="4" stroke-linecap="round" />
+                <path d="M104 238c-5 13-14 22-25 29" fill="none" stroke="#9c704d" stroke-width="4" stroke-linecap="round" />
+                <path d="M136 238c5 13 14 22 25 29" fill="none" stroke="#9c704d" stroke-width="4" stroke-linecap="round" />
+                <circle cx="98" cy="156" r="4" fill="#f4c7b4" />
+                <circle cx="142" cy="156" r="4" fill="#f4c7b4" />
               </svg>
-            </div>
+          </div>
 
-            <div class="blanket-shell" aria-hidden="true">
-              <div class="blanket"></div>
-              <div class="blanket-shadow"></div>
-            </div>
-
-            <div class="ingredient-grid" role="group" aria-label="Picnic ingredients">
-              <button class="ingredient ingredient--watermelon" type="button" data-ingredient="watermelon" aria-pressed="false">
-                <span class="ingredient-label">Watermelon Bounce</span>
-                <span class="ingredient-art" aria-hidden="true">
-                  <svg viewBox="0 0 180 160">
-                    <defs>
-                      <linearGradient id="watermelonRind" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#a8df7d" />
-                        <stop offset="100%" stop-color="#6ea35a" />
-                      </linearGradient>
-                      <linearGradient id="watermelonFlesh" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#ffb0b8" />
-                        <stop offset="100%" stop-color="#f2677f" />
-                      </linearGradient>
-                    </defs>
-                    <path d="M26 113c6-41 38-72 64-72 27 0 62 26 70 72H26Z" fill="url(#watermelonFlesh)" stroke="#9b5a5f" stroke-width="6" stroke-linejoin="round" />
-                    <path d="M25 113c20 18 49 28 65 28s47-10 65-28" fill="none" stroke="url(#watermelonRind)" stroke-width="18" stroke-linecap="round" />
-                    <path d="M45 78c8 1 16 5 23 13M80 64c9 3 16 8 21 16M111 70c8 4 14 10 18 18" stroke="#ffdfe2" stroke-width="5" stroke-linecap="round" opacity="0.8" />
-                    <circle cx="76" cy="93" r="4" fill="#5d2f2f" />
-                    <circle cx="98" cy="86" r="4" fill="#5d2f2f" />
-                    <circle cx="116" cy="100" r="4" fill="#5d2f2f" />
-                  </svg>
-                </span>
-              </button>
-
+          <div class="picnic-stage__ingredients">
+            <button class="ingredient ingredient--watermelon" type="button" data-ingredient="watermelon" aria-pressed="false">
+              <span class="ingredient-label">Watermelon Bounce</span>
+              <span class="ingredient-art" aria-hidden="true">
+                <svg viewBox="0 0 180 160">
+                  <defs>
+                    <linearGradient id="watermelonRind" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#98d97c" />
+                      <stop offset="100%" stop-color="#5ea74f" />
+                    </linearGradient>
+                    <linearGradient id="watermelonFruit" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#ff7c90" />
+                      <stop offset="100%" stop-color="#ef546f" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M36 84c0-30 24-54 54-54 16 0 30 7 40 18 11 12 17 26 17 40v27H36Z" fill="url(#watermelonRind)" stroke="#4d8f41" stroke-width="6" stroke-linejoin="round" />
+                  <path d="M43 84c0-24 19-44 47-44 29 0 48 20 48 44v23H43Z" fill="url(#watermelonFruit)" stroke="#cf455e" stroke-width="6" stroke-linejoin="round" />
+                  <path d="M61 106c6-6 11-10 18-13 7 4 11 8 17 14 8-7 13-11 18-14 6 4 11 9 16 15" fill="none" stroke="#ffd97f" stroke-width="6" stroke-linecap="round" />
+                  <path d="M78 104c2-12 9-22 17-29 8 7 13 16 15 29" fill="none" stroke="#ffb7c1" stroke-width="4" stroke-linecap="round" opacity="0.9" />
+                </svg>
+              </span>
+            </button>
               <button class="ingredient ingredient--lemonade" type="button" data-ingredient="lemonade" aria-pressed="false">
                 <span class="ingredient-label">Lemonade Sparkle</span>
                 <span class="ingredient-art" aria-hidden="true">
                   <svg viewBox="0 0 180 160">
                     <defs>
                       <linearGradient id="lemonGlass" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#fffef0" stop-opacity="0.95" />
-                        <stop offset="100%" stop-color="#d9f4ff" stop-opacity="0.55" />
+                        <stop offset="0%" stop-color="#fffdf0" stop-opacity="0.96" />
+                        <stop offset="100%" stop-color="#dff6ff" stop-opacity="0.65" />
+                      </linearGradient>
+                      <linearGradient id="lemonLiquid" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#fff6a8" />
+                        <stop offset="100%" stop-color="#ffd35f" />
                       </linearGradient>
                     </defs>
-                    <path d="M65 25h50l-8 70c-2 16-8 26-17 31h0c-11-5-17-15-19-31Z" fill="url(#lemonGlass)" stroke="#9ab0b6" stroke-width="6" stroke-linejoin="round" />
-                    <path d="M60 27h60M71 69h38" stroke="#bcd8df" stroke-width="6" stroke-linecap="round" />
-                    <path d="M80 20c7-8 14-14 25-19" fill="none" stroke="#f6cb57" stroke-width="7" stroke-linecap="round" />
-                    <circle cx="136" cy="47" r="4" fill="#fff4b5" />
-                    <circle cx="30" cy="55" r="5" fill="#fff4b5" />
-                    <circle cx="137" cy="92" r="5" fill="#fff4b5" />
+                    <path d="M47 28h86l-8 78c-2 18-12 32-35 32s-33-14-35-32Z" fill="url(#lemonGlass)" stroke="#94a8ab" stroke-width="6" stroke-linejoin="round" />
+                    <path d="M52 63h76M56 84h68" stroke="#bcd8df" stroke-width="6" stroke-linecap="round" />
+                    <path d="M62 27c5-9 15-15 22-18 9 4 14 10 16 18" fill="none" stroke="#f3cb63" stroke-width="7" stroke-linecap="round" />
+                    <path d="M76 47c9-7 20-10 33-10 9 0 17 2 25 6-4 10-13 17-25 21-12-1-25-5-33-17Z" fill="url(#lemonLiquid)" opacity="0.9" />
+                    <path d="M74 46c5-11 12-16 20-16 10 0 17 7 22 18" fill="none" stroke="#fff5bf" stroke-width="5" stroke-linecap="round" opacity="0.8" />
+                    <circle cx="121" cy="49" r="4" fill="#fff7c9" />
+                    <circle cx="34" cy="58" r="5" fill="#fff7c9" />
+                    <circle cx="136" cy="99" r="5" fill="#fff7c9" />
                   </svg>
                 </span>
               </button>
@@ -300,14 +388,19 @@
                   <svg viewBox="0 0 180 160">
                     <defs>
                       <linearGradient id="cupcakeFrosting" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#ffdfec" />
-                        <stop offset="100%" stop-color="#f7a9c5" />
+                        <stop offset="0%" stop-color="#ffe7f1" />
+                        <stop offset="100%" stop-color="#f5a9c8" />
+                      </linearGradient>
+                      <linearGradient id="cupcakeWrapper" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#d7a16c" />
+                        <stop offset="100%" stop-color="#b97e4f" />
                       </linearGradient>
                     </defs>
-                    <path d="M52 105c12-18 25-28 38-28s26 10 38 28l-7 29H59Z" fill="#d7a16c" stroke="#9d6f43" stroke-width="6" stroke-linejoin="round" />
-                    <path d="M71 76c-3-19 8-31 19-31s22 12 19 31c12 4 21 14 24 29H47c3-15 12-25 24-29Z" fill="url(#cupcakeFrosting)" stroke="#c36e96" stroke-width="6" stroke-linejoin="round" />
-                    <path d="M90 32c2-12 5-17 10-23 7 6 10 15 9 23" fill="none" stroke="#fff2a8" stroke-width="5" stroke-linecap="round" />
-                    <circle cx="78" cy="70" r="4" fill="#fff2b6" /><circle cx="102" cy="67" r="4" fill="#fff2b6" /><circle cx="90" cy="86" r="4" fill="#fff2b6" />
+                    <path d="M53 108c10-19 24-31 37-31 13 0 28 12 38 31l-8 28H61Z" fill="url(#cupcakeWrapper)" stroke="#9d6f43" stroke-width="6" stroke-linejoin="round" />
+                    <path d="M62 98c2-19 13-34 28-34s26 15 28 34c12 4 23 16 26 31H43c3-15 14-27 19-31Z" fill="url(#cupcakeFrosting)" stroke="#c36e96" stroke-width="6" stroke-linejoin="round" />
+                    <path d="M90 42c0-12 4-19 10-26 8 7 10 16 8 26" fill="none" stroke="#fff4ad" stroke-width="5" stroke-linecap="round" />
+                    <circle cx="80" cy="83" r="4" fill="#fff3c2" /><circle cx="100" cy="79" r="4" fill="#fff3c2" /><circle cx="90" cy="96" r="4" fill="#fff3c2" />
+                    <path d="M88 57c4 1 9 1 14 0" fill="none" stroke="#fff7e5" stroke-width="4" stroke-linecap="round" opacity="0.8" />
                   </svg>
                 </span>
               </button>

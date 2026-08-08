@@ -61,6 +61,46 @@ const ingredientDefinitions = [
   },
 ];
 
+const recipeDefinitions = [
+  {
+    id: "sunrise-basket",
+    name: "Sunrise Basket",
+    mood: "Bright and bubbly",
+    description: "A cheerful starter recipe with bass, sparkle, and fruit melody.",
+    steps: [
+      { ingredientId: "watermelon", note: "Start with the grounding bounce." },
+      { ingredientId: "lemonade", note: "Add a sparkling glass of light." },
+      { ingredientId: "strawberry", note: "Stir in a sweet little tune." },
+      { ingredientId: "grape", note: "Shake in a soft picnic rhythm." },
+    ],
+  },
+  {
+    id: "soft-meadow-waltz",
+    name: "Soft Meadow Waltz",
+    mood: "Warm and glowy",
+    description: "A dreamy picnic recipe built around harmony and a gentle whistle.",
+    steps: [
+      { ingredientId: "cheese", note: "Lay down the warm harmony first." },
+      { ingredientId: "cupcake", note: "Float in the sweet lead line." },
+      { ingredientId: "strawberry", note: "Add a dancing melody on top." },
+      { ingredientId: "watermelon", note: "Anchor the whole basket with a bounce." },
+    ],
+  },
+  {
+    id: "sparkling-feast",
+    name: "Sparkling Feast",
+    mood: "Playful and full",
+    description: "A fuller recipe with bright percussion, melody, and glowing chords.",
+    steps: [
+      { ingredientId: "grape", note: "Begin with the shaker texture." },
+      { ingredientId: "lemonade", note: "Let the bells sprinkle above it." },
+      { ingredientId: "cheese", note: "Fold in the creamy chord bed." },
+      { ingredientId: "cupcake", note: "Finish with a charming whistle." },
+      { ingredientId: "strawberry", note: "Top it off with a fruity melody." },
+    ],
+  },
+];
+
 const state = {
   started: false,
   playing: false,
@@ -76,6 +116,9 @@ const state = {
   helpTimerId: null,
   clearMessageActive: false,
   introDismissedAt: 0,
+  selectedRecipeId: null,
+  recipeStepIndex: 0,
+  recommendedIngredientId: null,
 };
 
 const elements = {
@@ -90,8 +133,16 @@ const elements = {
   beatIndicator: document.getElementById("beatIndicator"),
   beatLabel: document.getElementById("beatLabel"),
   recipeStrip: document.getElementById("recipeStrip"),
+  recipeCards: document.getElementById("recipeCards"),
+  selectedRecipeName: document.getElementById("selectedRecipeName"),
+  recipeStepPrompt: document.getElementById("recipeStepPrompt"),
+  recipeSteps: document.getElementById("recipeSteps"),
+  recipeResetButton: document.getElementById("recipeResetButton"),
   mimiSpeech: document.getElementById("mimiSpeech"),
   meadowScene: document.querySelector(".meadow-scene"),
+  recipeLab: document.querySelector(".recipe-lab"),
+  picnicStage: document.querySelector(".picnic-stage"),
+  mimiTraveler: document.querySelector(".mimi-traveler"),
   ingredientButtons: Array.from(document.querySelectorAll(".ingredient")),
 };
 
@@ -100,6 +151,7 @@ const visualByIngredient = new Map();
 
 initializeBeatIndicator();
 cacheIngredientButtons();
+renderRecipeCards();
 bindEvents();
 updateInterface();
 updateSceneMood();
@@ -110,6 +162,11 @@ function bindEvents() {
   elements.clearButton.addEventListener("click", clearMix);
   elements.helpButton.addEventListener("click", showHelpMessage);
   elements.volumeSlider.addEventListener("input", handleVolumeChange);
+  elements.recipeResetButton.addEventListener("click", clearRecipeSelection);
+
+  for (const card of Array.from(elements.recipeCards.querySelectorAll("[data-recipe-id]"))) {
+    card.addEventListener("click", () => handleRecipeSelect(card.dataset.recipeId));
+  }
 
   for (const button of elements.ingredientButtons) {
     button.addEventListener("click", () => toggleIngredient(button.dataset.ingredient));
@@ -306,10 +363,54 @@ function toggleIngredient(id) {
     button.classList.add("is-playing");
     window.setTimeout(() => button.classList.remove("is-playing"), flickerMs);
     triggerIngredientPreview(id);
+    advanceRecipeIfMatched(id);
   }
 
   state.clearMessageActive = false;
   updateInterface();
+}
+
+function handleRecipeSelect(recipeId) {
+  state.selectedRecipeId = recipeId;
+  state.recipeStepIndex = 0;
+  state.clearMessageActive = false;
+  updateInterface();
+}
+
+function clearRecipeSelection() {
+  state.selectedRecipeId = null;
+  state.recipeStepIndex = 0;
+  updateInterface();
+}
+
+function getSelectedRecipe() {
+  return recipeDefinitions.find((recipe) => recipe.id === state.selectedRecipeId) || null;
+}
+
+function getCurrentRecipeStep() {
+  const recipe = getSelectedRecipe();
+  if (!recipe) {
+    return null;
+  }
+
+  return recipe.steps[state.recipeStepIndex] || null;
+}
+
+function advanceRecipeIfMatched(ingredientId) {
+  const recipe = getSelectedRecipe();
+  if (!recipe) {
+    return;
+  }
+
+  const currentStep = recipe.steps[state.recipeStepIndex];
+  if (!currentStep || currentStep.ingredientId !== ingredientId) {
+    return;
+  }
+
+  window.setTimeout(() => {
+    state.recipeStepIndex = Math.min(state.recipeStepIndex + 1, recipe.steps.length);
+    updateInterface();
+  }, 180);
 }
 
 function triggerIngredientPreview(id) {
@@ -329,6 +430,7 @@ function triggerIngredientPreview(id) {
 function clearMix() {
   state.clearMessageActive = true;
   state.activeLayers.clear();
+  state.recipeStepIndex = 0;
 
   for (const button of elements.ingredientButtons) {
     button.classList.remove("is-selected", "is-playing");
@@ -368,8 +470,11 @@ function handleVolumeChange(event) {
 function updateInterface() {
   updateActiveLayerSummary();
   updateRecipeStrip();
+  renderRecipeGuide();
+  updateRecipeLabState();
   updateSceneMood();
   updateMimiMessage();
+  updateMimiGuidePosition(state.recommendedIngredientId);
   updateTransportLabel();
   updateBeatVisual(state.currentStep);
 }
@@ -411,6 +516,128 @@ function updateRecipeStrip() {
   }
 }
 
+function renderRecipeCards() {
+  elements.recipeCards.innerHTML = "";
+
+  for (const recipe of recipeDefinitions) {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "recipe-card";
+    card.dataset.recipeId = recipe.id;
+    card.setAttribute("aria-pressed", String(state.selectedRecipeId === recipe.id));
+    card.innerHTML = `
+      <span class="recipe-card__kicker">${recipe.mood}</span>
+      <strong class="recipe-card__title">${recipe.name}</strong>
+      <span class="recipe-card__copy">${recipe.description}</span>
+      <span class="recipe-card__steps">${recipe.steps.length} steps</span>
+    `;
+    elements.recipeCards.appendChild(card);
+  }
+}
+
+function renderRecipeGuide() {
+  const recipe = getSelectedRecipe();
+  const cards = Array.from(elements.recipeCards.querySelectorAll(".recipe-card"));
+
+  for (const card of cards) {
+    const isSelected = card.dataset.recipeId === state.selectedRecipeId;
+    card.classList.toggle("is-selected", isSelected);
+    card.setAttribute("aria-pressed", String(isSelected));
+  }
+
+  if (!recipe) {
+    elements.selectedRecipeName.textContent = "Choose a recipe";
+    elements.recipeStepPrompt.textContent = "Pick a recipe card above to begin the picnic music-making guide.";
+    elements.recipeSteps.innerHTML = "";
+    elements.recipeResetButton.hidden = true;
+    updateRecommendedIngredient(null);
+    return;
+  }
+
+  const currentStep = getCurrentRecipeStep();
+  const totalSteps = recipe.steps.length;
+
+  elements.selectedRecipeName.textContent = recipe.name;
+  elements.recipeResetButton.hidden = false;
+
+  if (currentStep) {
+    elements.recipeStepPrompt.textContent = `Step ${state.recipeStepIndex + 1} of ${totalSteps}: ${currentStep.note}`;
+  } else {
+    elements.recipeStepPrompt.textContent = `Recipe complete. You built ${recipe.name} in ${totalSteps} steps. Add any extra layers you like.`;
+  }
+
+  elements.recipeSteps.innerHTML = "";
+  recipe.steps.forEach((step, index) => {
+    const item = document.createElement("li");
+    item.className = "recipe-step";
+    item.textContent = ingredientById.get(step.ingredientId)?.name || step.ingredientId;
+    item.classList.toggle("is-complete", index < state.recipeStepIndex);
+    item.classList.toggle("is-current", index === state.recipeStepIndex && Boolean(currentStep));
+    elements.recipeSteps.appendChild(item);
+  });
+
+  updateRecommendedIngredient(currentStep?.ingredientId || null);
+}
+
+function updateRecipeLabState() {
+  const hasRecipe = Boolean(getSelectedRecipe());
+  elements.recipeLab.classList.toggle("is-active", hasRecipe);
+}
+
+function updateRecommendedIngredient(ingredientId) {
+  state.recommendedIngredientId = ingredientId;
+  for (const button of elements.ingredientButtons) {
+    button.classList.toggle("is-recommended", button.dataset.ingredient === ingredientId);
+  }
+
+  updateMimiGuidePosition(ingredientId);
+}
+
+function updateMimiGuidePosition(ingredientId) {
+  if (!elements.picnicStage || !elements.mimiTraveler) {
+    return;
+  }
+
+  const stageRect = elements.picnicStage.getBoundingClientRect();
+  if (stageRect.width === 0 || stageRect.height === 0) {
+    return;
+  }
+
+  const fallbackPositions = [
+    { x: 0.18, y: 0.22 },
+    { x: 0.44, y: 0.18 },
+    { x: 0.72, y: 0.24 },
+    { x: 0.26, y: 0.42 },
+    { x: 0.58, y: 0.38 },
+    { x: 0.78, y: 0.48 },
+  ];
+
+  let x = 0.18;
+  let y = 0.24;
+  let scale = 1;
+
+  if (ingredientId) {
+    const button = visualByIngredient.get(ingredientId);
+    if (button) {
+      const buttonRect = button.getBoundingClientRect();
+      x = ((buttonRect.left + buttonRect.width / 2) - stageRect.left) / stageRect.width;
+      y = ((buttonRect.top + buttonRect.height * 0.1) - stageRect.top) / stageRect.height;
+      scale = 1.04;
+    }
+  } else {
+    const fallback = fallbackPositions[state.currentStep % fallbackPositions.length];
+    x = fallback.x;
+    y = fallback.y;
+  }
+
+  const clampedX = Math.min(0.84, Math.max(0.12, x));
+  const clampedY = Math.min(0.72, Math.max(0.14, y));
+
+  elements.picnicStage.style.setProperty("--mimi-x", `${clampedX * 100}%`);
+  elements.picnicStage.style.setProperty("--mimi-y", `${clampedY * 100}%`);
+  elements.mimiTraveler.style.transform = `translate(-50%, -50%) scale(${scale})`;
+}
+
 function updateSceneMood() {
   const count = state.activeLayers.size;
   const scene = elements.meadowScene;
@@ -437,15 +664,24 @@ function updateMimiMessage() {
     return;
   }
 
+  const recipe = getSelectedRecipe();
   const count = state.activeLayers.size;
   let message = "Welcome to Picnic Symphony! Every picnic treat has a sound.";
 
   if (state.started) {
-    if (count === 0 && state.clearMessageActive) {
+    if (recipe) {
+      const currentStep = getCurrentRecipeStep();
+      if (currentStep) {
+        const ingredientName = ingredientById.get(currentStep.ingredientId)?.name || currentStep.ingredientId;
+        message = `Recipe guide: Step ${state.recipeStepIndex + 1} of ${recipe.steps.length}. Add ${ingredientName}.`;
+      } else {
+        message = `Beautiful. ${recipe.name} is ready. You can remix it or try a new recipe.`;
+      }
+    } else if (count === 0 && state.clearMessageActive) {
       message = "The picnic is quiet again. Let’s create a new recipe!";
       state.clearMessageActive = false;
     } else if (count === 0) {
-      message = "The meadow is listening. Choose a picnic treat to begin!";
+      message = "The meadow is listening. Choose a picnic recipe, then add the first treat!";
     } else if (count === 1) {
       message = "A lovely beginning! Try adding another flavor.";
     } else if (count === 3) {
@@ -469,7 +705,13 @@ function updateBeatVisual(stepIndex) {
   for (const dot of dots) {
     dot.classList.toggle("is-current", Number(dot.dataset.step) === stepIndex);
   }
-  elements.beatLabel.textContent = `Step ${stepIndex + 1} of ${STEP_COUNT}`;
+
+  const recommendedIngredient = ingredientById.get(state.recommendedIngredientId);
+  if (recommendedIngredient) {
+    elements.beatLabel.textContent = `Mimi points to ${recommendedIngredient.name}`;
+  } else {
+    elements.beatLabel.textContent = `Mimi is floating to the next treat`;
+  }
 }
 
 function playWatermelonBounce(time, context, masterGain) {
