@@ -218,3 +218,101 @@ const recipeDefinitions = [
     ],
   },
 ];
+
+/* ===== APP STATE ===== */
+const state = {
+  screen: "welcome", // welcome | guideSelect | game
+  selectedGuide: null,
+  started: false,
+  playing: false,
+  currentStep: 0,
+  timerId: null,
+  nextNoteTime: 0,
+  context: null,
+  masterGain: null,
+  compressor: null,
+  volume: 0.7,
+  activeLayers: new Set(),
+  scheduledVisualTimers: [],
+  helpTimerId: null,
+  clearMessageActive: false,
+  selectedRecipeId: null,
+  recipeStepIndex: 0,
+  recommendedIngredientId: null,
+};
+
+/* ===== DOM ELEMENTS ===== */
+const elements = {
+  // Screens
+  welcomeScreen: document.getElementById("welcomeScreen"),
+  guideSelectScreen: document.getElementById("guideSelectScreen"),
+  appShell: document.getElementById("appShell"),
+
+  // Welcome
+  toGuideSelectBtn: document.getElementById("toGuideSelectBtn"),
+
+  // Guide selection
+  guideCards: document.querySelectorAll(".guide-card"),
+  startPicnicBtn: document.getElementById("startPicnicBtn"),
+
+  // Game
+  playPauseButton: document.getElementById("playPauseButton"),
+  clearButton: document.getElementById("clearButton"),
+  helpButton: document.getElementById("helpButton"),
+  volumeSlider: document.getElementById("volumeSlider"),
+  activeLayerCount: document.getElementById("activeLayerCount"),
+  beatLabel: document.getElementById("beatLabel"),
+  recipeStrip: document.getElementById("recipeStrip"),
+  recipeCards: document.getElementById("recipeCards"),
+  selectedRecipeName: document.getElementById("selectedRecipeName"),
+  recipeStepPrompt: document.getElementById("recipeStepPrompt"),
+  recipeSteps: document.getElementById("recipeSteps"),
+  recipeResetButton: document.getElementById("recipeResetButton"),
+  guideSpeech: document.getElementById("guideSpeech"),
+  guideArtMain: document.getElementById("guideArtMain"),
+  guideTraveler: document.getElementById("guideTraveler"),
+  guideTravelerArt: document.getElementById("guideTravelerArt"),
+  meadowScene: document.querySelector(".meadow-scene"),
+  recipeLab: document.querySelector(".recipe-lab"),
+  ingredientButtons: Array.from(document.querySelectorAll(".ingredient")),
+};
+
+const ingredientById = new Map(ingredientDefinitions.map((d) => [d.id, d]));
+const visualByIngredient = new Map();
+
+/* ===== INITIALIZATION ===== */
+cacheIngredientButtons();
+renderRecipeCards();
+bindEvents();
+
+function bindEvents() {
+  // Welcome screen
+  elements.toGuideSelectBtn.addEventListener("click", showGuideSelection);
+
+  // Guide selection
+  for (const card of elements.guideCards) {
+    card.addEventListener("click", () => selectGuide(card.dataset.guide));
+  }
+  elements.startPicnicBtn.addEventListener("click", startGame);
+
+  // Game controls
+  elements.playPauseButton.addEventListener("click", togglePlayback);
+  elements.clearButton.addEventListener("click", clearMix);
+  elements.helpButton.addEventListener("click", showHelpMessage);
+  elements.volumeSlider.addEventListener("input", handleVolumeChange);
+  elements.recipeResetButton.addEventListener("click", clearRecipeSelection);
+
+  for (const card of Array.from(elements.recipeCards.querySelectorAll("[data-recipe-id]"))) {
+    card.addEventListener("click", () => handleRecipeSelect(card.dataset.recipeId));
+  }
+
+  for (const button of elements.ingredientButtons) {
+    button.addEventListener("click", () => toggleIngredient(button.dataset.ingredient));
+  }
+}
+
+function cacheIngredientButtons() {
+  for (const button of elements.ingredientButtons) {
+    visualByIngredient.set(button.dataset.ingredient, button);
+  }
+}
