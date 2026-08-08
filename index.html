@@ -102,3 +102,316 @@
             <span class="guide-card__name">Honey Bee</span>
             <span class="guide-card__personality">Cheerful &amp; energetic</span>
           </button>
+
+          <!-- BUTTERFLY -->
+          <button class="guide-card" type="button" data-guide="butterfly" role="radio" aria-checked="false">
+            <div class="guide-card__art" aria-hidden="true">
+              <svg viewBox="0 0 200 200">
+                <defs>
+                  <linearGradient id="bflyWingL" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#fff8cf"/>
+                    <stop offset="45%" stop-color="#f5c1ee"/>
+                    <stop offset="100%" stop-color="#82d7e6"/>
+                  </linearGradient>
+                  <linearGradient id="bflyWingR" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#fdf2ff"/>
+                    <stop offset="55%" stop-color="#8fd8ec"/>
+                    <stop offset="100%" stop-color="#6abf88"/>
+                  </linearGradient>
+                </defs>
+                <ellipse cx="100" cy="172" rx="40" ry="10" fill="#c8dfbe" opacity="0.3"/>
+                <!-- wings -->
+                <path d="M98 100c-14-32-44-52-70-47-10 25-1 55 25 74 17 12 37 15 50 6 8-5 8-18-5-33Z" fill="url(#bflyWingL)" stroke="#6e6d8a" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M102 100c14-32 44-52 70-47 10 25 1 55-25 74-17 12-37 15-50 6-8-5-8-18 5-33Z" fill="url(#bflyWingR)" stroke="#6e6d8a" stroke-width="3" stroke-linejoin="round"/>
+                <!-- inner wing patterns -->
+                <path d="M90 112c-20-15-39-16-52-7 6 16 18 28 33 32 13 2 26-3 29-15 1-4-1-6-10-10Z" fill="#ffffff" fill-opacity="0.35"/>
+                <path d="M110 112c20-15 39-16 52-7-6 16-18 28-33 32-13 2-26-3-29-15-1-4 1-6 10-10Z" fill="#ffffff" fill-opacity="0.35"/>
+                <!-- antennae -->
+                <path d="M96 82c-6-18-20-32-36-37 0 14 7 27 18 36" fill="none" stroke="#b7de83" stroke-width="5" stroke-linecap="round"/>
+                <path d="M104 82c6-18 20-32 36-37 0 14-7 27-18 36" fill="none" stroke="#b7de83" stroke-width="5" stroke-linecap="round"/>
+                <!-- body -->
+                <path d="M100 108v38" fill="none" stroke="#6a4f53" stroke-width="6" stroke-linecap="round"/>
+                <!-- face -->
+                <circle cx="96" cy="104" r="5" fill="#3d2a25"/>
+                <circle cx="104" cy="104" r="5" fill="#3d2a25"/>
+                <circle cx="95" cy="102" r="1.8" fill="#fff8f2"/>
+                <circle cx="103" cy="102" r="1.8" fill="#fff8f2"/>
+                <path d="M97 112c3 3 6 3 9 0" fill="none" stroke="#d86b87" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="guide-card__name">Butterfly</span>
+            <span class="guide-card__personality">Gentle &amp; dreamy</span>
+          </button>
+
+          <!-- DRAGONFLY -->
+          <button class="guide-card" type="button" data-guide="dragonfly" role="radio" aria-checked="false">
+            <div class="guide-card__art" aria-hidden="true">
+              <svg viewBox="0 0 200 200">
+                <defs>
+                  <linearGradient id="dflyBody" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#4dd0e1"/>
+                    <stop offset="100%" stop-color="#00897b"/>
+                  </linearGradient>
+                  <linearGradient id="dflyWing" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#e0f7fa" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#b2ebf2" stop-opacity="0.4"/>
+                  </linearGradient>
+                </defs>
+                <ellipse cx="100" cy="178" rx="30" ry="8" fill="#c8dfbe" opacity="0.3"/>
+                <!-- upper wings -->
+                <ellipse cx="66" cy="78" rx="32" ry="16" fill="url(#dflyWing)" stroke="#4dd0e1" stroke-width="2" transform="rotate(-25 66 78)"/>
+                <ellipse cx="134" cy="78" rx="32" ry="16" fill="url(#dflyWing)" stroke="#4dd0e1" stroke-width="2" transform="rotate(25 134 78)"/>
+                <!-- lower wings -->
+                <ellipse cx="70" cy="100" rx="28" ry="12" fill="url(#dflyWing)" stroke="#4dd0e1" stroke-width="1.5" transform="rotate(-15 70 100)"/>
+                <ellipse cx="130" cy="100" rx="28" ry="12" fill="url(#dflyWing)" stroke="#4dd0e1" stroke-width="1.5" transform="rotate(15 130 100)"/>
+                <!-- wing veins -->
+                <path d="M50 72l30 8M46 80l32 4" fill="none" stroke="#80deea" stroke-width="1" opacity="0.6"/>
+                <path d="M150 72l-30 8M154 80l-32 4" fill="none" stroke="#80deea" stroke-width="1" opacity="0.6"/>
+                <!-- body/tail -->
+                <path d="M100 95v70" stroke="url(#dflyBody)" stroke-width="6" stroke-linecap="round"/>
+                <!-- tail segments -->
+                <circle cx="100" cy="110" r="4" fill="#26a69a" stroke="#00695c" stroke-width="1.5"/>
+                <circle cx="100" cy="125" r="3.5" fill="#26a69a" stroke="#00695c" stroke-width="1.5"/>
+                <circle cx="100" cy="139" r="3" fill="#26a69a" stroke="#00695c" stroke-width="1.5"/>
+                <circle cx="100" cy="152" r="2.5" fill="#26a69a" stroke="#00695c" stroke-width="1.5"/>
+                <!-- head -->
+                <circle cx="100" cy="80" r="16" fill="#e0f7fa" stroke="#00897b" stroke-width="3"/>
+                <!-- big eyes -->
+                <circle cx="92" cy="77" r="7" fill="#00695c"/>
+                <circle cx="108" cy="77" r="7" fill="#00695c"/>
+                <circle cx="90" cy="75" r="2.5" fill="#e0f7fa"/>
+                <circle cx="106" cy="75" r="2.5" fill="#e0f7fa"/>
+                <!-- smile -->
+                <path d="M95 89c3 2 7 2 10 0" fill="none" stroke="#00695c" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="guide-card__name">Dragonfly</span>
+            <span class="guide-card__personality">Swift &amp; curious</span>
+          </button>
+
+          <!-- BIRD -->
+          <button class="guide-card" type="button" data-guide="bird" role="radio" aria-checked="false">
+            <div class="guide-card__art" aria-hidden="true">
+              <svg viewBox="0 0 200 200">
+                <defs>
+                  <linearGradient id="birdBody" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#ffcc80"/>
+                    <stop offset="100%" stop-color="#ff8a65"/>
+                  </linearGradient>
+                  <linearGradient id="birdWing" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#ffe0b2"/>
+                    <stop offset="100%" stop-color="#ffab91"/>
+                  </linearGradient>
+                  <linearGradient id="birdBelly" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#fff8e1"/>
+                    <stop offset="100%" stop-color="#ffecb3"/>
+                  </linearGradient>
+                </defs>
+                <ellipse cx="100" cy="172" rx="30" ry="8" fill="#c8dfbe" opacity="0.3"/>
+                <!-- tail feathers -->
+                <path d="M120 140c10 8 18 18 22 28" fill="none" stroke="#ff8a65" stroke-width="4" stroke-linecap="round"/>
+                <path d="M115 138c12 6 22 14 30 24" fill="none" stroke="#ffab91" stroke-width="3" stroke-linecap="round"/>
+                <path d="M125 142c8 10 12 20 14 30" fill="none" stroke="#bf360c" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+                <!-- body -->
+                <ellipse cx="100" cy="120" rx="34" ry="38" fill="url(#birdBody)" stroke="#e65100" stroke-width="3"/>
+                <!-- belly -->
+                <ellipse cx="100" cy="130" rx="22" ry="24" fill="url(#birdBelly)" stroke="#ffcc80" stroke-width="1.5"/>
+                <!-- wing -->
+                <path d="M68 110c-12-4-22 2-26 14 8 10 18 14 28 12 8-2 14-8 14-16 0-4-4-7-16-10Z" fill="url(#birdWing)" stroke="#e65100" stroke-width="2.5" stroke-linejoin="round"/>
+                <!-- head -->
+                <circle cx="100" cy="74" r="22" fill="url(#birdBody)" stroke="#e65100" stroke-width="3"/>
+                <!-- cheeks -->
+                <circle cx="86" cy="80" r="6" fill="#ffab91" opacity="0.5"/>
+                <circle cx="114" cy="80" r="6" fill="#ffab91" opacity="0.5"/>
+                <!-- eyes -->
+                <circle cx="92" cy="72" r="5" fill="#3e2723"/>
+                <circle cx="108" cy="72" r="5" fill="#3e2723"/>
+                <circle cx="91" cy="70" r="2" fill="#fff"/>
+                <circle cx="107" cy="70" r="2" fill="#fff"/>
+                <!-- beak -->
+                <path d="M96 82l4 8 4-8Z" fill="#ff6f00" stroke="#e65100" stroke-width="1.5" stroke-linejoin="round"/>
+                <!-- little crest -->
+                <path d="M96 54c-2-8 0-14 4-18 4 4 6 10 4 18" fill="#ff8a65" stroke="#e65100" stroke-width="2" stroke-linejoin="round"/>
+                <!-- feet -->
+                <path d="M90 156c-2 6-4 10-8 12" fill="none" stroke="#bf360c" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M110 156c2 6 4 10 8 12" fill="none" stroke="#bf360c" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="guide-card__name">Little Bird</span>
+            <span class="guide-card__personality">Warm &amp; melodic</span>
+          </button>
+        </div>
+
+        <button id="startPicnicBtn" class="primary-button start-btn" type="button" disabled>Start Picnic</button>
+      </div>
+    </section>
+
+    <!-- MAIN GAME -->
+    <div id="appShell" class="app-shell" hidden>
+      <header class="topbar">
+        <div class="brand-lockup">
+          <p class="brand-name">Picnic Symphony</p>
+          <p class="brand-tagline">Pack a basket. Build a beat.</p>
+        </div>
+
+        <div class="transport-controls" aria-label="Transport and mix controls">
+          <button id="playPauseButton" class="control-button" type="button" disabled>Play</button>
+          <button id="clearButton" class="control-button" type="button" disabled>Clear Mix</button>
+          <button id="helpButton" class="control-button control-button--ghost" type="button" disabled>Help</button>
+          <label class="volume-control">
+            <span>Volume</span>
+            <input id="volumeSlider" type="range" min="0" max="100" value="70" />
+          </label>
+        </div>
+      </header>
+
+      <section class="status-strip" aria-label="Mix status">
+        <div class="status-card">
+          <span class="status-label">Active layers</span>
+          <strong id="activeLayerCount">0 / 6 sounds</strong>
+        </div>
+        <div class="status-card status-card--guide">
+          <span class="status-label">Next ingredient</span>
+          <strong id="beatLabel">Follow your fairy to the next treat</strong>
+        </div>
+        <div class="status-card status-card--recipe">
+          <span class="status-label">Musical recipe</span>
+          <div id="recipeStrip" class="recipe-strip" aria-live="polite">
+            <span class="recipe-empty">No ingredients yet</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="recipe-lab" aria-labelledby="recipeLabHeading">
+        <div class="recipe-lab__intro">
+          <p class="recipe-lab__kicker">Step-by-step picnic recipes</p>
+          <h2 id="recipeLabHeading">Choose a recipe, then build it like a little food song.</h2>
+          <p>Pick a picnic menu below. Your fairy guide will lead you through the ingredients one at a time.</p>
+        </div>
+        <div id="recipeCards" class="recipe-cards" role="list" aria-label="Picnic recipe choices"></div>
+        <div class="recipe-walkthrough" aria-label="Current recipe walkthrough">
+          <div class="recipe-walkthrough__header">
+            <span>Current recipe</span>
+            <strong id="selectedRecipeName">Choose a recipe</strong>
+            <button id="recipeResetButton" class="text-button" type="button">Change recipe</button>
+          </div>
+          <p id="recipeStepPrompt" class="recipe-walkthrough__prompt">Pick a recipe card above to begin.</p>
+          <ol id="recipeSteps" class="recipe-steps-list"></ol>
+        </div>
+      </section>
+
+      <main class="scene-layout">
+        <section class="guide-scene" aria-labelledby="guideHeading">
+          <h2 id="guideHeading" class="sr-only">Your Fairy Guide</h2>
+          <div class="guide-card-main">
+            <div class="guide-art" id="guideArtMain" aria-hidden="true"></div>
+            <div class="speech-bubble guide-speech" aria-live="polite">
+              <p id="guideSpeech">Welcome to Picnic Symphony! Follow your fairy guide to the next treat.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="meadow-scene" aria-label="Interactive picnic meadow">
+          <div class="sky-cloud sky-cloud--one" aria-hidden="true"></div>
+          <div class="sky-cloud sky-cloud--two" aria-hidden="true"></div>
+          <div class="sun-glow" aria-hidden="true"></div>
+          <div class="floating-notes" aria-hidden="true"></div>
+          <div class="sparkles" aria-hidden="true"></div>
+          <div class="guide-traveler" id="guideTraveler" aria-hidden="true">
+            <div class="guide-traveler__bubble">Follow me!</div>
+            <div class="guide-traveler__art" id="guideTravelerArt"></div>
+          </div>
+
+          <div class="picnic-stage__ingredients">
+            <button class="ingredient ingredient--watermelon" type="button" data-ingredient="watermelon" aria-pressed="false">
+              <span class="ingredient-label">Watermelon Bounce</span>
+              <span class="ingredient-art" aria-hidden="true">
+                <svg viewBox="0 0 180 160">
+                  <defs>
+                    <linearGradient id="watermelonRind" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#98d97c"/><stop offset="100%" stop-color="#5ea74f"/></linearGradient>
+                    <linearGradient id="watermelonFruit" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff7c90"/><stop offset="100%" stop-color="#ef546f"/></linearGradient>
+                  </defs>
+                  <path d="M36 84c0-30 24-54 54-54 16 0 30 7 40 18 11 12 17 26 17 40v27H36Z" fill="url(#watermelonRind)" stroke="#4d8f41" stroke-width="6" stroke-linejoin="round"/>
+                  <path d="M43 84c0-24 19-44 47-44 29 0 48 20 48 44v23H43Z" fill="url(#watermelonFruit)" stroke="#cf455e" stroke-width="6" stroke-linejoin="round"/>
+                  <path d="M61 106c6-6 11-10 18-13 7 4 11 8 17 14 8-7 13-11 18-14 6 4 11 9 16 15" fill="none" stroke="#ffd97f" stroke-width="6" stroke-linecap="round"/>
+                </svg>
+              </span>
+            </button>
+
+            <button class="ingredient ingredient--lemonade" type="button" data-ingredient="lemonade" aria-pressed="false">
+              <span class="ingredient-label">Lemonade Sparkle</span>
+              <span class="ingredient-art" aria-hidden="true">
+                <svg viewBox="0 0 180 160">
+                  <defs>
+                    <linearGradient id="lemonGlass" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fffdf0" stop-opacity="0.96"/><stop offset="100%" stop-color="#dff6ff" stop-opacity="0.65"/></linearGradient>
+                    <linearGradient id="lemonLiquid" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff6a8"/><stop offset="100%" stop-color="#ffd35f"/></linearGradient>
+                  </defs>
+                  <path d="M47 28h86l-8 78c-2 18-12 32-35 32s-33-14-35-32Z" fill="url(#lemonGlass)" stroke="#94a8ab" stroke-width="6" stroke-linejoin="round"/>
+                  <path d="M62 27c5-9 15-15 22-18 9 4 14 10 16 18" fill="none" stroke="#f3cb63" stroke-width="7" stroke-linecap="round"/>
+                  <path d="M76 47c9-7 20-10 33-10 9 0 17 2 25 6-4 10-13 17-25 21-12-1-25-5-33-17Z" fill="url(#lemonLiquid)" opacity="0.9"/>
+                  <circle cx="121" cy="49" r="4" fill="#fff7c9"/><circle cx="34" cy="58" r="5" fill="#fff7c9"/><circle cx="136" cy="99" r="5" fill="#fff7c9"/>
+                </svg>
+              </span>
+            </button>
+
+            <button class="ingredient ingredient--strawberry" type="button" data-ingredient="strawberry" aria-pressed="false">
+              <span class="ingredient-label">Strawberry Melody</span>
+              <span class="ingredient-art" aria-hidden="true">
+                <svg viewBox="0 0 180 160">
+                  <defs><linearGradient id="strawberryBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff8090"/><stop offset="100%" stop-color="#d94e6a"/></linearGradient></defs>
+                  <path d="M88 32c17 0 43 18 43 44 0 34-27 61-43 61s-43-27-43-61c0-26 26-44 43-44Z" fill="url(#strawberryBody)" stroke="#944150" stroke-width="6" stroke-linejoin="round"/>
+                  <path d="M88 20c-2-10 5-18 12-20 8 5 10 13 8 20M85 21c-8-8-17-10-26-8 0 11 7 18 16 20M92 22c11-9 22-10 31-5-2 11-10 17-19 19" fill="#86bc5f" stroke="#5f8d42" stroke-width="5" stroke-linejoin="round"/>
+                  <circle cx="76" cy="70" r="3" fill="#ffefad"/><circle cx="97" cy="62" r="3" fill="#ffefad"/><circle cx="110" cy="81" r="3" fill="#ffefad"/><circle cx="86" cy="95" r="3" fill="#ffefad"/>
+                </svg>
+              </span>
+            </button>
+
+            <button class="ingredient ingredient--cheese" type="button" data-ingredient="cheese" aria-pressed="false">
+              <span class="ingredient-label">Cheesy Harmony</span>
+              <span class="ingredient-art" aria-hidden="true">
+                <svg viewBox="0 0 180 160">
+                  <defs><linearGradient id="cheeseBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffe48e"/><stop offset="100%" stop-color="#f1bf49"/></linearGradient></defs>
+                  <path d="M36 104L115 45l31 59-31 29H43Z" fill="url(#cheeseBody)" stroke="#b5841f" stroke-width="6" stroke-linejoin="round"/>
+                  <circle cx="77" cy="78" r="9" fill="#f7d966" stroke="#b5841f" stroke-width="4"/><circle cx="99" cy="95" r="6" fill="#f7d966" stroke="#b5841f" stroke-width="4"/><circle cx="88" cy="59" r="5" fill="#f7d966" stroke="#b5841f" stroke-width="4"/>
+                </svg>
+              </span>
+            </button>
+
+            <button class="ingredient ingredient--grape" type="button" data-ingredient="grape" aria-pressed="false">
+              <span class="ingredient-label">Grape Shaker</span>
+              <span class="ingredient-art" aria-hidden="true">
+                <svg viewBox="0 0 180 160">
+                  <defs><linearGradient id="grapeSkin" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#9e83d4"/><stop offset="100%" stop-color="#6d4ca4"/></linearGradient></defs>
+                  <path d="M93 22c12 10 20 21 24 34" fill="none" stroke="#8b6d40" stroke-width="6" stroke-linecap="round"/>
+                  <path d="M82 41c12-18 29-23 40-20 0 15-8 26-20 31" fill="#8dc96f" stroke="#588c44" stroke-width="5" stroke-linejoin="round"/>
+                  <g fill="url(#grapeSkin)" stroke="#5a437e" stroke-width="4">
+                    <circle cx="68" cy="68" r="18"/><circle cx="95" cy="63" r="18"/><circle cx="119" cy="76" r="18"/>
+                    <circle cx="83" cy="92" r="18"/><circle cx="108" cy="96" r="18"/><circle cx="62" cy="97" r="18"/>
+                  </g>
+                </svg>
+              </span>
+            </button>
+
+            <button class="ingredient ingredient--cupcake" type="button" data-ingredient="cupcake" aria-pressed="false">
+              <span class="ingredient-label">Cupcake Whistle</span>
+              <span class="ingredient-art" aria-hidden="true">
+                <svg viewBox="0 0 180 160">
+                  <defs>
+                    <linearGradient id="cupcakeFrosting" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe7f1"/><stop offset="100%" stop-color="#f5a9c8"/></linearGradient>
+                    <linearGradient id="cupcakeWrapper" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#d7a16c"/><stop offset="100%" stop-color="#b97e4f"/></linearGradient>
+                  </defs>
+                  <path d="M53 108c10-19 24-31 37-31 13 0 28 12 38 31l-8 28H61Z" fill="url(#cupcakeWrapper)" stroke="#9d6f43" stroke-width="6" stroke-linejoin="round"/>
+                  <path d="M62 98c2-19 13-34 28-34s26 15 28 34c12 4 23 16 26 31H43c3-15 14-27 19-31Z" fill="url(#cupcakeFrosting)" stroke="#c36e96" stroke-width="6" stroke-linejoin="round"/>
+                  <path d="M90 42c0-12 4-19 10-26 8 7 10 16 8 26" fill="none" stroke="#fff4ad" stroke-width="5" stroke-linecap="round"/>
+                  <circle cx="80" cy="83" r="4" fill="#fff3c2"/><circle cx="100" cy="79" r="4" fill="#fff3c2"/><circle cx="90" cy="96" r="4" fill="#fff3c2"/>
+                </svg>
+              </span>
+            </button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
