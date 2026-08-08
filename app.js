@@ -119,6 +119,7 @@ const state = {
   selectedRecipeId: null,
   recipeStepIndex: 0,
   recommendedIngredientId: null,
+  guideTrail: [],
 };
 
 const elements = {
@@ -143,6 +144,7 @@ const elements = {
   recipeLab: document.querySelector(".recipe-lab"),
   picnicStage: document.querySelector(".picnic-stage"),
   mimiTraveler: document.querySelector(".mimi-traveler"),
+  guideTrail: Array.from(document.querySelectorAll(".guide-trail__orb")),
   ingredientButtons: Array.from(document.querySelectorAll(".ingredient")),
 };
 
@@ -633,9 +635,26 @@ function updateMimiGuidePosition(ingredientId) {
   const clampedX = Math.min(0.84, Math.max(0.12, x));
   const clampedY = Math.min(0.72, Math.max(0.14, y));
 
+  state.guideTrail.unshift({ x: clampedX, y: clampedY });
+  state.guideTrail.length = Math.min(state.guideTrail.length, elements.guideTrail.length);
+
   elements.picnicStage.style.setProperty("--mimi-x", `${clampedX * 100}%`);
   elements.picnicStage.style.setProperty("--mimi-y", `${clampedY * 100}%`);
   elements.mimiTraveler.style.transform = `translate(-50%, -50%) scale(${scale})`;
+
+  for (let index = 0; index < elements.guideTrail.length; index += 1) {
+    const orb = elements.guideTrail[index];
+    const position = state.guideTrail[index];
+    if (!position) {
+      orb.style.opacity = "0";
+      continue;
+    }
+
+    orb.style.left = `${position.x * 100}%`;
+    orb.style.top = `${position.y * 100}%`;
+    orb.style.opacity = String(Math.max(0, 0.72 - index * 0.12));
+    orb.style.transform = `translate(-50%, -50%) scale(${1 - index * 0.08})`;
+  }
 }
 
 function updateSceneMood() {
@@ -666,7 +685,7 @@ function updateMimiMessage() {
 
   const recipe = getSelectedRecipe();
   const count = state.activeLayers.size;
-  let message = "Welcome to Picnic Symphony! Every picnic treat has a sound.";
+  let message = "Welcome to Picnic Symphony! Follow the butterfly to the next treat.";
 
   if (state.started) {
     if (recipe) {
@@ -708,9 +727,9 @@ function updateBeatVisual(stepIndex) {
 
   const recommendedIngredient = ingredientById.get(state.recommendedIngredientId);
   if (recommendedIngredient) {
-    elements.beatLabel.textContent = `Mimi points to ${recommendedIngredient.name}`;
+    elements.beatLabel.textContent = `Butterfly points to ${recommendedIngredient.name}`;
   } else {
-    elements.beatLabel.textContent = `Mimi is floating to the next treat`;
+    elements.beatLabel.textContent = `Butterfly is floating to the next treat`;
   }
 }
 
