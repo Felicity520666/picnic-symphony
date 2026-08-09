@@ -1,0 +1,18 @@
+{
+  "name": "Picnic Symphony",
+  "short_name": "Picnic Symphony",
+  "description": "A magical interactive music-making picnic. Choose a guiding spirit, layer picnic treats, and build a summer song.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fef9ec",
+  "theme_color": "#5e9a4f",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "lang": "en",
+  "categories": ["music", "games", "education"]
+}
