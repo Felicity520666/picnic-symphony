@@ -315,7 +315,8 @@ button, input { font: inherit; }
 }
 
 .guide-card__art {
-  width: 90px; height: 90px;
+  width: 100px; height: 100px;
+  display: flex; align-items: center; justify-content: center;
 }
 
 .guide-card__art svg {
@@ -399,10 +400,6 @@ button, input { font: inherit; }
   font-size: 0.9rem;
   border: 1px solid rgba(125, 172, 104, 0.16);
   border-radius: 999px;
-}
-
-.control-button--ghost {
-  background: linear-gradient(180deg, rgba(220, 240, 215, 0.9), rgba(240, 248, 235, 0.9));
 }
 
 .control-button:hover { transform: translateY(-2px); }
@@ -610,8 +607,8 @@ button, input { font: inherit; }
   backdrop-filter: blur(6px);
 }
 
-.guide-art { width: 100%; max-width: 180px; margin: 0 auto; }
-.guide-art svg { width: 100%; height: auto; display: block; }
+.guide-art { width: 100%; max-width: 160px; margin: 0 auto; }
+.guide-art svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 4px 8px rgba(72,96,52,0.1)); }
 
 .speech-bubble {
   position: relative;
@@ -688,9 +685,9 @@ button, input { font: inherit; }
 .guide-traveler {
   position: absolute;
   left: var(--guide-x, 16%); top: var(--guide-y, 20%);
-  width: min(120px, 18vw);
+  width: min(100px, 14vw);
   transform: translate(-50%, -50%);
-  transition: left 700ms cubic-bezier(0.22,1,0.36,1), top 700ms cubic-bezier(0.22,1,0.36,1);
+  transition: left 800ms cubic-bezier(0.22,1,0.36,1), top 800ms cubic-bezier(0.22,1,0.36,1), opacity 400ms ease;
   pointer-events: none; z-index: 4;
 }
 
@@ -717,9 +714,10 @@ button, input { font: inherit; }
   border-bottom: 1px solid rgba(125,172,104,0.14);
 }
 
+.guide-traveler__art { position: relative; z-index: 1; }
 .guide-traveler__art svg {
   width: 100%; height: auto; display: block;
-  filter: drop-shadow(0 10px 14px rgba(72,96,52,0.12));
+  filter: drop-shadow(0 8px 12px rgba(72,96,52,0.12));
 }
 
 /* ===== INGREDIENT BUTTONS ===== */

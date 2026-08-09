@@ -16,7 +16,7 @@ const guideDefinitions = {
       threeActive: "The hive is humming! Keep going!",
       fullMix: "A full honeycomb of sound! Beautiful!",
       cleared: "Fresh start! Let's fill the meadow again!",
-      idle: "Tap any treat to get the buzz started!",
+      idle: "Tap any treat to get the buzz started, or pick a recipe!",
       recipeStep: (name, step, total) => `Step ${step} of ${total}: Add ${name}! Buzz buzz!`,
       recipeDone: (name) => `Sweet! ${name} is complete! Try remixing or pick a new recipe!`,
     },
@@ -30,7 +30,7 @@ const guideDefinitions = {
       threeActive: "Your picnic band is coming alive!",
       fullMix: "A full summer symphony! Look at the meadow dance!",
       cleared: "The picnic is quiet again. Let's create something new!",
-      idle: "The meadow is listening. Choose a recipe and add the first treat!",
+      idle: "The meadow is listening. Pick a recipe above to get started!",
       recipeStep: (name, step, total) => `Step ${step} of ${total}: Gently add ${name}.`,
       recipeDone: (name) => `Beautiful. ${name} is ready. You can remix it or try a new recipe.`,
     },
@@ -44,7 +44,7 @@ const guideDefinitions = {
       threeActive: "Ooh, layers are building! This is getting interesting!",
       fullMix: "Wow, the whole meadow is alive with sound!",
       cleared: "Clean slate! Let's explore something new!",
-      idle: "Tap a treat and let's see what sound it makes!",
+      idle: "Tap a treat and let's see what sound it makes! Or pick a recipe!",
       recipeStep: (name, step, total) => `Step ${step} of ${total}: Quick, add ${name}!`,
       recipeDone: (name) => `Done! ${name} sounds great! Want to try another combo?`,
     },
@@ -67,86 +67,82 @@ const guideDefinitions = {
 
 /* ===== GUIDE SVG TEMPLATES ===== */
 const guideSvgTemplates = {
-  bee: `<svg viewBox="0 0 200 200">
+  bee: `<svg viewBox="55 45 90 115">
     <defs>
       <linearGradient id="gbBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffd54f"/><stop offset="100%" stop-color="#f9a825"/></linearGradient>
-      <linearGradient id="gbWing" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fff" stop-opacity="0.9"/><stop offset="100%" stop-color="#e3f2fd" stop-opacity="0.5"/></linearGradient>
+      <linearGradient id="gbWing" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fff" stop-opacity="0.85"/><stop offset="100%" stop-color="#e3f2fd" stop-opacity="0.4"/></linearGradient>
     </defs>
-    <ellipse cx="100" cy="172" rx="40" ry="10" fill="#c8dfbe" opacity="0.3"/>
-    <ellipse cx="78" cy="82" rx="26" ry="36" fill="url(#gbWing)" stroke="#90caf9" stroke-width="2" transform="rotate(-20 78 82)"/>
-    <ellipse cx="122" cy="82" rx="26" ry="36" fill="url(#gbWing)" stroke="#90caf9" stroke-width="2" transform="rotate(20 122 82)"/>
-    <ellipse cx="100" cy="115" rx="28" ry="38" fill="url(#gbBody)" stroke="#e65100" stroke-width="3"/>
-    <path d="M74 105h52" stroke="#4e342e" stroke-width="5" stroke-linecap="round"/>
-    <path d="M76 118h48" stroke="#4e342e" stroke-width="5" stroke-linecap="round"/>
-    <path d="M78 131h44" stroke="#4e342e" stroke-width="5" stroke-linecap="round"/>
-    <circle cx="100" cy="88" r="20" fill="#fff8e1" stroke="#f9a825" stroke-width="3"/>
-    <circle cx="93" cy="85" r="4" fill="#3e2723"/><circle cx="107" cy="85" r="4" fill="#3e2723"/>
-    <circle cx="92" cy="83" r="1.5" fill="#fff"/><circle cx="106" cy="83" r="1.5" fill="#fff"/>
-    <path d="M95 94c3 3 7 3 10 0" fill="none" stroke="#5d4037" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M93 70c-4-10-8-16-12-18" fill="none" stroke="#5d4037" stroke-width="2.5" stroke-linecap="round"/>
-    <circle cx="81" cy="52" r="4" fill="#ffd54f" stroke="#5d4037" stroke-width="2"/>
-    <path d="M107 70c4-10 8-16 12-18" fill="none" stroke="#5d4037" stroke-width="2.5" stroke-linecap="round"/>
-    <circle cx="119" cy="52" r="4" fill="#ffd54f" stroke="#5d4037" stroke-width="2"/>
+    <ellipse cx="80" cy="80" rx="20" ry="28" fill="url(#gbWing)" stroke="#90caf9" stroke-width="1.5" transform="rotate(-15 80 80)"/>
+    <ellipse cx="120" cy="80" rx="20" ry="28" fill="url(#gbWing)" stroke="#90caf9" stroke-width="1.5" transform="rotate(15 120 80)"/>
+    <ellipse cx="100" cy="110" rx="22" ry="30" fill="url(#gbBody)" stroke="#e65100" stroke-width="2.5"/>
+    <path d="M80 100h40" stroke="#4e342e" stroke-width="4" stroke-linecap="round"/>
+    <path d="M81 112h38" stroke="#4e342e" stroke-width="4" stroke-linecap="round"/>
+    <path d="M82 124h36" stroke="#4e342e" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="100" cy="82" r="16" fill="#fff8e1" stroke="#f9a825" stroke-width="2.5"/>
+    <circle cx="94" cy="80" r="3.5" fill="#3e2723"/><circle cx="106" cy="80" r="3.5" fill="#3e2723"/>
+    <circle cx="93" cy="78.5" r="1.3" fill="#fff"/><circle cx="105" cy="78.5" r="1.3" fill="#fff"/>
+    <path d="M96 89c2 2.5 6 2.5 8 0" fill="none" stroke="#5d4037" stroke-width="2" stroke-linecap="round"/>
+    <path d="M94 67c-3-8-6-13-9-15" fill="none" stroke="#5d4037" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="85" cy="52" r="3" fill="#ffd54f" stroke="#5d4037" stroke-width="1.5"/>
+    <path d="M106 67c3-8 6-13 9-15" fill="none" stroke="#5d4037" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="115" cy="52" r="3" fill="#ffd54f" stroke="#5d4037" stroke-width="1.5"/>
   </svg>`,
 
-  butterfly: `<svg viewBox="0 0 200 200">
+  butterfly: `<svg viewBox="25 50 150 105">
     <defs>
       <linearGradient id="gbfWL" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fff8cf"/><stop offset="45%" stop-color="#f5c1ee"/><stop offset="100%" stop-color="#82d7e6"/></linearGradient>
       <linearGradient id="gbfWR" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fdf2ff"/><stop offset="55%" stop-color="#8fd8ec"/><stop offset="100%" stop-color="#6abf88"/></linearGradient>
     </defs>
-    <ellipse cx="100" cy="172" rx="40" ry="10" fill="#c8dfbe" opacity="0.3"/>
-    <path d="M98 100c-14-32-44-52-70-47-10 25-1 55 25 74 17 12 37 15 50 6 8-5 8-18-5-33Z" fill="url(#gbfWL)" stroke="#6e6d8a" stroke-width="3" stroke-linejoin="round"/>
-    <path d="M102 100c14-32 44-52 70-47 10 25 1 55-25 74-17 12-37 15-50 6-8-5-8-18 5-33Z" fill="url(#gbfWR)" stroke="#6e6d8a" stroke-width="3" stroke-linejoin="round"/>
-    <path d="M90 112c-20-15-39-16-52-7 6 16 18 28 33 32 13 2 26-3 29-15 1-4-1-6-10-10Z" fill="#fff" fill-opacity="0.35"/>
-    <path d="M110 112c20-15 39-16 52-7-6 16-18 28-33 32-13 2-26-3-29-15-1-4 1-6 10-10Z" fill="#fff" fill-opacity="0.35"/>
-    <path d="M96 82c-6-18-20-32-36-37 0 14 7 27 18 36" fill="none" stroke="#b7de83" stroke-width="5" stroke-linecap="round"/>
-    <path d="M104 82c6-18 20-32 36-37 0 14-7 27-18 36" fill="none" stroke="#b7de83" stroke-width="5" stroke-linecap="round"/>
-    <path d="M100 108v38" fill="none" stroke="#6a4f53" stroke-width="6" stroke-linecap="round"/>
-    <circle cx="96" cy="104" r="5" fill="#3d2a25"/><circle cx="104" cy="104" r="5" fill="#3d2a25"/>
-    <circle cx="95" cy="102" r="1.8" fill="#fff8f2"/><circle cx="103" cy="102" r="1.8" fill="#fff8f2"/>
-    <path d="M97 112c3 3 6 3 9 0" fill="none" stroke="#d86b87" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M98 100c-12-26-36-44-58-40-8 20-1 46 20 60 14 10 30 12 40 5 6-4 6-14-2-25Z" fill="url(#gbfWL)" stroke="#6e6d8a" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M102 100c12-26 36-44 58-40 8 20 1 46-20 60-14 10-30 12-40 5-6-4-6-14 2-25Z" fill="url(#gbfWR)" stroke="#6e6d8a" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M90 108c-14-10-28-11-38-5 4 12 13 20 24 23 9 2 18-2 20-11 1-3-1-4-6-7Z" fill="#fff" fill-opacity="0.3"/>
+    <path d="M110 108c14-10 28-11 38-5-4 12-13 20-24 23-9 2-18-2-20-11-1-3 1-4 6-7Z" fill="#fff" fill-opacity="0.3"/>
+    <path d="M96 84c-4-12-14-22-24-26 0 10 5 18 12 24" fill="none" stroke="#b7de83" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M104 84c4-12 14-22 24-26 0 10-5 18-12 24" fill="none" stroke="#b7de83" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M100 106v28" fill="none" stroke="#6a4f53" stroke-width="4.5" stroke-linecap="round"/>
+    <circle cx="96" cy="100" r="4" fill="#3d2a25"/><circle cx="104" cy="100" r="4" fill="#3d2a25"/>
+    <circle cx="95" cy="98.5" r="1.4" fill="#fff8f2"/><circle cx="103" cy="98.5" r="1.4" fill="#fff8f2"/>
+    <path d="M97 107c2 2.5 5 2.5 7 0" fill="none" stroke="#d86b87" stroke-width="2" stroke-linecap="round"/>
   </svg>`,
 
-  dragonfly: `<svg viewBox="0 0 200 200">
+  dragonfly: `<svg viewBox="35 58 130 110">
     <defs>
       <linearGradient id="gdfB" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4dd0e1"/><stop offset="100%" stop-color="#00897b"/></linearGradient>
-      <linearGradient id="gdfW" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e0f7fa" stop-opacity="0.9"/><stop offset="100%" stop-color="#b2ebf2" stop-opacity="0.4"/></linearGradient>
+      <linearGradient id="gdfW" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e0f7fa" stop-opacity="0.85"/><stop offset="100%" stop-color="#b2ebf2" stop-opacity="0.35"/></linearGradient>
     </defs>
-    <ellipse cx="100" cy="178" rx="30" ry="8" fill="#c8dfbe" opacity="0.3"/>
-    <ellipse cx="66" cy="78" rx="32" ry="16" fill="url(#gdfW)" stroke="#4dd0e1" stroke-width="2" transform="rotate(-25 66 78)"/>
-    <ellipse cx="134" cy="78" rx="32" ry="16" fill="url(#gdfW)" stroke="#4dd0e1" stroke-width="2" transform="rotate(25 134 78)"/>
-    <ellipse cx="70" cy="100" rx="28" ry="12" fill="url(#gdfW)" stroke="#4dd0e1" stroke-width="1.5" transform="rotate(-15 70 100)"/>
-    <ellipse cx="130" cy="100" rx="28" ry="12" fill="url(#gdfW)" stroke="#4dd0e1" stroke-width="1.5" transform="rotate(15 130 100)"/>
-    <path d="M100 95v70" stroke="url(#gdfB)" stroke-width="6" stroke-linecap="round"/>
-    <circle cx="100" cy="110" r="4" fill="#26a69a" stroke="#00695c" stroke-width="1.5"/>
-    <circle cx="100" cy="125" r="3.5" fill="#26a69a" stroke="#00695c" stroke-width="1.5"/>
-    <circle cx="100" cy="139" r="3" fill="#26a69a" stroke="#00695c" stroke-width="1.5"/>
-    <circle cx="100" cy="152" r="2.5" fill="#26a69a" stroke="#00695c" stroke-width="1.5"/>
-    <circle cx="100" cy="80" r="16" fill="#e0f7fa" stroke="#00897b" stroke-width="3"/>
-    <circle cx="92" cy="77" r="7" fill="#00695c"/><circle cx="108" cy="77" r="7" fill="#00695c"/>
-    <circle cx="90" cy="75" r="2.5" fill="#e0f7fa"/><circle cx="106" cy="75" r="2.5" fill="#e0f7fa"/>
-    <path d="M95 89c3 2 7 2 10 0" fill="none" stroke="#00695c" stroke-width="2" stroke-linecap="round"/>
+    <ellipse cx="68" cy="80" rx="26" ry="12" fill="url(#gdfW)" stroke="#4dd0e1" stroke-width="1.5" transform="rotate(-20 68 80)"/>
+    <ellipse cx="132" cy="80" rx="26" ry="12" fill="url(#gdfW)" stroke="#4dd0e1" stroke-width="1.5" transform="rotate(20 132 80)"/>
+    <ellipse cx="72" cy="98" rx="22" ry="9" fill="url(#gdfW)" stroke="#4dd0e1" stroke-width="1.2" transform="rotate(-10 72 98)"/>
+    <ellipse cx="128" cy="98" rx="22" ry="9" fill="url(#gdfW)" stroke="#4dd0e1" stroke-width="1.2" transform="rotate(10 128 98)"/>
+    <path d="M100 92v60" stroke="url(#gdfB)" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="100" cy="108" r="3" fill="#26a69a" stroke="#00695c" stroke-width="1.2"/>
+    <circle cx="100" cy="120" r="2.7" fill="#26a69a" stroke="#00695c" stroke-width="1.2"/>
+    <circle cx="100" cy="131" r="2.4" fill="#26a69a" stroke="#00695c" stroke-width="1.2"/>
+    <circle cx="100" cy="141" r="2" fill="#26a69a" stroke="#00695c" stroke-width="1.2"/>
+    <circle cx="100" cy="78" r="14" fill="#e0f7fa" stroke="#00897b" stroke-width="2.5"/>
+    <circle cx="93" cy="76" r="5.5" fill="#00695c"/><circle cx="107" cy="76" r="5.5" fill="#00695c"/>
+    <circle cx="91.5" cy="74.5" r="2" fill="#e0f7fa"/><circle cx="105.5" cy="74.5" r="2" fill="#e0f7fa"/>
+    <path d="M96 87c2.5 2 5.5 2 8 0" fill="none" stroke="#00695c" stroke-width="1.8" stroke-linecap="round"/>
   </svg>`,
 
-  bird: `<svg viewBox="0 0 200 200">
+  bird: `<svg viewBox="45 48 110 120">
     <defs>
       <linearGradient id="gbiB" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffcc80"/><stop offset="100%" stop-color="#ff8a65"/></linearGradient>
       <linearGradient id="gbiBe" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff8e1"/><stop offset="100%" stop-color="#ffecb3"/></linearGradient>
     </defs>
-    <ellipse cx="100" cy="172" rx="30" ry="8" fill="#c8dfbe" opacity="0.3"/>
-    <path d="M120 140c10 8 18 18 22 28" fill="none" stroke="#ff8a65" stroke-width="4" stroke-linecap="round"/>
-    <path d="M115 138c12 6 22 14 30 24" fill="none" stroke="#ffab91" stroke-width="3" stroke-linecap="round"/>
-    <ellipse cx="100" cy="120" rx="34" ry="38" fill="url(#gbiB)" stroke="#e65100" stroke-width="3"/>
-    <ellipse cx="100" cy="130" rx="22" ry="24" fill="url(#gbiBe)" stroke="#ffcc80" stroke-width="1.5"/>
-    <path d="M68 110c-12-4-22 2-26 14 8 10 18 14 28 12 8-2 14-8 14-16 0-4-4-7-16-10Z" fill="#ffe0b2" stroke="#e65100" stroke-width="2.5" stroke-linejoin="round"/>
-    <circle cx="100" cy="74" r="22" fill="url(#gbiB)" stroke="#e65100" stroke-width="3"/>
-    <circle cx="86" cy="80" r="6" fill="#ffab91" opacity="0.5"/><circle cx="114" cy="80" r="6" fill="#ffab91" opacity="0.5"/>
-    <circle cx="92" cy="72" r="5" fill="#3e2723"/><circle cx="108" cy="72" r="5" fill="#3e2723"/>
-    <circle cx="91" cy="70" r="2" fill="#fff"/><circle cx="107" cy="70" r="2" fill="#fff"/>
-    <path d="M96 82l4 8 4-8Z" fill="#ff6f00" stroke="#e65100" stroke-width="1.5" stroke-linejoin="round"/>
-    <path d="M96 54c-2-8 0-14 4-18 4 4 6 10 4 18" fill="#ff8a65" stroke="#e65100" stroke-width="2" stroke-linejoin="round"/>
-    <path d="M90 156c-2 6-4 10-8 12" fill="none" stroke="#bf360c" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M110 156c2 6 4 10 8 12" fill="none" stroke="#bf360c" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M116 135c7 5 13 12 16 20" fill="none" stroke="#ff8a65" stroke-width="3" stroke-linecap="round"/>
+    <path d="M112 133c9 5 17 11 22 18" fill="none" stroke="#ffab91" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="100" cy="115" rx="28" ry="32" fill="url(#gbiB)" stroke="#e65100" stroke-width="2.5"/>
+    <ellipse cx="100" cy="124" rx="18" ry="20" fill="url(#gbiBe)" stroke="#ffcc80" stroke-width="1.2"/>
+    <path d="M74 106c-9-3-16 1-19 10 6 7 13 11 21 9 6-1 10-6 10-12 0-3-3-5-12-7Z" fill="#ffe0b2" stroke="#e65100" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="100" cy="72" r="18" fill="url(#gbiB)" stroke="#e65100" stroke-width="2.5"/>
+    <circle cx="89" cy="77" r="4.5" fill="#ffab91" opacity="0.5"/><circle cx="111" cy="77" r="4.5" fill="#ffab91" opacity="0.5"/>
+    <circle cx="94" cy="70" r="4" fill="#3e2723"/><circle cx="106" cy="70" r="4" fill="#3e2723"/>
+    <circle cx="93" cy="68.5" r="1.6" fill="#fff"/><circle cx="105" cy="68.5" r="1.6" fill="#fff"/>
+    <path d="M97 79l3 6 3-6Z" fill="#ff6f00" stroke="#e65100" stroke-width="1.3" stroke-linejoin="round"/>
+    <path d="M97 56c-1.5-6 0-10 3-14 3 3 4.5 7.5 3.5 14" fill="#ff8a65" stroke="#e65100" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M90 145c-1.5 4-3 7-5.5 9" fill="none" stroke="#bf360c" stroke-width="2" stroke-linecap="round"/>
+    <path d="M110 145c1.5 4 3 7 5.5 9" fill="none" stroke="#bf360c" stroke-width="2" stroke-linecap="round"/>
   </svg>`,
 };
 
@@ -258,7 +254,7 @@ const elements = {
   // Game
   playPauseButton: document.getElementById("playPauseButton"),
   clearButton: document.getElementById("clearButton"),
-  helpButton: document.getElementById("helpButton"),
+  helpButton: null,
   volumeSlider: document.getElementById("volumeSlider"),
   activeLayerCount: document.getElementById("activeLayerCount"),
   beatLabel: document.getElementById("beatLabel"),
@@ -298,13 +294,14 @@ function bindEvents() {
   // Game controls
   elements.playPauseButton.addEventListener("click", togglePlayback);
   elements.clearButton.addEventListener("click", clearMix);
-  elements.helpButton.addEventListener("click", showHelpMessage);
   elements.volumeSlider.addEventListener("input", handleVolumeChange);
   elements.recipeResetButton.addEventListener("click", clearRecipeSelection);
 
-  for (const card of Array.from(elements.recipeCards.querySelectorAll("[data-recipe-id]"))) {
-    card.addEventListener("click", () => handleRecipeSelect(card.dataset.recipeId));
-  }
+  // Use event delegation for recipe cards (they are dynamically rendered)
+  elements.recipeCards.addEventListener("click", (event) => {
+    const card = event.target.closest("[data-recipe-id]");
+    if (card) handleRecipeSelect(card.dataset.recipeId);
+  });
 
   for (const button of elements.ingredientButtons) {
     button.addEventListener("click", () => toggleIngredient(button.dataset.ingredient));
@@ -389,7 +386,6 @@ function createAudioGraph() {
 function setControlsEnabled(enabled) {
   elements.playPauseButton.disabled = !enabled;
   elements.clearButton.disabled = !enabled;
-  elements.helpButton.disabled = !enabled;
   elements.volumeSlider.disabled = !enabled;
   for (const button of elements.ingredientButtons) {
     button.disabled = !enabled;
@@ -497,6 +493,14 @@ function triggerIngredientPreview(id) {
 
 /* ===== RECIPES ===== */
 function handleRecipeSelect(recipeId) {
+  // Clear all active sounds so user starts the recipe fresh
+  state.activeLayers.clear();
+  for (const button of elements.ingredientButtons) {
+    button.classList.remove("is-selected", "is-playing");
+    button.setAttribute("aria-pressed", "false");
+  }
+  cancelVisualTimers();
+
   state.selectedRecipeId = recipeId;
   state.recipeStepIndex = 0;
   state.clearMessageActive = false;
@@ -722,23 +726,31 @@ function updateGuidePosition() {
   const meadow = elements.meadowScene;
   if (!traveler || !meadow) return;
 
+  // Hide traveler when there's no active recommendation
+  if (!state.recommendedIngredientId) {
+    traveler.style.opacity = "0";
+    traveler.style.pointerEvents = "none";
+    elements.beatLabel.textContent = "Pick a recipe to get started";
+    return;
+  }
+
+  traveler.style.opacity = "1";
   const meadowRect = meadow.getBoundingClientRect();
   if (meadowRect.width === 0 || meadowRect.height === 0) return;
 
-  let x = 0.16;
-  let y = 0.2;
+  let x = 0.5;
+  let y = 0.15;
 
-  if (state.recommendedIngredientId) {
-    const button = visualByIngredient.get(state.recommendedIngredientId);
-    if (button) {
-      const buttonRect = button.getBoundingClientRect();
-      x = ((buttonRect.left + buttonRect.width / 2) - meadowRect.left) / meadowRect.width;
-      y = ((buttonRect.top - 20) - meadowRect.top) / meadowRect.height;
-    }
+  const button = visualByIngredient.get(state.recommendedIngredientId);
+  if (button) {
+    const buttonRect = button.getBoundingClientRect();
+    x = ((buttonRect.left + buttonRect.width / 2) - meadowRect.left) / meadowRect.width;
+    // Position fairy ABOVE the ingredient, not on top
+    y = ((buttonRect.top - 50) - meadowRect.top) / meadowRect.height;
   }
 
   const clampedX = Math.min(0.85, Math.max(0.1, x));
-  const clampedY = Math.min(0.7, Math.max(0.1, y));
+  const clampedY = Math.min(0.65, Math.max(0.05, y));
 
   meadow.style.setProperty("--guide-x", `${clampedX * 100}%`);
   meadow.style.setProperty("--guide-y", `${clampedY * 100}%`);
@@ -747,8 +759,6 @@ function updateGuidePosition() {
   const recommended = ingredientById.get(state.recommendedIngredientId);
   if (recommended) {
     elements.beatLabel.textContent = `Your fairy points to ${recommended.name}`;
-  } else {
-    elements.beatLabel.textContent = "Follow your fairy to the next treat";
   }
 }
 
@@ -929,3 +939,72 @@ function createNoiseBuffer(context, lengthSeconds) {
 function midiToFrequency(midi) {
   return 440 * (2 ** ((midi - 69) / 12));
 }
+
+
+/* ===== CURSOR SPARKLE TRAIL (拖尾效果) ===== */
+(function initCursorTrail() {
+  const TRAIL_COUNT = 12;
+  const trail = [];
+
+  for (let i = 0; i < TRAIL_COUNT; i++) {
+    const dot = document.createElement("div");
+    dot.className = "cursor-trail-dot";
+    dot.style.cssText = `
+      position: fixed;
+      width: ${8 - i * 0.4}px;
+      height: ${8 - i * 0.4}px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: ${1 - i * 0.07};
+      background: radial-gradient(circle, rgba(125,188,106,${0.7 - i*0.04}), rgba(255,213,79,${0.5 - i*0.03}));
+      box-shadow: 0 0 ${6 - i*0.3}px rgba(125,188,106,${0.4 - i*0.025});
+      transition: transform ${50 + i * 30}ms ease;
+      transform: translate(-50%, -50%) scale(0);
+    `;
+    document.body.appendChild(dot);
+    trail.push({ el: dot, x: 0, y: 0 });
+  }
+
+  let mouseX = 0;
+  let mouseY = 0;
+  let isMoving = false;
+  let hideTimer = null;
+
+  document.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    isMoving = true;
+
+    if (hideTimer) clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => {
+      isMoving = false;
+      for (const dot of trail) {
+        dot.el.style.transform = `translate(-50%, -50%) scale(0)`;
+      }
+    }, 150);
+  });
+
+  function animate() {
+    let prevX = mouseX;
+    let prevY = mouseY;
+
+    for (let i = 0; i < trail.length; i++) {
+      const dot = trail[i];
+      const speed = 0.35 - i * 0.015;
+      dot.x += (prevX - dot.x) * speed;
+      dot.y += (prevY - dot.y) * speed;
+
+      if (isMoving) {
+        dot.el.style.transform = `translate(${dot.x - 4}px, ${dot.y - 4}px) scale(1)`;
+      }
+
+      prevX = dot.x;
+      prevY = dot.y;
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+})();
