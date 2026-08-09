@@ -1,46 +1,74 @@
 /**
- * audio.js — Audio engine with dual bus (music + ambience),
- * look-ahead scheduler, and tempo control.
+ * audio.js — Audio engine with multi-bus routing, 96 BPM default,
+ * 6-layer limit, gentle compression, and ambience ducking.
+ *
+ * Bus architecture:
+ *   Ingredient → bus gain (rhythm/bass/melody/harmony/texture)
+ *                → master gain → compressor/limiter → destination
+ *   Ambience   → ambience gain → destination (separate path)
  */
 
 import { state, setState } from './state.js';
-import { ingredientDefinitions, STEP_COUNT } from './ingredients.js';
+import { ingredientDefinitions, STEP_COUNT, MAX_LAYERS } from './ingredients.js';
 
-const SCHEDULE_AHEAD_TIME = 0.12;
+const SCHEDULE_AHEAD_TIME = 0.1;
 const SCHEDULE_INTERVAL_MS = 25;
+const DEFAULT_BPM = 96;
 
-/** Create the audio graph with separate music and ambience buses */
+// Bus gain levels (linear, approximate dB targets)
+const BUS_GAINS = {
+  rhythm:  0.25,  // ~-12 dB
+  bass:    0.20,  // ~-14 dB
+  melody:  0.16,  // ~-16 dB
+  harmony: 0.10,  // ~-20 dB
+  texture: 0.06,  // ~-24 dB
+};
+
+let buses = {};
+
+/** Create the full audio graph */
 function createAudioGraph() {
   if (state.context) return;
 
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   const ctx = new AudioCtx();
 
-  // Compressor for music bus
+  // Master limiter/compressor to prevent clipping
   const compressor = ctx.createDynamicsCompressor();
-  compressor.threshold.value = -20;
-  compressor.knee.value = 16;
-  compressor.ratio.value = 3;
-  compressor.attack.value = 0.004;
-  compressor.release.value = 0.24;
+  compressor.threshold.value = -6;
+  compressor.knee.value = 6;
+  compressor.ratio.value = 4;
+  compressor.attack.value = 0.003;
+  compressor.release.value = 0.15;
 
-  // Music master gain → compressor → destination
+  // Master gain (headroom at ~-6dB)
   const masterGain = ctx.createGain();
-  masterGain.gain.value = state.volume;
+  masterGain.gain.value = state.volume * 0.5; // keep headroom
   masterGain.connect(compressor);
   compressor.connect(ctx.destination);
 
-  // Ambience gain → destination (bypasses compressor)
+  // Create bus gains
+  buses = {};
+  for (const [name, level] of Object.entries(BUS_GAINS)) {
+    const g = ctx.createGain();
+    g.gain.value = level;
+    g.connect(masterGain);
+    buses[name] = g;
+  }
+
+  // Ambience on separate path (bypasses compressor)
   const ambienceGain = ctx.createGain();
-  ambienceGain.gain.value = state.ambienceMuted ? 0 : state.ambienceVolume;
+  ambienceGain.gain.value = state.ambienceMuted ? 0 : state.ambienceVolume * 0.3;
   ambienceGain.connect(ctx.destination);
 
-  setState({
-    context: ctx,
-    masterGain,
-    ambienceGain,
-    compressor,
-  });
+  setState({ context: ctx, masterGain, ambienceGain, compressor });
+}
+
+/** Get the correct bus gain node for an ingredient */
+function getBusForIngredient(ingredientId) {
+  const def = ingredientDefinitions.find(d => d.id === ingredientId);
+  const busName = def?.bus || 'melody';
+  return buses[busName] || state.masterGain;
 }
 
 /** Resume audio context (required after user gesture) */
@@ -60,7 +88,7 @@ function startTransport() {
   setState({ timerId: id });
 }
 
-/** Stop the sequencer transport */
+/** Stop the sequencer */
 function stopTransport() {
   if (!state.playing) return;
   setState({ playing: false });
@@ -73,14 +101,11 @@ function stopTransport() {
 
 /** Toggle play/pause */
 function toggleTransport() {
-  if (state.playing) {
-    stopTransport();
-  } else {
-    resumeAudio().then(() => startTransport());
-  }
+  if (state.playing) stopTransport();
+  else resumeAudio().then(() => startTransport());
 }
 
-/** Scheduler tick — look-ahead and schedule notes */
+/** Scheduler tick — look-ahead scheduling */
 function schedulerTick() {
   const stepDuration = 60 / state.bpm / 4;
   while (state.nextNoteTime < state.context.currentTime + SCHEDULE_AHEAD_TIME) {
@@ -90,7 +115,7 @@ function schedulerTick() {
   }
 }
 
-/** Schedule all active layers for a given step */
+/** Schedule active layers for a given step */
 function scheduleStep(stepIndex, time) {
   const now = state.context.currentTime;
   const delayMs = Math.max(0, (time - now) * 1000);
@@ -98,24 +123,20 @@ function scheduleStep(stepIndex, time) {
   for (const def of ingredientDefinitions) {
     if (!state.activeLayers.has(def.id)) continue;
     if (!def.pattern.includes(stepIndex)) continue;
-    def.play(time, state.context, state.masterGain, stepIndex);
+    // Route through the correct bus
+    const busGain = getBusForIngredient(def.id);
+    def.play(time, state.context, busGain, stepIndex);
     queueVisual(def.id, delayMs);
   }
 }
 
-/** Queue visual feedback for an ingredient hit */
+/** Visual hit callback system */
 const visualCallbacks = new Set();
-
-function onVisualHit(callback) {
-  visualCallbacks.add(callback);
-  return () => visualCallbacks.delete(callback);
-}
+function onVisualHit(cb) { visualCallbacks.add(cb); return () => visualCallbacks.delete(cb); }
 
 function queueVisual(id, delayMs) {
-  const timerId = setTimeout(() => {
-    for (const cb of visualCallbacks) cb(id);
-  }, delayMs);
-  state.scheduledVisualTimers.push(timerId);
+  const t = setTimeout(() => { for (const cb of visualCallbacks) cb(id); }, delayMs);
+  state.scheduledVisualTimers.push(t);
 }
 
 function cancelVisualTimers() {
@@ -123,11 +144,16 @@ function cancelVisualTimers() {
   state.scheduledVisualTimers = [];
 }
 
+/** Check if adding a layer would exceed MAX_LAYERS */
+function canAddLayer() {
+  return state.activeLayers.size < MAX_LAYERS;
+}
+
 /** Set master music volume */
 function setMusicVolume(value) {
   setState({ volume: value }, true);
   if (state.masterGain) {
-    state.masterGain.gain.setTargetAtTime(value, state.context.currentTime, 0.02);
+    state.masterGain.gain.setTargetAtTime(value * 0.5, state.context.currentTime, 0.03);
   }
 }
 
@@ -135,16 +161,16 @@ function setMusicVolume(value) {
 function setAmbienceVolume(value) {
   setState({ ambienceVolume: value, ambienceMuted: false }, true);
   if (state.ambienceGain) {
-    state.ambienceGain.gain.setTargetAtTime(value, state.context.currentTime, 0.05);
+    state.ambienceGain.gain.setTargetAtTime(value * 0.3, state.context.currentTime, 0.05);
   }
 }
 
-/** Mute/unmute ambience */
+/** Toggle ambience mute */
 function toggleAmbienceMute() {
   const muted = !state.ambienceMuted;
   setState({ ambienceMuted: muted }, true);
   if (state.ambienceGain) {
-    const target = muted ? 0 : state.ambienceVolume;
+    const target = muted ? 0 : state.ambienceVolume * 0.3;
     state.ambienceGain.gain.setTargetAtTime(target, state.context.currentTime, 0.05);
   }
 }
@@ -153,59 +179,46 @@ function toggleAmbienceMute() {
 function updateAmbienceDucking() {
   if (!state.ambienceGain || state.ambienceMuted) return;
   const hasMusic = state.activeLayers.size > 0;
-  const target = hasMusic ? state.ambienceVolume * 0.12 : state.ambienceVolume;
-  state.ambienceGain.gain.setTargetAtTime(target, state.context.currentTime, 0.8);
+  const base = state.ambienceVolume * 0.3;
+  const target = hasMusic ? base * 0.12 : base;
+  state.ambienceGain.gain.setTargetAtTime(target, state.context.currentTime, 1.0);
 }
 
 /** Set BPM */
 function setTempo(bpm) {
-  setState({ bpm: Math.max(60, Math.min(160, bpm)) }, true);
+  setState({ bpm: Math.max(60, Math.min(140, bpm)) }, true);
 }
 
-/** Preview a single ingredient sound */
+/** Preview a single ingredient (solo, short) */
 function previewIngredient(id) {
-  if (!state.context || !state.masterGain) return;
+  if (!state.context) return;
   const def = ingredientDefinitions.find(d => d.id === id);
   if (!def) return;
-  def.play(state.context.currentTime + 0.015, state.context, state.masterGain, state.currentStep);
+  const busGain = getBusForIngredient(id);
+  def.play(state.context.currentTime + 0.01, state.context, busGain, 0);
 }
 
-/** Clear all active layers and stop sounds */
+/** Clear all active layers */
 function clearAllLayers() {
   state.activeLayers.clear();
   cancelVisualTimers();
   updateAmbienceDucking();
 }
 
-/** Start simple ambience (wind + birds or crickets based on theme) */
+/** Start quiet environmental ambience */
 function startAmbience() {
-  // Ambience implementation — creates quiet looping noise
   if (!state.context || !state.ambienceGain) return;
-
   const ctx = state.context;
+  // Very quiet filtered noise loop as environmental bed
   const duration = 4;
   const buf = ctx.createBuffer(1, Math.floor(duration * ctx.sampleRate), ctx.sampleRate);
-  const data = buf.getChannelData(0);
-  for (let i = 0; i < data.length; i++) {
-    data[i] = (Math.random() * 2 - 1) * 0.3;
-  }
-
-  const src = ctx.createBufferSource();
-  src.buffer = buf;
-  src.loop = true;
-
-  const flt = ctx.createBiquadFilter();
-  flt.type = 'lowpass';
-  flt.frequency.value = 400;
-  flt.Q.value = 0.3;
-
-  const g = ctx.createGain();
-  g.gain.value = 0.6;
-
-  src.connect(flt).connect(g).connect(state.ambienceGain);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * 0.15;
+  const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+  const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 300; lp.Q.value = 0.2;
+  const g = ctx.createGain(); g.gain.value = 0.4;
+  src.connect(lp).connect(g).connect(state.ambienceGain);
   src.start();
-
-  // Store reference for cleanup
   state._ambienceSource = src;
 }
 
@@ -217,20 +230,11 @@ function stopAmbience() {
 }
 
 export {
-  createAudioGraph,
-  resumeAudio,
-  startTransport,
-  stopTransport,
-  toggleTransport,
-  setMusicVolume,
-  setAmbienceVolume,
-  toggleAmbienceMute,
-  updateAmbienceDucking,
-  setTempo,
-  previewIngredient,
-  clearAllLayers,
-  cancelVisualTimers,
-  onVisualHit,
-  startAmbience,
-  stopAmbience,
+  createAudioGraph, resumeAudio,
+  startTransport, stopTransport, toggleTransport,
+  setMusicVolume, setAmbienceVolume, toggleAmbienceMute, updateAmbienceDucking,
+  setTempo, previewIngredient, clearAllLayers, canAddLayer,
+  cancelVisualTimers, onVisualHit,
+  startAmbience, stopAmbience,
+  DEFAULT_BPM,
 };

@@ -1,13 +1,14 @@
 /**
  * particles.js — Spirit-specific cursor trails.
- * Pollen (bee), feathers (bird), ripples (dragonfly), petals (butterfly).
- * Disabled on touch devices and prefers-reduced-motion.
+ * Aurelia: pollen (golden specks), Lark: feather shapes,
+ * Rill: water rings, Iris: petal flecks.
+ * Disabled on touch/reduced-motion. Capped at 16 particles.
  */
 
 import { state } from './state.js';
 
-const MAX_PARTICLES = 20;
-const THROTTLE_MS = 40;
+const MAX_PARTICLES = 16;
+const THROTTLE_MS = 50;
 
 let particles = [];
 let container = null;
@@ -15,145 +16,90 @@ let lastEmit = 0;
 let animId = null;
 let enabled = false;
 
-const TRAIL_CONFIG = {
-  pollen: {
-    colors: ['#ffd54f', '#ffe082', '#fff8e1', '#ffb300'],
-    sizeRange: [4, 8],
-    lifetime: 600,
-    shape: 'circle',
-  },
-  feather: {
-    colors: ['#ffcc80', '#ffe0b2', '#fff3e0', '#ffab40'],
-    sizeRange: [6, 12],
-    lifetime: 800,
-    shape: 'feather',
-  },
-  ripple: {
-    colors: ['#4dd0e1', '#80deea', '#b2ebf2', '#26c6da'],
-    sizeRange: [6, 14],
-    lifetime: 700,
-    shape: 'ripple',
-  },
-  petal: {
-    colors: ['#ce93d8', '#f3e5f5', '#e1bee7', '#ba68c8'],
-    sizeRange: [5, 10],
-    lifetime: 750,
-    shape: 'petal',
-  },
+const TRAILS = {
+  pollen: { colors: ['#F4D77D', '#e8c55a', '#f0dfa0'], size: [3, 6], life: 500, shape: 'circle' },
+  feather: { colors: ['#E97B70', '#f0a090', '#d4a090'], size: [5, 10], life: 650, shape: 'feather' },
+  ripple: { colors: ['#9CCDDD', '#7ab8cc', '#b8dde8'], size: [5, 12], life: 600, shape: 'ring' },
+  petal: { colors: ['#9A8EB8', '#c4b8d8', '#b8a0d0'], size: [4, 8], life: 550, shape: 'petal' },
 };
 
-/** Initialize the particle system */
 function initParticles() {
-  // Don't run on touch-only devices
   if (window.matchMedia('(pointer: coarse)').matches) return;
-  // Respect reduced motion
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   container = document.createElement('div');
-  container.className = 'particle-container';
-  container.setAttribute('aria-hidden', 'true');
   container.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9990;overflow:hidden;';
+  container.setAttribute('aria-hidden', 'true');
   document.body.appendChild(container);
-
   enabled = true;
-  document.addEventListener('mousemove', onMouseMove, { passive: true });
-  animate();
+
+  document.addEventListener('mousemove', onMove, { passive: true });
+  tick();
 }
 
-function onMouseMove(e) {
+function onMove(e) {
   if (!enabled) return;
   const now = performance.now();
   if (now - lastEmit < THROTTLE_MS) return;
   lastEmit = now;
-
-  emitParticle(e.clientX, e.clientY);
+  emit(e.clientX, e.clientY);
 }
 
-function emitParticle(x, y) {
+function emit(x, y) {
   if (particles.length >= MAX_PARTICLES) return;
-
-  const spiritDef = state.spirit ? TRAIL_CONFIG[getTrailType()] : TRAIL_CONFIG.pollen;
-  const config = spiritDef || TRAIL_CONFIG.pollen;
-
-  const size = config.sizeRange[0] + Math.random() * (config.sizeRange[1] - config.sizeRange[0]);
-  const color = config.colors[Math.floor(Math.random() * config.colors.length)];
+  const trail = getTrailConfig();
+  const size = trail.size[0] + Math.random() * (trail.size[1] - trail.size[0]);
+  const color = trail.colors[Math.floor(Math.random() * trail.colors.length)];
 
   const el = document.createElement('span');
-  el.className = `particle particle--${config.shape}`;
-  el.style.cssText = `
-    position: absolute;
-    left: ${x}px; top: ${y}px;
-    width: ${size}px; height: ${size}px;
-    background: ${color};
-    border-radius: ${config.shape === 'petal' ? '50% 0 50% 50%' : config.shape === 'feather' ? '50% 50% 50% 0' : '50%'};
-    opacity: 0.8;
-    transform: translate(-50%, -50%) scale(1) rotate(${Math.random() * 360}deg);
-    pointer-events: none;
-    transition: none;
-  `;
+  let style = `position:absolute;left:${x}px;top:${y}px;width:${size}px;height:${size}px;opacity:0.7;pointer-events:none;`;
 
-  if (config.shape === 'ripple') {
-    el.style.background = 'transparent';
-    el.style.border = `1.5px solid ${color}`;
-    el.style.borderRadius = '50%';
+  if (trail.shape === 'circle') {
+    style += `border-radius:50%;background:${color};`;
+  } else if (trail.shape === 'ring') {
+    style += `border-radius:50%;border:1px solid ${color};background:transparent;`;
+  } else if (trail.shape === 'feather') {
+    style += `border-radius:40% 60% 60% 40%;background:${color};transform:rotate(${Math.random()*40-20}deg);`;
+  } else {
+    style += `border-radius:50% 0 50% 50%;background:${color};transform:rotate(${Math.random()*360}deg);`;
   }
 
+  el.style.cssText = style;
   container.appendChild(el);
 
-  const particle = {
-    el,
-    x, y,
-    vx: (Math.random() - 0.5) * 1.2,
-    vy: -0.5 - Math.random() * 0.8,
-    life: config.lifetime,
-    maxLife: config.lifetime,
-    size,
-    shape: config.shape,
-  };
-
-  particles.push(particle);
+  particles.push({
+    el, life: trail.life, maxLife: trail.life,
+    x, y, vx: (Math.random() - 0.5) * 0.8, vy: -0.4 - Math.random() * 0.6,
+    shape: trail.shape,
+  });
 }
 
-function getTrailType() {
-  const spiritId = state.spirit;
-  if (!spiritId) return 'pollen';
+function getTrailConfig() {
   const map = { bee: 'pollen', bird: 'feather', dragonfly: 'ripple', butterfly: 'petal' };
-  return map[spiritId] || 'pollen';
+  const type = map[state.spirit] || 'pollen';
+  return TRAILS[type];
 }
 
-function animate() {
-  const dt = 16; // ~60fps frame budget
-
+function tick() {
   for (let i = particles.length - 1; i >= 0; i--) {
     const p = particles[i];
-    p.life -= dt;
-
-    if (p.life <= 0) {
-      p.el.remove();
-      particles.splice(i, 1);
-      continue;
-    }
-
+    p.life -= 16;
+    if (p.life <= 0) { p.el.remove(); particles.splice(i, 1); continue; }
     const progress = 1 - p.life / p.maxLife;
-    p.x += p.vx;
-    p.y += p.vy;
-
-    const scale = p.shape === 'ripple' ? 1 + progress * 2 : 1 - progress * 0.5;
-    const opacity = 0.8 * (1 - progress);
-
+    p.x += p.vx; p.y += p.vy;
+    const scale = p.shape === 'ring' ? 1 + progress * 1.5 : 1 - progress * 0.4;
+    const opacity = 0.7 * (1 - progress);
     p.el.style.left = `${p.x}px`;
     p.el.style.top = `${p.y}px`;
     p.el.style.opacity = opacity;
-    p.el.style.transform = `translate(-50%, -50%) scale(${scale}) rotate(${progress * 120}deg)`;
+    p.el.style.transform = `translate(-50%,-50%) scale(${scale})`;
   }
-
-  animId = requestAnimationFrame(animate);
+  animId = requestAnimationFrame(tick);
 }
 
-/** Clean up */
 function destroyParticles() {
   enabled = false;
-  document.removeEventListener('mousemove', onMouseMove);
+  document.removeEventListener('mousemove', onMove);
   if (animId) cancelAnimationFrame(animId);
   if (container) container.remove();
   particles = [];

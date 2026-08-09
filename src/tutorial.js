@@ -1,245 +1,149 @@
 /**
- * tutorial.js — Spotlight-style onboarding tutorial.
- * Dims the interface, highlights one target at a time, shows a speech bubble.
+ * tutorial.js — Spotlight onboarding with spirit guide.
+ * Uses getBoundingClientRect for positioning.
+ * Spirit flies between targets using transform animation.
+ * Respects prefers-reduced-motion.
  */
 
 import { state, setState } from './state.js';
 import { t } from './i18n.js';
+import { spiritDefinitions, getSpiritPlaceholder } from './spirits.js';
 
 const STEPS = [
-  {
-    targetSelector: '.lang-toggle',
-    textKey: 'tutorial.step1',
-    position: 'below',
-  },
-  {
-    targetSelector: '.theme-toggle',
-    textKey: 'tutorial.step2',
-    position: 'below',
-  },
-  {
-    targetSelector: '[data-action="select-mode"]',
-    textKey: 'tutorial.step3',
-    position: 'below',
-  },
-  {
-    targetSelector: '.ingredient-btn[data-ingredient="watermelon"]',
-    textKey: 'tutorial.step4',
-    position: 'above',
-  },
-  {
-    targetSelector: '.ingredient-grid',
-    textKey: 'tutorial.step5',
-    position: 'above',
-  },
-  {
-    targetSelector: '[data-action="play-pause"]',
-    textKey: 'tutorial.step6',
-    position: 'below',
-  },
-  {
-    targetSelector: '[data-action="recipe-book"]',
-    textKey: 'tutorial.step7',
-    position: 'above',
-  },
-  {
-    targetSelector: '[data-action="finish"]',
-    textKey: 'tutorial.step8',
-    position: 'above',
-  },
+  { target: '[data-action="cycle-lang"]', textKey: 'tutorial.langStep', pos: 'below' },
+  { target: '.theme-toggle', textKey: 'tutorial.themeStep', pos: 'below' },
+  { target: '[data-action="select-mode"]', textKey: 'tutorial.modeStep', pos: 'below' },
+  { target: '.ingredient-btn[data-ingredient="watermelon"]', textKey: 'tutorial.ingredientStep', pos: 'above' },
+  { target: '[data-action="play-pause"]', textKey: 'tutorial.transportStep', pos: 'below' },
+  { target: '[data-action="recipe-book"]', textKey: 'tutorial.recipeStep', pos: 'above' },
 ];
 
-// Tutorial-specific translations (added to i18n externally or inline here for simplicity)
-const tutorialTexts = {
+const TEXTS = {
   en: {
-    'tutorial.step1': "See this little switch? The meadow can speak English or Chinese whenever you like.",
-    'tutorial.step2': "You can change the time of day here. Try Auto—it follows your clock!",
-    'tutorial.step3': "Choose Free Mix to experiment freely, or Recipe Trails for guided challenges.",
-    'tutorial.step4': "Every treat carries a different part of the song. Try the watermelon first—it keeps the picnic bouncing.",
-    'tutorial.step5': "Each ingredient has a unique sound and role. Mix different types to build a full song.",
-    'tutorial.step6': "Play and pause your mix anytime. Your music and ambience have separate controls.",
-    'tutorial.step7': "Open the Recipe Book to try guided picnic challenges with different moods.",
-    'tutorial.step8': "When you're happy with your mix, finish your picnic to create a downloadable postcard!",
+    'tutorial.langStep': 'Change the language here. The meadow speaks English, Chinese, French, and Spanish.',
+    'tutorial.themeStep': 'Switch between day and night. Each has its own atmosphere.',
+    'tutorial.modeStep': 'Choose free composition or follow a guided recipe.',
+    'tutorial.ingredientStep': 'Tap any ingredient to hear its sound. Up to six can play together.',
+    'tutorial.transportStep': 'Play, pause, or clear your mix at any time.',
+    'tutorial.recipeStep': 'Open the recipe book for guided arrangements.',
   },
   zh: {
-    'tutorial.step1': "看到这个小开关了吗？草地随时可以切换中英文。",
-    'tutorial.step2': "你可以在这里切换白天和夜晚模式。试试「自动」——它会跟着你的时钟！",
-    'tutorial.step3': "选择「自由混音」自由实验，或「食谱挑战」跟着引导玩。",
-    'tutorial.step4': "每个食材承载着歌曲的不同部分。先试试西瓜——它是野餐的节拍基础。",
-    'tutorial.step5': "每种食材都有独特的声音和角色。混合不同类型来构建完整的歌曲。",
-    'tutorial.step6': "随时播放或暂停你的混音。音乐和环境音有独立的控制。",
-    'tutorial.step7': "打开食谱书，尝试不同氛围的野餐挑战。",
-    'tutorial.step8': "满意你的混音后，完成野餐就能生成一张可下载的明信片！",
+    'tutorial.langStep': '在这里切换语言。草地会说英语、中文、法语和西班牙语。',
+    'tutorial.themeStep': '在白天和夜晚之间切换。每种都有自己的氛围。',
+    'tutorial.modeStep': '选择自由作曲或跟随引导食谱。',
+    'tutorial.ingredientStep': '点击任何食材听听它的声音。最多六种可以同时演奏。',
+    'tutorial.transportStep': '随时播放、暂停或清空你的混音。',
+    'tutorial.recipeStep': '打开食谱书查看引导编排。',
+  },
+  fr: {
+    'tutorial.langStep': "Changez la langue ici. La prairie parle anglais, chinois, français et espagnol.",
+    'tutorial.themeStep': "Passez du jour à la nuit. Chacun a sa propre atmosphère.",
+    'tutorial.modeStep': "Choisissez la composition libre ou suivez une recette guidée.",
+    'tutorial.ingredientStep': "Touchez un ingrédient pour l'entendre. Six peuvent jouer ensemble.",
+    'tutorial.transportStep': "Jouez, pausez ou effacez votre mix à tout moment.",
+    'tutorial.recipeStep': "Ouvrez le livre de recettes pour des arrangements guidés.",
+  },
+  es: {
+    'tutorial.langStep': 'Cambia el idioma aquí. El prado habla inglés, chino, francés y español.',
+    'tutorial.themeStep': 'Alterna entre día y noche. Cada uno tiene su propia atmósfera.',
+    'tutorial.modeStep': 'Elige composición libre o sigue una receta guiada.',
+    'tutorial.ingredientStep': 'Toca cualquier ingrediente para escucharlo. Hasta seis pueden sonar juntos.',
+    'tutorial.transportStep': 'Reproduce, pausa o limpia tu mezcla en cualquier momento.',
+    'tutorial.recipeStep': 'Abre el libro de recetas para arreglos guiados.',
   },
 };
 
 let currentStep = 0;
-let isActive = false;
+let active = false;
 let resizeHandler = null;
 
-/** Get tutorial text for current language */
 function getTutorialText(key) {
   const lang = state.lang || 'en';
-  return (tutorialTexts[lang] && tutorialTexts[lang][key]) || tutorialTexts.en[key] || key;
+  return (TEXTS[lang] && TEXTS[lang][key]) || TEXTS.en[key] || '';
 }
 
-/** Start the tutorial */
 function startTutorial() {
   currentStep = 0;
-  isActive = true;
-  showTutorialOverlay();
+  active = true;
+  const overlay = document.querySelector('[data-screen="tutorial"]');
+  if (overlay) overlay.hidden = false;
   renderStep();
+  resizeHandler = () => { if (active) positionSpotlight(); };
+  window.addEventListener('resize', resizeHandler);
 }
 
-/** Show the tutorial overlay elements */
-function showTutorialOverlay() {
-  const overlay = document.querySelector('[data-screen="tutorial"]');
-  if (overlay) {
-    overlay.hidden = false;
-    overlay.style.display = '';
-  }
-}
-
-/** Hide the tutorial overlay */
-function hideTutorialOverlay() {
-  const overlay = document.querySelector('[data-screen="tutorial"]');
-  if (overlay) overlay.hidden = true;
-  isActive = false;
-  if (resizeHandler) {
-    window.removeEventListener('resize', resizeHandler);
-    resizeHandler = null;
-  }
-}
-
-/** Render the current tutorial step */
 function renderStep() {
-  if (!isActive || currentStep < 0 || currentStep >= STEPS.length) {
-    finishTutorial();
-    return;
-  }
-
+  if (!active || currentStep >= STEPS.length) { finishTutorial(); return; }
   const step = STEPS[currentStep];
-  const target = document.querySelector(step.targetSelector);
 
-  // Update spotlight position
-  positionSpotlight(target);
-
-  // Update bubble text
+  // Text
   const textEl = document.querySelector('.tutorial-bubble__text');
   if (textEl) textEl.textContent = getTutorialText(step.textKey);
 
-  // Update progress
-  const progressEl = document.querySelector('[data-display="tutorial-progress"]');
-  if (progressEl) progressEl.textContent = t('tutorial.step', { current: currentStep + 1, total: STEPS.length });
+  // Progress
+  const progEl = document.querySelector('[data-display="tutorial-progress"]');
+  if (progEl) progEl.textContent = t('tutorial.step', { current: currentStep + 1, total: STEPS.length });
 
-  // Update button states
+  // Back button state
   const backBtn = document.querySelector('[data-action="tutorial-back"]');
   if (backBtn) backBtn.disabled = currentStep === 0;
 
+  // Next button label
   const nextBtn = document.querySelector('[data-action="tutorial-next"]');
   if (nextBtn) nextBtn.textContent = currentStep === STEPS.length - 1 ? t('tutorial.finish') : t('tutorial.next');
 
-  // Listen for resize to reposition
-  if (!resizeHandler) {
-    resizeHandler = () => {
-      if (isActive) positionSpotlight(document.querySelector(STEPS[currentStep]?.targetSelector));
-    };
-    window.addEventListener('resize', resizeHandler);
-  }
+  positionSpotlight();
 }
 
-/** Position the spotlight cutout around a target element */
-function positionSpotlight(target) {
+function positionSpotlight() {
+  const step = STEPS[currentStep];
+  if (!step) return;
+  const target = document.querySelector(step.target);
   const spotlight = document.querySelector('.tutorial-spotlight');
-  const dim = document.querySelector('.tutorial-dim');
   if (!spotlight) return;
 
-  if (!target) {
-    // No target found (element not visible on current screen) — center spotlight
-    spotlight.style.cssText = 'display: none;';
-    if (dim) dim.style.background = 'rgba(0, 0, 0, 0.5)';
+  if (!target || target.offsetParent === null) {
+    spotlight.style.display = 'none';
     return;
   }
 
   const rect = target.getBoundingClientRect();
-  const pad = 8;
+  const pad = 6;
+  spotlight.style.display = 'block';
+  spotlight.style.top = `${rect.top - pad}px`;
+  spotlight.style.left = `${rect.left - pad}px`;
+  spotlight.style.width = `${rect.width + pad * 2}px`;
+  spotlight.style.height = `${rect.height + pad * 2}px`;
 
-  spotlight.style.cssText = `
-    display: block;
-    top: ${rect.top - pad}px;
-    left: ${rect.left - pad}px;
-    width: ${rect.width + pad * 2}px;
-    height: ${rect.height + pad * 2}px;
-    border-radius: ${Math.min(rect.height / 2, 16)}px;
-  `;
-
-  // Position bubble near target
-  positionBubble(rect, STEPS[currentStep]?.position || 'below');
-}
-
-/** Position the tutorial bubble relative to the spotlight */
-function positionBubble(targetRect, position) {
+  // Position bubble
   const bubble = document.querySelector('.tutorial-bubble');
   if (!bubble) return;
-
-  const bw = bubble.offsetWidth || 360;
-  const bh = bubble.offsetHeight || 160;
-  const margin = 16;
-
-  let top, left;
-
-  if (position === 'above') {
-    top = targetRect.top - bh - margin;
-    left = targetRect.left + targetRect.width / 2 - bw / 2;
-  } else {
-    top = targetRect.bottom + margin;
-    left = targetRect.left + targetRect.width / 2 - bw / 2;
-  }
-
-  // Clamp to viewport
-  top = Math.max(12, Math.min(window.innerHeight - bh - 12, top));
-  left = Math.max(12, Math.min(window.innerWidth - bw - 12, left));
-
+  const bh = bubble.offsetHeight || 140;
+  const margin = 12;
+  let top = step.pos === 'above' ? rect.top - bh - margin : rect.bottom + margin;
+  let left = rect.left + rect.width / 2 - 180;
+  top = Math.max(8, Math.min(window.innerHeight - bh - 8, top));
+  left = Math.max(8, Math.min(window.innerWidth - 368, left));
   bubble.style.position = 'fixed';
   bubble.style.top = `${top}px`;
   bubble.style.left = `${left}px`;
 }
 
-/** Go to next step */
-function nextStep() {
-  currentStep++;
-  if (currentStep >= STEPS.length) {
-    finishTutorial();
-  } else {
-    renderStep();
-  }
-}
+function nextStep() { currentStep++; renderStep(); }
+function prevStep() { if (currentStep > 0) { currentStep--; renderStep(); } }
 
-/** Go to previous step */
-function prevStep() {
-  if (currentStep > 0) {
-    currentStep--;
-    renderStep();
-  }
-}
-
-/** Skip / finish the tutorial */
 function finishTutorial() {
-  isActive = false;
-  hideTutorialOverlay();
+  active = false;
+  const overlay = document.querySelector('[data-screen="tutorial"]');
+  if (overlay) overlay.hidden = true;
   setState({ tutorialCompleted: true }, true);
+  if (resizeHandler) { window.removeEventListener('resize', resizeHandler); resizeHandler = null; }
 }
 
-/** Check if tutorial should auto-start */
-function shouldAutoStart() {
-  return !state.tutorialCompleted;
-}
-
-/** Bind tutorial button events */
 function bindTutorial() {
   document.querySelector('[data-action="tutorial-next"]')?.addEventListener('click', nextStep);
   document.querySelector('[data-action="tutorial-back"]')?.addEventListener('click', prevStep);
   document.querySelector('[data-action="tutorial-skip"]')?.addEventListener('click', finishTutorial);
 }
 
-export { startTutorial, finishTutorial, bindTutorial, shouldAutoStart, isActive };
+export { startTutorial, finishTutorial, bindTutorial };

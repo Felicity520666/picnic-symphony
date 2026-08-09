@@ -4,22 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Picnic Symphony</title>
-  <meta name="description" content="A magical interactive music-making picnic. Choose a guiding spirit, layer picnic treats, and build a summer song.">
-  <meta name="theme-color" content="#5e9a4f">
+  <meta name="description" content="A quiet music-making picnic. Layer sounds, follow recipes, and let the meadow remember your song.">
+  <meta name="theme-color" content="#7FA36B">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&family=Nunito:wght@400;600;700;800&family=Noto+Sans+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Paper grain overlay -->
   <div class="paper-grain" aria-hidden="true"></div>
 
-  <!-- Global toolbar: language + theme (always visible) -->
+  <!-- Global toolbar -->
   <nav class="global-toolbar" aria-label="Settings">
-    <button class="lang-toggle" type="button" data-action="toggle-lang" aria-label="Switch language">EN / 中文</button>
+    <button class="toolbar-btn" type="button" data-action="cycle-lang" aria-label="Switch language">EN</button>
     <div class="theme-toggle" role="group" aria-label="Theme">
       <button type="button" data-action="set-theme" data-theme="auto" class="theme-btn is-active" data-i18n="theme.auto">Auto</button>
       <button type="button" data-action="set-theme" data-theme="day" class="theme-btn" data-i18n="theme.day">Day</button>
@@ -27,75 +26,55 @@
     </div>
   </nav>
 
-  <!-- ═══════════ SCREEN: Welcome ═══════════ -->
+  <!-- SCREEN: Welcome -->
   <section data-screen="welcome" class="screen welcome-screen" aria-labelledby="welcome-title">
     <div class="welcome-card">
-      <p class="welcome-kicker" data-i18n="welcome.kicker">Welcome to</p>
       <h1 id="welcome-title" class="welcome-title" data-i18n="welcome.title">Picnic Symphony</h1>
-      <p class="welcome-subtitle" data-i18n="welcome.subtitle">Pack a basket. Build a beat.</p>
-      <p class="welcome-body" data-i18n="welcome.body">Spread a blanket beneath the open sky. Every picnic treat is hiding a rhythm, a harmony, or a little piece of summer. Choose a guiding spirit, gather your favorite sounds, and let the meadow remember your song.</p>
+      <p class="welcome-body" data-i18n="welcome.body">Some afternoons ask nothing of us but a blanket in the grass and time enough to listen.</p>
       <div class="welcome-actions">
-        <button class="btn btn--primary" type="button" data-action="enter-meadow" data-i18n="welcome.enter">Enter the Meadow</button>
-        <button class="btn btn--secondary" type="button" data-action="how-it-works" data-i18n="welcome.howItWorks">How It Works</button>
-      </div>
-      <div class="welcome-deco" aria-hidden="true">
-        <span class="deco-leaf deco-leaf--1"></span>
-        <span class="deco-leaf deco-leaf--2"></span>
-        <span class="deco-note">♪</span>
+        <button class="btn btn--primary" type="button" data-action="enter-meadow" data-i18n="welcome.enter">Begin the Picnic</button>
+        <button class="btn btn--ghost" type="button" data-action="how-it-works" data-i18n="welcome.howItWorks">How It Works</button>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ SCREEN: Spirit Selection ═══════════ -->
+  <!-- SCREEN: Spirit Selection -->
   <section data-screen="spirits" class="screen spirit-screen" hidden aria-labelledby="spirit-title">
     <div class="spirit-card">
-      <p class="spirit-kicker" data-i18n="spirits.kicker">Choose your companion</p>
-      <h2 id="spirit-title" class="spirit-title" data-i18n="spirits.title">Pick a Guiding Spirit</h2>
-      <p class="spirit-subtitle" data-i18n="spirits.subtitle">Your spirit will float beside you, pointing to the next ingredient and cheering you on.</p>
+      <h2 id="spirit-title" class="spirit-title" data-i18n="spirits.title">A spirit for the meadow</h2>
+      <p class="spirit-subtitle" data-i18n="spirits.subtitle">Each guide listens differently. Choose the one whose ear you trust.</p>
 
       <div class="spirit-grid" role="radiogroup" aria-label="Spirit options">
         <button class="spirit-option" type="button" data-spirit="bee" role="radio" aria-checked="false">
-          <div class="spirit-portrait spirit-portrait--card" data-spirit-img="bee">
-            <img src="assets/spirits/bee-guide.png" alt="Pollen the Bee" class="spirit-portrait__img" onerror="this.parentElement.classList.add('is-fallback');this.remove();">
-            <div class="spirit-portrait__fallback" style="--spirit-color:#ffd54f">
-              <span class="spirit-portrait__symbol">&#x1F41D;</span>
-            </div>
+          <div class="spirit-portrait" data-spirit-img="bee">
+            <img src="assets/spirits/aurelia-bee.png" alt="Aurelia, a honeybee spirit" class="spirit-portrait__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
           </div>
-          <span class="spirit-option__name" data-i18n="spirit.bee.name">Pollen the Bee</span>
-          <span class="spirit-option__personality" data-i18n="spirit.bee.personality">Cheerful & rhythm-focused</span>
+          <span class="spirit-option__name" data-i18n="spirit.bee.name">Aurelia</span>
+          <span class="spirit-option__trait" data-i18n="spirit.bee.personality">Rhythm and sunlight</span>
         </button>
 
         <button class="spirit-option" type="button" data-spirit="bird" role="radio" aria-checked="false">
-          <div class="spirit-portrait spirit-portrait--card" data-spirit-img="bird">
-            <img src="assets/spirits/bird-guide.png" alt="Lark the Songbird" class="spirit-portrait__img" onerror="this.parentElement.classList.add('is-fallback');this.remove();">
-            <div class="spirit-portrait__fallback" style="--spirit-color:#ffcc80">
-              <span class="spirit-portrait__symbol">&#x1F426;</span>
-            </div>
+          <div class="spirit-portrait" data-spirit-img="bird">
+            <img src="assets/spirits/lark-songbird.png" alt="Lark, a songbird spirit" class="spirit-portrait__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
           </div>
-          <span class="spirit-option__name" data-i18n="spirit.bird.name">Lark the Songbird</span>
-          <span class="spirit-option__personality" data-i18n="spirit.bird.personality">Warm & melody-focused</span>
+          <span class="spirit-option__name" data-i18n="spirit.bird.name">Lark</span>
+          <span class="spirit-option__trait" data-i18n="spirit.bird.personality">Melody and breath</span>
         </button>
 
         <button class="spirit-option" type="button" data-spirit="dragonfly" role="radio" aria-checked="false">
-          <div class="spirit-portrait spirit-portrait--card" data-spirit-img="dragonfly">
-            <img src="assets/spirits/dragonfly-guide.png" alt="Ripple the Dragonfly" class="spirit-portrait__img" onerror="this.parentElement.classList.add('is-fallback');this.remove();">
-            <div class="spirit-portrait__fallback" style="--spirit-color:#4dd0e1">
-              <span class="spirit-portrait__symbol">&#x1FAB7;</span>
-            </div>
+          <div class="spirit-portrait" data-spirit-img="dragonfly">
+            <img src="assets/spirits/rill-dragonfly.png" alt="Rill, a dragonfly spirit" class="spirit-portrait__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
           </div>
-          <span class="spirit-option__name" data-i18n="spirit.dragonfly.name">Ripple the Dragonfly</span>
-          <span class="spirit-option__personality" data-i18n="spirit.dragonfly.personality">Calm & texture-focused</span>
+          <span class="spirit-option__name" data-i18n="spirit.dragonfly.name">Rill</span>
+          <span class="spirit-option__trait" data-i18n="spirit.dragonfly.personality">Texture and movement</span>
         </button>
 
         <button class="spirit-option" type="button" data-spirit="butterfly" role="radio" aria-checked="false">
-          <div class="spirit-portrait spirit-portrait--card" data-spirit-img="butterfly">
-            <img src="assets/spirits/butterfly-guide.png" alt="Petal the Butterfly" class="spirit-portrait__img" onerror="this.parentElement.classList.add('is-fallback');this.remove();">
-            <div class="spirit-portrait__fallback" style="--spirit-color:#ce93d8">
-              <span class="spirit-portrait__symbol">&#x1F98B;</span>
-            </div>
+          <div class="spirit-portrait" data-spirit-img="butterfly">
+            <img src="assets/spirits/iris-butterfly.png" alt="Iris, a butterfly spirit" class="spirit-portrait__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
           </div>
-          <span class="spirit-option__name" data-i18n="spirit.butterfly.name">Petal the Butterfly</span>
-          <span class="spirit-option__personality" data-i18n="spirit.butterfly.personality">Poetic & harmony-focused</span>
+          <span class="spirit-option__name" data-i18n="spirit.butterfly.name">Iris</span>
+          <span class="spirit-option__trait" data-i18n="spirit.butterfly.personality">Harmony and color</span>
         </button>
       </div>
 
@@ -103,177 +82,163 @@
     </div>
   </section>
 
-  <!-- ═══════════ SCREEN: Mode Selection ═══════════ -->
+  <!-- SCREEN: Mode Selection -->
   <section data-screen="mode-select" class="screen mode-screen" hidden aria-labelledby="mode-title">
     <div class="mode-card">
-      <h2 id="mode-title" class="mode-title" data-i18n="mode.title">How would you like to play?</h2>
+      <h2 id="mode-title" class="mode-title" data-i18n="mode.title">How would you like to listen?</h2>
       <div class="mode-options">
         <button class="mode-option" type="button" data-action="select-mode" data-mode="free">
-          <span class="mode-option__icon">&#x1F3B6;</span>
-          <strong class="mode-option__title" data-i18n="mode.free.title">Free Mix</strong>
-          <span class="mode-option__desc" data-i18n="mode.free.desc">Freely combine ingredients, adjust tempo, and create your own picnic song.</span>
+          <strong class="mode-option__title" data-i18n="mode.free.title">Free Composition</strong>
+          <span class="mode-option__desc" data-i18n="mode.free.desc">Layer sounds at your own pace.</span>
         </button>
         <button class="mode-option" type="button" data-action="select-mode" data-mode="recipe">
-          <span class="mode-option__icon">&#x1F4D6;</span>
-          <strong class="mode-option__title" data-i18n="mode.recipe.title">Recipe Trails</strong>
-          <span class="mode-option__desc" data-i18n="mode.recipe.desc">Follow guided recipes with poetic challenges and collect picnic stickers.</span>
+          <strong class="mode-option__title" data-i18n="mode.recipe.title">Guided Recipes</strong>
+          <span class="mode-option__desc" data-i18n="mode.recipe.desc">Follow a suggested arrangement.</span>
         </button>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ SCREEN: Studio ═══════════ -->
+  <!-- SCREEN: Studio -->
   <section data-screen="studio" class="screen studio-screen" hidden aria-labelledby="studio-heading">
-    <h2 id="studio-heading" class="sr-only">Picnic Studio</h2>
+    <h2 id="studio-heading" class="sr-only">Studio</h2>
 
-    <!-- Transport bar -->
     <header class="studio-topbar">
-      <div class="studio-brand">
-        <p class="studio-brand__name" data-i18n="studio.brand">Picnic Symphony</p>
-      </div>
       <div class="studio-transport">
         <button class="btn btn--control" type="button" data-action="play-pause" data-i18n="studio.play">Play</button>
-        <button class="btn btn--control" type="button" data-action="clear-mix" data-i18n="studio.clear">Clear Mix</button>
-        <button class="btn btn--control" type="button" data-action="surprise" data-i18n="studio.surprise">Surprise Basket</button>
-        <label class="range-control">
-          <span data-i18n="studio.tempo">Tempo</span>
-          <input type="range" min="60" max="160" value="110" data-action="tempo">
-          <span data-display="tempo">110 BPM</span>
-        </label>
-        <label class="range-control">
-          <span data-i18n="studio.volume">Music</span>
-          <input type="range" min="0" max="100" value="70" data-action="music-volume">
-        </label>
-        <label class="range-control">
-          <span data-i18n="studio.ambience">Ambience</span>
-          <input type="range" min="0" max="100" value="30" data-action="ambience-volume">
-        </label>
+        <button class="btn btn--control" type="button" data-action="clear-mix" data-i18n="studio.clear">Clear</button>
+        <button class="btn btn--control" type="button" data-action="surprise" data-i18n="studio.surprise">Surprise</button>
+      </div>
+      <div class="studio-sliders">
+        <label class="range-control"><span data-i18n="studio.tempo">Tempo</span><input type="range" min="60" max="140" value="96" data-action="tempo"><span data-display="tempo">96</span></label>
+        <label class="range-control"><span data-i18n="studio.volume">Music</span><input type="range" min="0" max="100" value="70" data-action="music-volume"></label>
+        <label class="range-control"><span data-i18n="studio.ambience">Ambience</span><input type="range" min="0" max="100" value="30" data-action="ambience-volume"></label>
       </div>
     </header>
 
-    <!-- Status -->
     <div class="studio-status">
-      <div class="status-item">
-        <span class="status-label" data-i18n="studio.layers">Active layers</span>
-        <strong data-display="layer-count">0 / 12 sounds</strong>
-      </div>
-      <div class="status-item">
-        <span class="status-label" data-i18n="studio.nextIngredient">Next ingredient</span>
-        <strong data-display="beat-label" data-i18n="studio.pickRecipe">Pick a recipe to get started</strong>
-      </div>
+      <span class="status-label" data-i18n="studio.layers">Active layers</span>
+      <strong data-display="layer-count">0 of 6</strong>
+      <span data-display="beat-label" data-i18n="studio.pickRecipe">Choose a sound to begin</span>
+      <p class="layer-message" data-display="layer-message" hidden></p>
     </div>
 
-    <!-- Main layout: spirit + meadow -->
     <div class="studio-layout">
-      <!-- Spirit guide panel -->
       <aside class="spirit-panel">
         <div class="spirit-panel__portrait" id="studio-spirit-art"></div>
-        <div class="spirit-speech-bubble">
-          <p data-display="spirit-speech">Pick a recipe or tap any ingredient!</p>
-        </div>
+        <div class="spirit-speech"><p data-display="spirit-speech"></p></div>
       </aside>
 
-      <!-- Ingredient meadow -->
       <div class="meadow">
-        <div class="meadow-sky" aria-hidden="true">
-          <div class="cloud cloud--1"></div>
-          <div class="cloud cloud--2"></div>
-          <div class="sun-moon"></div>
+        <div class="meadow-env" aria-hidden="true">
+          <div class="env-cloud env-cloud--1"></div>
+          <div class="env-cloud env-cloud--2"></div>
+          <div class="env-sun"></div>
+          <div class="env-grass"></div>
+          <div class="env-fireflies"></div>
         </div>
 
         <div class="ingredient-grid">
-          <!-- 12 ingredients rendered here -->
           <button class="ingredient-btn" type="button" data-ingredient="watermelon" aria-pressed="false">
-            <span class="ingredient-btn__name" data-i18n="ingredient.watermelon.name">Watermelon Bounce</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.watermelon.role">Kick / Pulse</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="lemonade" aria-pressed="false">
-            <span class="ingredient-btn__name" data-i18n="ingredient.lemonade.name">Lemonade Sparkle</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.lemonade.role">Bell Arpeggio</span>
+            <img src="assets/ingredients/watermelon.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <span class="ingredient-btn__name" data-i18n="ingredient.watermelon.name">Watermelon</span>
+            <span class="ingredient-btn__role" data-i18n="ingredient.watermelon.role">Kick</span>
           </button>
           <button class="ingredient-btn" type="button" data-ingredient="strawberry" aria-pressed="false">
-            <span class="ingredient-btn__name" data-i18n="ingredient.strawberry.name">Strawberry Melody</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.strawberry.role">Marimba Melody</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="cheese" aria-pressed="false">
-            <span class="ingredient-btn__name" data-i18n="ingredient.cheese.name">Cheesy Harmony</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.cheese.role">Warm Chords</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="grape" aria-pressed="false">
-            <span class="ingredient-btn__name" data-i18n="ingredient.grape.name">Grape Shaker</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.grape.role">High Percussion</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="cupcake" aria-pressed="false">
-            <span class="ingredient-btn__name" data-i18n="ingredient.cupcake.name">Cupcake Whistle</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.cupcake.role">Lead Whistle</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="blueberry" aria-pressed="false">
-            <span class="ingredient-btn__name" data-i18n="ingredient.blueberry.name">Blueberry Bass</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.blueberry.role">Plucked Bass</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="peach" aria-pressed="false">
-            <span class="ingredient-btn__name" data-i18n="ingredient.peach.name">Peach Clap</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.peach.role">Clap / Snare</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="mint" aria-pressed="false">
-            <span class="ingredient-btn__name" data-i18n="ingredient.mint.name">Mint Breeze</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.mint.role">Atmospheric Texture</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="honey" aria-pressed="false">
-            <span class="ingredient-btn__name" data-i18n="ingredient.honey.name">Honey Hum</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.honey.role">Warm Drone</span>
+            <img src="assets/ingredients/strawberry.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <span class="ingredient-btn__name" data-i18n="ingredient.strawberry.name">Strawberry</span>
+            <span class="ingredient-btn__role" data-i18n="ingredient.strawberry.role">Clap</span>
           </button>
           <button class="ingredient-btn" type="button" data-ingredient="cherry" aria-pressed="false">
-            <span class="ingredient-btn__name" data-i18n="ingredient.cherry.name">Cherry Chime</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.cherry.role">High Accents</span>
+            <img src="assets/ingredients/cherry.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <span class="ingredient-btn__name" data-i18n="ingredient.cherry.name">Cherry</span>
+            <span class="ingredient-btn__role" data-i18n="ingredient.cherry.role">Woodblock</span>
+          </button>
+          <button class="ingredient-btn" type="button" data-ingredient="grape" aria-pressed="false">
+            <img src="assets/ingredients/grapes.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <span class="ingredient-btn__name" data-i18n="ingredient.grape.name">Grapes</span>
+            <span class="ingredient-btn__role" data-i18n="ingredient.grape.role">Plucked bass</span>
+          </button>
+          <button class="ingredient-btn" type="button" data-ingredient="blueberry" aria-pressed="false">
+            <img src="assets/ingredients/blueberry.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <span class="ingredient-btn__name" data-i18n="ingredient.blueberry.name">Blueberry</span>
+            <span class="ingredient-btn__role" data-i18n="ingredient.blueberry.role">Low tom</span>
+          </button>
+          <button class="ingredient-btn" type="button" data-ingredient="lemonade" aria-pressed="false">
+            <img src="assets/ingredients/lemonade.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <span class="ingredient-btn__name" data-i18n="ingredient.lemonade.name">Lemonade</span>
+            <span class="ingredient-btn__role" data-i18n="ingredient.lemonade.role">Glass melody</span>
+          </button>
+          <button class="ingredient-btn" type="button" data-ingredient="peach" aria-pressed="false">
+            <img src="assets/ingredients/peach.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <span class="ingredient-btn__name" data-i18n="ingredient.peach.name">Peach</span>
+            <span class="ingredient-btn__role" data-i18n="ingredient.peach.role">Plucked melody</span>
+          </button>
+          <button class="ingredient-btn" type="button" data-ingredient="cupcake" aria-pressed="false">
+            <img src="assets/ingredients/cupcake.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <span class="ingredient-btn__name" data-i18n="ingredient.cupcake.name">Cupcake</span>
+            <span class="ingredient-btn__role" data-i18n="ingredient.cupcake.role">Bell</span>
+          </button>
+          <button class="ingredient-btn" type="button" data-ingredient="cheese" aria-pressed="false">
+            <img src="assets/ingredients/cheese.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <span class="ingredient-btn__name" data-i18n="ingredient.cheese.name">Cheese</span>
+            <span class="ingredient-btn__role" data-i18n="ingredient.cheese.role">Chord pad</span>
+          </button>
+          <button class="ingredient-btn" type="button" data-ingredient="honey" aria-pressed="false">
+            <img src="assets/ingredients/honey.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <span class="ingredient-btn__name" data-i18n="ingredient.honey.name">Honey</span>
+            <span class="ingredient-btn__role" data-i18n="ingredient.honey.role">Sustained harmony</span>
+          </button>
+          <button class="ingredient-btn" type="button" data-ingredient="mint" aria-pressed="false">
+            <img src="assets/ingredients/mint.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <span class="ingredient-btn__name" data-i18n="ingredient.mint.name">Mint</span>
+            <span class="ingredient-btn__role" data-i18n="ingredient.mint.role">Shaker</span>
           </button>
           <button class="ingredient-btn" type="button" data-ingredient="sandwich" aria-pressed="false">
-            <span class="ingredient-btn__name" data-i18n="ingredient.sandwich.name">Sandwich Groove</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.sandwich.role">Bongo / Tom</span>
+            <img src="assets/ingredients/sandwich.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <span class="ingredient-btn__name" data-i18n="ingredient.sandwich.name">Sandwich</span>
+            <span class="ingredient-btn__role" data-i18n="ingredient.sandwich.role">Brushed texture</span>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Studio footer -->
     <footer class="studio-footer">
-      <button class="btn btn--secondary" type="button" data-action="recipe-book" data-i18n="studio.recipeBook">Recipe Book</button>
-      <button class="btn btn--primary" type="button" data-action="finish" data-i18n="studio.finish">Finish My Picnic</button>
+      <button class="btn btn--ghost" type="button" data-action="recipe-book" data-i18n="studio.recipeBook">Recipes</button>
+      <button class="btn btn--primary" type="button" data-action="finish" data-i18n="studio.finish">Finish</button>
     </footer>
   </section>
 
-  <!-- ═══════════ SCREEN: Recipes ═══════════ -->
+  <!-- SCREEN: Recipes -->
   <section data-screen="recipes" class="screen recipe-screen" hidden aria-labelledby="recipe-title">
-    <div class="recipe-book-card">
-      <h2 id="recipe-title" class="recipe-book-title" data-i18n="recipes.title">Recipe Book</h2>
-      <p class="recipe-book-subtitle" data-i18n="recipes.subtitle">Choose a poetic recipe challenge. Each creates a different mood.</p>
-      <div class="recipe-grid" role="list">
-        <!-- Recipes rendered by JS -->
-      </div>
-      <button class="btn btn--secondary" type="button" data-action="back-to-studio" data-i18n="recipes.back">Back to Studio</button>
+    <div class="recipe-card">
+      <h2 id="recipe-title" class="recipe-title" data-i18n="recipes.title">Recipes</h2>
+      <p class="recipe-subtitle" data-i18n="recipes.subtitle">Each arrangement tells a different story.</p>
+      <div class="recipe-grid" role="list"></div>
+      <button class="btn btn--ghost" type="button" data-action="back-to-studio" data-i18n="recipes.back">Back</button>
     </div>
   </section>
 
-  <!-- ═══════════ SCREEN: Postcard ═══════════ -->
+  <!-- SCREEN: Postcard -->
   <section data-screen="postcard" class="screen postcard-screen" hidden aria-labelledby="postcard-title">
     <div class="postcard-card">
-      <h2 id="postcard-title" class="postcard-title" data-i18n="postcard.title">Your Picnic Postcard</h2>
+      <h2 id="postcard-title" class="postcard-title" data-i18n="postcard.title">Your Composition</h2>
       <label class="postcard-name-label">
-        <span data-i18n="postcard.nameLabel">Name your mix</span>
-        <input type="text" class="postcard-name-input" data-i18n="postcard.namePlaceholder" data-i18n-attr="placeholder" placeholder="My Summer Song">
+        <span data-i18n="postcard.nameLabel">Name this piece</span>
+        <input type="text" class="postcard-name-input" data-i18n="postcard.namePlaceholder" data-i18n-attr="placeholder" placeholder="Afternoon in the grass">
       </label>
       <canvas id="postcard-canvas" class="postcard-canvas" width="800" height="500"></canvas>
       <div class="postcard-actions">
-        <button class="btn btn--primary" type="button" data-action="download-postcard" data-i18n="postcard.download">Download Postcard</button>
-        <button class="btn btn--secondary" type="button" data-action="back-to-studio-from-postcard" data-i18n="postcard.backToStudio">Return to Studio</button>
-        <button class="btn btn--secondary" type="button" data-action="new-picnic" data-i18n="postcard.newPicnic">Start a New Picnic</button>
+        <button class="btn btn--primary" type="button" data-action="download-postcard" data-i18n="postcard.download">Download</button>
+        <button class="btn btn--ghost" type="button" data-action="back-to-studio-from-postcard" data-i18n="postcard.backToStudio">Return</button>
+        <button class="btn btn--ghost" type="button" data-action="new-picnic" data-i18n="postcard.newPicnic">New Picnic</button>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ SCREEN: Tutorial (overlay) ═══════════ -->
-  <section data-screen="tutorial" class="screen tutorial-overlay" hidden aria-labelledby="tutorial-heading">
-    <h2 id="tutorial-heading" class="sr-only">Tutorial</h2>
+  <!-- SCREEN: Tutorial overlay -->
+  <section data-screen="tutorial" class="screen tutorial-screen" hidden aria-labelledby="tutorial-heading">
+    <h2 id="tutorial-heading" class="sr-only">Guide</h2>
     <div class="tutorial-dim" aria-hidden="true"></div>
     <div class="tutorial-spotlight" aria-hidden="true"></div>
     <div class="tutorial-bubble">
@@ -286,6 +251,9 @@
       </div>
     </div>
   </section>
+
+  <!-- Guide spirit floating layer (above all screens) -->
+  <div id="guide-spirit-layer" class="guide-spirit-layer" aria-hidden="true"></div>
 
   <script type="module" src="src/main.js"></script>
 </body>
