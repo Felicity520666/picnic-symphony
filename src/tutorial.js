@@ -1,149 +1,266 @@
 /**
- * tutorial.js — Spotlight onboarding with spirit guide.
- * Uses getBoundingClientRect for positioning.
- * Spirit flies between targets using transform animation.
- * Respects prefers-reduced-motion.
+ * tutorial.js — Action-based onboarding with structured steps.
+ * Steps advance on user interaction, not just Next clicks.
+ * Uses tutorial-spirit.js for the viewport-level guide.
  */
 
-import { state, setState } from './state.js';
+import { state, setState, subscribe, SCREENS } from './state.js';
+import { navigateTo } from './router.js';
 import { t } from './i18n.js';
-import { spiritDefinitions, getSpiritPlaceholder } from './spirits.js';
+import { initTutorialSpirit, show as showSpirit, hide as hideSpirit, flyToTarget, setSpiritId } from './tutorial-spirit.js';
+
+// ─── Step definitions ─────────────────────────────────────────────────────────
 
 const STEPS = [
-  { target: '[data-action="cycle-lang"]', textKey: 'tutorial.langStep', pos: 'below' },
-  { target: '.theme-toggle', textKey: 'tutorial.themeStep', pos: 'below' },
-  { target: '[data-action="select-mode"]', textKey: 'tutorial.modeStep', pos: 'below' },
-  { target: '.ingredient-btn[data-ingredient="watermelon"]', textKey: 'tutorial.ingredientStep', pos: 'above' },
-  { target: '[data-action="play-pause"]', textKey: 'tutorial.transportStep', pos: 'below' },
-  { target: '[data-action="recipe-book"]', textKey: 'tutorial.recipeStep', pos: 'above' },
+  {
+    id: 'language',
+    route: SCREENS.WELCOME,
+    titleKey: 'tutorial.steps.language.title',
+    bodyKey: 'tutorial.steps.language.body',
+    getTarget: () => document.querySelector('[data-tutorial-id="language-menu"]'),
+    actionRequired: true,
+    completionEvent: 'lang-selected',
+    showNext: false,
+  },
+  {
+    id: 'theme',
+    route: SCREENS.WELCOME,
+    titleKey: 'tutorial.steps.theme.title',
+    bodyKey: 'tutorial.steps.theme.body',
+    getTarget: () => document.querySelector('.theme-toggle'),
+    actionRequired: true,
+    completionEvent: 'theme-selected',
+    showNext: true,
+    nextLabel: () => t('tutorial.keepLight'),
+  },
+  {
+    id: 'spirit',
+    route: SCREENS.SPIRITS,
+    titleKey: 'tutorial.steps.spirit.title',
+    bodyKey: 'tutorial.steps.spirit.body',
+    getTarget: () => document.querySelector('.spirit-grid'),
+    actionRequired: true,
+    completionEvent: 'spirit-selected',
+    showNext: false,
+  },
+  {
+    id: 'mode',
+    route: SCREENS.MODE_SELECT,
+    titleKey: 'tutorial.steps.mode.title',
+    bodyKey: 'tutorial.steps.mode.body',
+    getTarget: () => document.querySelector('.mode-options'),
+    actionRequired: true,
+    completionEvent: 'mode-selected',
+    showNext: false,
+  },
+  {
+    id: 'ingredient',
+    route: SCREENS.STUDIO,
+    titleKey: 'tutorial.steps.ingredient.title',
+    bodyKey: 'tutorial.steps.ingredient.body',
+    getTarget: () => document.querySelector('[data-tutorial-id="ingredient-lemonade"]'),
+    actionRequired: true,
+    completionEvent: 'ingredient-added',
+    showNext: false,
+  },
+  {
+    id: 'transport',
+    route: SCREENS.STUDIO,
+    titleKey: 'tutorial.steps.transport.title',
+    bodyKey: 'tutorial.steps.transport.body',
+    getTarget: () => document.querySelector('[data-tutorial-id="play-pause"]'),
+    actionRequired: false,
+    showNext: true,
+  },
+  {
+    id: 'recipes',
+    route: SCREENS.STUDIO,
+    titleKey: 'tutorial.steps.recipes.title',
+    bodyKey: 'tutorial.steps.recipes.body',
+    getTarget: () => document.querySelector('[data-tutorial-id="open-recipes"]'),
+    actionRequired: false,
+    showNext: true,
+  },
+  {
+    id: 'ready',
+    route: SCREENS.STUDIO,
+    titleKey: 'tutorial.steps.ready.title',
+    bodyKey: 'tutorial.steps.ready.body',
+    getTarget: () => document.querySelector('[data-tutorial-id="play-pause"]'),
+    actionRequired: false,
+    showNext: true,
+    nextLabel: () => t('tutorial.finish'),
+  },
 ];
 
-const TEXTS = {
-  en: {
-    'tutorial.langStep': 'Change the language here. The meadow speaks English, Chinese, French, and Spanish.',
-    'tutorial.themeStep': 'Switch between day and night. Each has its own atmosphere.',
-    'tutorial.modeStep': 'Choose free composition or follow a guided recipe.',
-    'tutorial.ingredientStep': 'Tap any ingredient to hear its sound. Up to six can play together.',
-    'tutorial.transportStep': 'Play, pause, or clear your mix at any time.',
-    'tutorial.recipeStep': 'Open the recipe book for guided arrangements.',
-  },
-  zh: {
-    'tutorial.langStep': '在这里切换语言。草地会说英语、中文、法语和西班牙语。',
-    'tutorial.themeStep': '在白天和夜晚之间切换。每种都有自己的氛围。',
-    'tutorial.modeStep': '选择自由作曲或跟随引导食谱。',
-    'tutorial.ingredientStep': '点击任何食材听听它的声音。最多六种可以同时演奏。',
-    'tutorial.transportStep': '随时播放、暂停或清空你的混音。',
-    'tutorial.recipeStep': '打开食谱书查看引导编排。',
-  },
-  fr: {
-    'tutorial.langStep': "Changez la langue ici. La prairie parle anglais, chinois, français et espagnol.",
-    'tutorial.themeStep': "Passez du jour à la nuit. Chacun a sa propre atmosphère.",
-    'tutorial.modeStep': "Choisissez la composition libre ou suivez une recette guidée.",
-    'tutorial.ingredientStep': "Touchez un ingrédient pour l'entendre. Six peuvent jouer ensemble.",
-    'tutorial.transportStep': "Jouez, pausez ou effacez votre mix à tout moment.",
-    'tutorial.recipeStep': "Ouvrez le livre de recettes pour des arrangements guidés.",
-  },
-  es: {
-    'tutorial.langStep': 'Cambia el idioma aquí. El prado habla inglés, chino, francés y español.',
-    'tutorial.themeStep': 'Alterna entre día y noche. Cada uno tiene su propia atmósfera.',
-    'tutorial.modeStep': 'Elige composición libre o sigue una receta guiada.',
-    'tutorial.ingredientStep': 'Toca cualquier ingrediente para escucharlo. Hasta seis pueden sonar juntos.',
-    'tutorial.transportStep': 'Reproduce, pausa o limpia tu mezcla en cualquier momento.',
-    'tutorial.recipeStep': 'Abre el libro de recetas para arreglos guiados.',
-  },
-};
+// ─── State ────────────────────────────────────────────────────────────────────
 
 let currentStep = 0;
 let active = false;
-let resizeHandler = null;
+let _unsubscribe = null;
+let _langListener = null;
+let _themeListener = null;
 
-function getTutorialText(key) {
-  const lang = state.lang || 'en';
-  return (TEXTS[lang] && TEXTS[lang][key]) || TEXTS.en[key] || '';
-}
+// ─── Public API ───────────────────────────────────────────────────────────────
 
 function startTutorial() {
+  initTutorialSpirit();
   currentStep = 0;
   active = true;
-  const overlay = document.querySelector('[data-screen="tutorial"]');
-  if (overlay) overlay.hidden = false;
-  renderStep();
-  resizeHandler = () => { if (active) positionSpotlight(); };
-  window.addEventListener('resize', resizeHandler);
+  showSpirit(state.spirit || 'bee');
+  listenForCompletions();
+  goToStep(0);
 }
-
-function renderStep() {
-  if (!active || currentStep >= STEPS.length) { finishTutorial(); return; }
-  const step = STEPS[currentStep];
-
-  // Text
-  const textEl = document.querySelector('.tutorial-bubble__text');
-  if (textEl) textEl.textContent = getTutorialText(step.textKey);
-
-  // Progress
-  const progEl = document.querySelector('[data-display="tutorial-progress"]');
-  if (progEl) progEl.textContent = t('tutorial.step', { current: currentStep + 1, total: STEPS.length });
-
-  // Back button state
-  const backBtn = document.querySelector('[data-action="tutorial-back"]');
-  if (backBtn) backBtn.disabled = currentStep === 0;
-
-  // Next button label
-  const nextBtn = document.querySelector('[data-action="tutorial-next"]');
-  if (nextBtn) nextBtn.textContent = currentStep === STEPS.length - 1 ? t('tutorial.finish') : t('tutorial.next');
-
-  positionSpotlight();
-}
-
-function positionSpotlight() {
-  const step = STEPS[currentStep];
-  if (!step) return;
-  const target = document.querySelector(step.target);
-  const spotlight = document.querySelector('.tutorial-spotlight');
-  if (!spotlight) return;
-
-  if (!target || target.offsetParent === null) {
-    spotlight.style.display = 'none';
-    return;
-  }
-
-  const rect = target.getBoundingClientRect();
-  const pad = 6;
-  spotlight.style.display = 'block';
-  spotlight.style.top = `${rect.top - pad}px`;
-  spotlight.style.left = `${rect.left - pad}px`;
-  spotlight.style.width = `${rect.width + pad * 2}px`;
-  spotlight.style.height = `${rect.height + pad * 2}px`;
-
-  // Position bubble
-  const bubble = document.querySelector('.tutorial-bubble');
-  if (!bubble) return;
-  const bh = bubble.offsetHeight || 140;
-  const margin = 12;
-  let top = step.pos === 'above' ? rect.top - bh - margin : rect.bottom + margin;
-  let left = rect.left + rect.width / 2 - 180;
-  top = Math.max(8, Math.min(window.innerHeight - bh - 8, top));
-  left = Math.max(8, Math.min(window.innerWidth - 368, left));
-  bubble.style.position = 'fixed';
-  bubble.style.top = `${top}px`;
-  bubble.style.left = `${left}px`;
-}
-
-function nextStep() { currentStep++; renderStep(); }
-function prevStep() { if (currentStep > 0) { currentStep--; renderStep(); } }
 
 function finishTutorial() {
   active = false;
-  const overlay = document.querySelector('[data-screen="tutorial"]');
-  if (overlay) overlay.hidden = true;
+  cleanupListeners();
+  hideSpirit();
   setState({ tutorialCompleted: true }, true);
-  if (resizeHandler) { window.removeEventListener('resize', resizeHandler); resizeHandler = null; }
+  // Stay on current screen
 }
 
 function bindTutorial() {
-  document.querySelector('[data-action="tutorial-next"]')?.addEventListener('click', nextStep);
-  document.querySelector('[data-action="tutorial-back"]')?.addEventListener('click', prevStep);
-  document.querySelector('[data-action="tutorial-skip"]')?.addEventListener('click', finishTutorial);
+  document.body.addEventListener('click', (e) => {
+    if (!active) return;
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const action = btn.dataset.action;
+    if (action === 'tutorial-next') { e.stopPropagation(); nextStep(); }
+    else if (action === 'tutorial-back') { e.stopPropagation(); prevStep(); }
+    else if (action === 'tutorial-skip') { e.stopPropagation(); finishTutorial(); }
+  });
+
+  // Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && active) {
+      e.preventDefault();
+      finishTutorial();
+    }
+  });
+}
+
+// ─── Navigation ───────────────────────────────────────────────────────────────
+
+function goToStep(idx) {
+  if (idx < 0 || idx >= STEPS.length) { finishTutorial(); return; }
+  currentStep = idx;
+  const step = STEPS[currentStep];
+
+  // Navigate to route
+  if (state.screen !== step.route) {
+    navigateTo(step.route, false);
+  }
+
+  // Wait for DOM to settle
+  setTimeout(() => renderStep(), 150);
+}
+
+function renderStep() {
+  if (!active) return;
+  const step = STEPS[currentStep];
+  const target = step.getTarget();
+  if (!target) {
+    // Target not found, try again briefly
+    setTimeout(() => {
+      if (!active) return;
+      const t2 = step.getTarget();
+      if (t2) doFlyToTarget(step, t2);
+    }, 300);
+    return;
+  }
+  doFlyToTarget(step, target);
+}
+
+function doFlyToTarget(step, target) {
+  // Update spirit if one was selected
+  if (state.spirit && currentStep > 2) {
+    setSpiritId(state.spirit);
+  }
+
+  flyToTarget(target, {
+    title: t(step.titleKey),
+    body: t(step.bodyKey),
+    stepNum: currentStep + 1,
+    totalSteps: STEPS.length,
+    showBack: currentStep > 0,
+    showNext: step.showNext !== false,
+    nextLabel: step.nextLabel ? step.nextLabel() : undefined,
+  });
+}
+
+function nextStep() {
+  if (currentStep < STEPS.length - 1) {
+    goToStep(currentStep + 1);
+  } else {
+    finishTutorial();
+  }
+}
+
+function prevStep() {
+  if (currentStep > 0) {
+    goToStep(currentStep - 1);
+  }
+}
+
+// ─── Completion listeners ─────────────────────────────────────────────────────
+
+function listenForCompletions() {
+  // Language selection auto-advance
+  _langListener = () => {
+    if (!active) return;
+    const step = STEPS[currentStep];
+    if (step.id === 'language') {
+      setTimeout(() => nextStep(), 400);
+    }
+  };
+
+  // Theme selection
+  _themeListener = () => {
+    if (!active) return;
+    // Don't auto-advance theme — let user explore, they can click Next
+  };
+
+  // Spirit + mode + ingredient via state subscribe
+  _unsubscribe = subscribe((s, key) => {
+    if (!active) return;
+    const step = STEPS[currentStep];
+
+    if (step.id === 'spirit' && key === 'spirit' && s.spirit) {
+      setSpiritId(s.spirit);
+      setTimeout(() => nextStep(), 500);
+    }
+    if (step.id === 'mode' && key === 'mode' && s.mode) {
+      setTimeout(() => nextStep(), 300);
+    }
+    if (step.id === 'ingredient' && key === 'screen') {
+      // Ingredient was added — handled below
+    }
+  });
+
+  // Watch for ingredient click specifically
+  document.addEventListener('click', _ingredientClickHandler, true);
+
+  // Watch for language change
+  const langMenu = document.getElementById('lang-menu');
+  if (langMenu) langMenu.addEventListener('click', _langListener);
+}
+
+function _ingredientClickHandler(e) {
+  if (!active) return;
+  const step = STEPS[currentStep];
+  if (step.id !== 'ingredient') return;
+  const btn = e.target.closest('.ingredient-btn');
+  if (btn) {
+    setTimeout(() => nextStep(), 400);
+  }
+}
+
+function cleanupListeners() {
+  if (_unsubscribe) { _unsubscribe(); _unsubscribe = null; }
+  document.removeEventListener('click', _ingredientClickHandler, true);
+  const langMenu = document.getElementById('lang-menu');
+  if (langMenu && _langListener) langMenu.removeEventListener('click', _langListener);
 }
 
 export { startTutorial, finishTutorial, bindTutorial };

@@ -10,21 +10,52 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Noto+Sans+SC:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- Environment background layers -->
+  <div class="env-bg" aria-hidden="true">
+    <div class="env-bg__day"></div>
+    <div class="env-bg__night"></div>
+  </div>
+
+  <!-- Foreground grass overlay -->
+  <div class="env-foreground" aria-hidden="true">
+    <img src="assets/overlays/foreground-grass.png" alt="" class="env-foreground__grass">
+  </div>
+
+  <!-- Night lantern (visible only at night) -->
+  <div class="env-lantern" aria-hidden="true">
+    <img src="assets/overlays/night-lantern.png" alt="" class="env-lantern__img">
+  </div>
+
   <div class="paper-grain" aria-hidden="true"></div>
 
   <!-- Global toolbar -->
   <nav class="global-toolbar" aria-label="Settings">
-    <button class="toolbar-btn" type="button" data-action="cycle-lang" aria-label="Switch language">EN</button>
+    <div class="lang-dropdown" id="lang-dropdown">
+      <button class="toolbar-btn lang-dropdown__trigger" type="button" id="lang-trigger" data-tutorial-id="language-menu" aria-haspopup="listbox" aria-expanded="false" aria-label="Language">
+        <span class="lang-dropdown__globe" aria-hidden="true">&#127760;</span>
+        <span class="lang-dropdown__code" id="lang-code">EN</span>
+        <span class="lang-dropdown__chevron" aria-hidden="true">&#9662;</span>
+      </button>
+      <ul class="lang-dropdown__menu" id="lang-menu" role="listbox" aria-label="Select language" hidden>
+        <li class="lang-dropdown__item" role="option" data-lang="en" aria-selected="true">English</li>
+        <li class="lang-dropdown__item" role="option" data-lang="zh" aria-selected="false">简体中文</li>
+        <li class="lang-dropdown__item" role="option" data-lang="fr" aria-selected="false">Français</li>
+        <li class="lang-dropdown__item" role="option" data-lang="es" aria-selected="false">Español</li>
+      </ul>
+    </div>
     <div class="theme-toggle" role="group" aria-label="Theme">
       <button type="button" data-action="set-theme" data-theme="auto" class="theme-btn is-active" data-i18n="theme.auto">Auto</button>
       <button type="button" data-action="set-theme" data-theme="day" class="theme-btn" data-i18n="theme.day">Day</button>
       <button type="button" data-action="set-theme" data-theme="night" class="theme-btn" data-i18n="theme.night">Night</button>
     </div>
   </nav>
+
+  <!-- Top-level overlay container (for popovers that must not be clipped) -->
+  <div id="overlay-container" class="overlay-container" aria-hidden="true"></div>
 
   <!-- SCREEN: Welcome -->
   <section data-screen="welcome" class="screen welcome-screen" aria-labelledby="welcome-title">
@@ -47,38 +78,41 @@
       <div class="spirit-grid" role="radiogroup" aria-label="Spirit options">
         <button class="spirit-option" type="button" data-spirit="bee" role="radio" aria-checked="false">
           <div class="spirit-portrait" data-spirit-img="bee">
-            <img src="assets/spirits/aurelia-bee.png" alt="Aurelia, a honeybee spirit" class="spirit-portrait__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <img src="assets/spirits/aurelia/idle-right.png" alt="" data-i18n="spirit.bee.alt" data-i18n-attr="alt" class="spirit-portrait__img">
           </div>
           <span class="spirit-option__name" data-i18n="spirit.bee.name">Aurelia</span>
-          <span class="spirit-option__trait" data-i18n="spirit.bee.personality">Rhythm and sunlight</span>
+          <span class="spirit-option__type" data-i18n="spirit.bee.type">Honeybee · Bright</span>
         </button>
 
         <button class="spirit-option" type="button" data-spirit="bird" role="radio" aria-checked="false">
           <div class="spirit-portrait" data-spirit-img="bird">
-            <img src="assets/spirits/lark-songbird.png" alt="Lark, a songbird spirit" class="spirit-portrait__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <img src="assets/spirits/lark/idle-right.png" alt="" data-i18n="spirit.bird.alt" data-i18n-attr="alt" class="spirit-portrait__img">
           </div>
           <span class="spirit-option__name" data-i18n="spirit.bird.name">Lark</span>
-          <span class="spirit-option__trait" data-i18n="spirit.bird.personality">Melody and breath</span>
+          <span class="spirit-option__type" data-i18n="spirit.bird.type">Songbird · Gentle</span>
         </button>
 
         <button class="spirit-option" type="button" data-spirit="dragonfly" role="radio" aria-checked="false">
           <div class="spirit-portrait" data-spirit-img="dragonfly">
-            <img src="assets/spirits/rill-dragonfly.png" alt="Rill, a dragonfly spirit" class="spirit-portrait__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <img src="assets/spirits/rill/idle-right.png" alt="" data-i18n="spirit.dragonfly.alt" data-i18n-attr="alt" class="spirit-portrait__img">
           </div>
           <span class="spirit-option__name" data-i18n="spirit.dragonfly.name">Rill</span>
-          <span class="spirit-option__trait" data-i18n="spirit.dragonfly.personality">Texture and movement</span>
+          <span class="spirit-option__type" data-i18n="spirit.dragonfly.type">Dragonfly · Curious</span>
         </button>
 
         <button class="spirit-option" type="button" data-spirit="butterfly" role="radio" aria-checked="false">
           <div class="spirit-portrait" data-spirit-img="butterfly">
-            <img src="assets/spirits/iris-butterfly.png" alt="Iris, a butterfly spirit" class="spirit-portrait__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <img src="assets/spirits/iris/idle-right.png" alt="" data-i18n="spirit.butterfly.alt" data-i18n-attr="alt" class="spirit-portrait__img">
           </div>
           <span class="spirit-option__name" data-i18n="spirit.butterfly.name">Iris</span>
-          <span class="spirit-option__trait" data-i18n="spirit.butterfly.personality">Harmony and color</span>
+          <span class="spirit-option__type" data-i18n="spirit.butterfly.type">Butterfly · Dreamy</span>
         </button>
       </div>
 
-      <button class="btn btn--primary" type="button" data-action="spirit-continue" disabled data-i18n="spirits.continue">Continue</button>
+      <div class="spirit-card__actions">
+        <button class="btn btn--ghost" type="button" data-action="spirit-back" data-i18n="nav.back">Back</button>
+        <button class="btn btn--primary" type="button" data-action="spirit-continue" disabled data-i18n="spirits.continue">Continue</button>
+      </div>
     </div>
   </section>
 
@@ -96,6 +130,7 @@
           <span class="mode-option__desc" data-i18n="mode.recipe.desc">Follow a suggested arrangement.</span>
         </button>
       </div>
+      <button class="btn btn--ghost mode-back" type="button" data-action="mode-back" data-i18n="nav.back">Back</button>
     </div>
   </section>
 
@@ -105,7 +140,7 @@
 
     <header class="studio-topbar">
       <div class="studio-transport">
-        <button class="btn btn--control" type="button" data-action="play-pause" data-i18n="studio.play">Play</button>
+        <button class="btn btn--control" type="button" data-action="play-pause" data-tutorial-id="play-pause" data-i18n="studio.play">Play</button>
         <button class="btn btn--control" type="button" data-action="clear-mix" data-i18n="studio.clear">Clear</button>
         <button class="btn btn--control" type="button" data-action="surprise" data-i18n="studio.surprise">Surprise</button>
       </div>
@@ -140,62 +175,62 @@
 
         <div class="ingredient-grid">
           <button class="ingredient-btn" type="button" data-ingredient="watermelon" aria-pressed="false">
-            <img src="assets/ingredients/watermelon.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <img src="assets/ingredients/watermelon.png" alt="" class="ingredient-btn__img">
             <span class="ingredient-btn__name" data-i18n="ingredient.watermelon.name">Watermelon</span>
             <span class="ingredient-btn__role" data-i18n="ingredient.watermelon.role">Kick</span>
           </button>
           <button class="ingredient-btn" type="button" data-ingredient="strawberry" aria-pressed="false">
-            <img src="assets/ingredients/strawberry.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <img src="assets/ingredients/strawberry.png" alt="" class="ingredient-btn__img">
             <span class="ingredient-btn__name" data-i18n="ingredient.strawberry.name">Strawberry</span>
             <span class="ingredient-btn__role" data-i18n="ingredient.strawberry.role">Clap</span>
           </button>
           <button class="ingredient-btn" type="button" data-ingredient="cherry" aria-pressed="false">
-            <img src="assets/ingredients/cherry.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <img src="assets/ingredients/cherry.png" alt="" class="ingredient-btn__img">
             <span class="ingredient-btn__name" data-i18n="ingredient.cherry.name">Cherry</span>
             <span class="ingredient-btn__role" data-i18n="ingredient.cherry.role">Woodblock</span>
           </button>
           <button class="ingredient-btn" type="button" data-ingredient="grape" aria-pressed="false">
-            <img src="assets/ingredients/grapes.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <img src="assets/ingredients/grapes.png" alt="" class="ingredient-btn__img">
             <span class="ingredient-btn__name" data-i18n="ingredient.grape.name">Grapes</span>
             <span class="ingredient-btn__role" data-i18n="ingredient.grape.role">Plucked bass</span>
           </button>
           <button class="ingredient-btn" type="button" data-ingredient="blueberry" aria-pressed="false">
-            <img src="assets/ingredients/blueberry.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <img src="assets/ingredients/blueberry.png" alt="" class="ingredient-btn__img">
             <span class="ingredient-btn__name" data-i18n="ingredient.blueberry.name">Blueberry</span>
             <span class="ingredient-btn__role" data-i18n="ingredient.blueberry.role">Low tom</span>
           </button>
-          <button class="ingredient-btn" type="button" data-ingredient="lemonade" aria-pressed="false">
-            <img src="assets/ingredients/lemonade.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+          <button class="ingredient-btn" type="button" data-ingredient="lemonade" data-tutorial-id="ingredient-lemonade" aria-pressed="false">
+            <img src="assets/ingredients/lemonade.png" alt="" class="ingredient-btn__img">
             <span class="ingredient-btn__name" data-i18n="ingredient.lemonade.name">Lemonade</span>
             <span class="ingredient-btn__role" data-i18n="ingredient.lemonade.role">Glass melody</span>
           </button>
           <button class="ingredient-btn" type="button" data-ingredient="peach" aria-pressed="false">
-            <img src="assets/ingredients/peach.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <img src="assets/ingredients/peach.png" alt="" class="ingredient-btn__img">
             <span class="ingredient-btn__name" data-i18n="ingredient.peach.name">Peach</span>
             <span class="ingredient-btn__role" data-i18n="ingredient.peach.role">Plucked melody</span>
           </button>
           <button class="ingredient-btn" type="button" data-ingredient="cupcake" aria-pressed="false">
-            <img src="assets/ingredients/cupcake.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <img src="assets/ingredients/cupcake.png" alt="" class="ingredient-btn__img">
             <span class="ingredient-btn__name" data-i18n="ingredient.cupcake.name">Cupcake</span>
             <span class="ingredient-btn__role" data-i18n="ingredient.cupcake.role">Bell</span>
           </button>
           <button class="ingredient-btn" type="button" data-ingredient="cheese" aria-pressed="false">
-            <img src="assets/ingredients/cheese.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <img src="assets/ingredients/cheese.png" alt="" class="ingredient-btn__img">
             <span class="ingredient-btn__name" data-i18n="ingredient.cheese.name">Cheese</span>
             <span class="ingredient-btn__role" data-i18n="ingredient.cheese.role">Chord pad</span>
           </button>
           <button class="ingredient-btn" type="button" data-ingredient="honey" aria-pressed="false">
-            <img src="assets/ingredients/honey.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <img src="assets/ingredients/honey.png" alt="" class="ingredient-btn__img">
             <span class="ingredient-btn__name" data-i18n="ingredient.honey.name">Honey</span>
             <span class="ingredient-btn__role" data-i18n="ingredient.honey.role">Sustained harmony</span>
           </button>
           <button class="ingredient-btn" type="button" data-ingredient="mint" aria-pressed="false">
-            <img src="assets/ingredients/mint.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <img src="assets/ingredients/mint.png" alt="" class="ingredient-btn__img">
             <span class="ingredient-btn__name" data-i18n="ingredient.mint.name">Mint</span>
             <span class="ingredient-btn__role" data-i18n="ingredient.mint.role">Shaker</span>
           </button>
           <button class="ingredient-btn" type="button" data-ingredient="sandwich" aria-pressed="false">
-            <img src="assets/ingredients/sandwich.png" alt="" class="ingredient-btn__img" onerror="this.onerror=null;this.classList.add('is-placeholder');">
+            <img src="assets/ingredients/sandwich.png" alt="" class="ingredient-btn__img">
             <span class="ingredient-btn__name" data-i18n="ingredient.sandwich.name">Sandwich</span>
             <span class="ingredient-btn__role" data-i18n="ingredient.sandwich.role">Brushed texture</span>
           </button>
@@ -204,8 +239,8 @@
     </div>
 
     <footer class="studio-footer">
-      <button class="btn btn--ghost" type="button" data-action="recipe-book" data-i18n="studio.recipeBook">Recipes</button>
-      <button class="btn btn--primary" type="button" data-action="finish" data-i18n="studio.finish">Finish</button>
+      <button class="btn btn--ghost" type="button" data-action="recipe-book" data-tutorial-id="open-recipes" data-i18n="studio.recipeBook">Recipes</button>
+      <button class="btn btn--primary" type="button" data-action="finish" data-tutorial-id="finish" data-i18n="studio.finish">Finish</button>
     </footer>
   </section>
 
@@ -236,24 +271,16 @@
     </div>
   </section>
 
-  <!-- SCREEN: Tutorial overlay -->
+  <!-- SCREEN: Tutorial (legacy section, hidden — tutorial uses portal now) -->
   <section data-screen="tutorial" class="screen tutorial-screen" hidden aria-labelledby="tutorial-heading">
     <h2 id="tutorial-heading" class="sr-only">Guide</h2>
-    <div class="tutorial-dim" aria-hidden="true"></div>
-    <div class="tutorial-spotlight" aria-hidden="true"></div>
-    <div class="tutorial-bubble">
-      <p class="tutorial-bubble__text"></p>
-      <div class="tutorial-bubble__nav">
-        <button class="btn btn--small" type="button" data-action="tutorial-back" data-i18n="tutorial.back">Back</button>
-        <span class="tutorial-bubble__progress" data-display="tutorial-progress"></span>
-        <button class="btn btn--small" type="button" data-action="tutorial-skip" data-i18n="tutorial.skip">Skip</button>
-        <button class="btn btn--small btn--primary" type="button" data-action="tutorial-next" data-i18n="tutorial.next">Next</button>
-      </div>
-    </div>
   </section>
 
   <!-- Guide spirit floating layer (above all screens) -->
   <div id="guide-spirit-layer" class="guide-spirit-layer" aria-hidden="true"></div>
+
+  <!-- Tutorial spirit portal (viewport-level, outside all overflow:hidden containers) -->
+  <div id="tutorial-spirit-portal" class="tutorial-spirit-portal" aria-hidden="true"></div>
 
   <script type="module" src="src/main.js"></script>
 </body>

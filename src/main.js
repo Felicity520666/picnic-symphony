@@ -7,7 +7,7 @@ import { state, loadPersistedState, setState, SCREENS, MODES } from './state.js'
 import { initRouter, navigateTo } from './router.js';
 import { applyTranslations, setLanguage, t, detectLanguage, SUPPORTED_LANGS } from './i18n.js';
 import { initTheme, setTheme, getEffectiveTheme } from './theme.js';
-import { spiritDefinitions, getSpiritPlaceholder } from './spirits.js';
+import { spiritDefinitions, getSpiritPlaceholder, guideSpiritLayer, initSpiritSelectionAnimations, preloadSpiritAssets } from './spirits.js';
 import { ingredientDefinitions, ingredientById, MAX_LAYERS } from './ingredients.js';
 import { recipeDefinitions, recipeById, isRecipeUnlocked } from './recipes.js';
 import {
@@ -33,11 +33,13 @@ initTheme();
 
 document.addEventListener('DOMContentLoaded', () => {
   initRouter();
-  document.documentElement.lang = state.lang;
+  guideSpiritLayer.init();
+  document.documentElement.lang = state.lang === 'zh' ? 'zh-CN' : state.lang;
   applyTranslations();
   bindGlobalControls();
   bindWelcome();
   bindSpirits();
+  initSpiritSelectionAnimations();
   bindModeSelect();
   bindStudio();
   bindRecipes();
@@ -46,34 +48,182 @@ document.addEventListener('DOMContentLoaded', () => {
   initParticles();
 });
 
+// ─── Overlay Manager ─────────────────────────────────────────────────────────
+// Centralized control: only one popover/dropdown can be open at a time.
+
+const overlayManager = {
+  _openId: null,
+  _openerEl: null,
+  _closers: new Map(), // id → close function
+
+  register(id, closeFn) {
+    this._closers.set(id, closeFn);
+  },
+
+  open(id, openerEl) {
+    // Close any currently open overlay
+    if (this._openId && this._openId !== id) {
+      this.close();
+    }
+    this._openId = id;
+    this._openerEl = openerEl || null;
+    const fn = this._closers.get(id);
+    if (fn) fn(true);
+  },
+
+  close() {
+    if (!this._openId) return;
+    const fn = this._closers.get(this._openId);
+    if (fn) fn(false);
+    // Restore focus
+    if (this._openerEl && typeof this._openerEl.focus === 'function') {
+      this._openerEl.focus();
+    }
+    this._openId = null;
+    this._openerEl = null;
+  },
+
+  get isOpen() { return this._openId !== null; },
+  get currentId() { return this._openId; },
+};
+
+// Global Escape key handler
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && overlayManager.isOpen) {
+    e.preventDefault();
+    overlayManager.close();
+  }
+});
+
+// Click outside handler
+document.addEventListener('pointerdown', (e) => {
+  if (!overlayManager.isOpen) return;
+  const langMenu = document.getElementById('lang-menu');
+  const langTrigger = document.getElementById('lang-trigger');
+  if (langMenu && !langMenu.contains(e.target) && !langTrigger.contains(e.target)) {
+    overlayManager.close();
+  }
+});
+
 // ─── Global Controls ─────────────────────────────────────────────────────────
 
 function bindGlobalControls() {
-  // Language cycling (en → zh → fr → es → en)
-  document.querySelectorAll('[data-action="cycle-lang"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const idx = SUPPORTED_LANGS.indexOf(state.lang);
-      const next = SUPPORTED_LANGS[(idx + 1) % SUPPORTED_LANGS.length];
-      setLanguage(next);
-      updateLangButtonLabel();
-    });
-  });
-  updateLangButtonLabel();
+  // Language dropdown
+  bindLangDropdown();
 
   // Theme buttons
   document.querySelectorAll('[data-action="set-theme"]').forEach(btn => {
     btn.addEventListener('click', () => {
+      overlayManager.close();
       setTheme(btn.dataset.theme);
       updateThemeButtons();
     });
   });
   updateThemeButtons();
+
+  // Set initial lang display
+  updateLangDisplay();
 }
 
-function updateLangButtonLabel() {
-  const labels = { en: 'EN', zh: '中文', fr: 'FR', es: 'ES' };
-  document.querySelectorAll('[data-action="cycle-lang"]').forEach(btn => {
-    btn.textContent = labels[state.lang] || 'EN';
+// ─── Language Dropdown ───────────────────────────────────────────────────────
+
+function bindLangDropdown() {
+  const trigger = document.getElementById('lang-trigger');
+  const menu = document.getElementById('lang-menu');
+  if (!trigger || !menu) return;
+
+  let focusedIndex = -1;
+  const items = [...menu.querySelectorAll('.lang-dropdown__item')];
+
+  // Register with overlay manager
+  overlayManager.register('lang', (shouldOpen) => {
+    if (shouldOpen) {
+      menu.hidden = false;
+      // Force reflow then add class for animation
+      void menu.offsetHeight;
+      menu.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+      // Focus current language
+      focusedIndex = items.findIndex(el => el.dataset.lang === state.lang);
+      if (focusedIndex >= 0) items[focusedIndex].classList.add('is-focused');
+    } else {
+      menu.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+      items.forEach(el => el.classList.remove('is-focused'));
+      // Hide after animation
+      setTimeout(() => { if (!menu.classList.contains('is-open')) menu.hidden = true; }, 200);
+    }
+  });
+
+  // Toggle on click
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (overlayManager.currentId === 'lang') {
+      overlayManager.close();
+    } else {
+      overlayManager.open('lang', trigger);
+    }
+  });
+
+  // Item selection
+  menu.addEventListener('click', (e) => {
+    const item = e.target.closest('.lang-dropdown__item');
+    if (!item) return;
+    selectLanguage(item.dataset.lang);
+  });
+
+  // Keyboard navigation
+  trigger.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (overlayManager.currentId !== 'lang') {
+        overlayManager.open('lang', trigger);
+      }
+    }
+  });
+
+  menu.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      moveFocus(1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      moveFocus(-1);
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (focusedIndex >= 0) selectLanguage(items[focusedIndex].dataset.lang);
+    }
+  });
+
+  function moveFocus(dir) {
+    items.forEach(el => el.classList.remove('is-focused'));
+    focusedIndex = (focusedIndex + dir + items.length) % items.length;
+    items[focusedIndex].classList.add('is-focused');
+    items[focusedIndex].scrollIntoView({ block: 'nearest' });
+  }
+
+  function selectLanguage(lang) {
+    setLanguage(lang);
+    updateLangDisplay();
+    updateLangMenuSelection();
+    overlayManager.close();
+    // Re-render dynamic content
+    renderRecipeGrid();
+    updateStudioUI();
+  }
+}
+
+function updateLangDisplay() {
+  const codeEl = document.getElementById('lang-code');
+  const codes = { en: 'EN', zh: '中文', fr: 'FR', es: 'ES' };
+  if (codeEl) codeEl.textContent = codes[state.lang] || 'EN';
+}
+
+function updateLangMenuSelection() {
+  const menu = document.getElementById('lang-menu');
+  if (!menu) return;
+  menu.querySelectorAll('.lang-dropdown__item').forEach(item => {
+    item.setAttribute('aria-selected', String(item.dataset.lang === state.lang));
   });
 }
 
@@ -112,10 +262,15 @@ function bindSpirits() {
     if (!state.spirit) return;
     navigateTo(SCREENS.MODE_SELECT);
   });
+
+  document.querySelector('[data-action="spirit-back"]')?.addEventListener('click', () => {
+    navigateTo(SCREENS.WELCOME);
+  });
 }
 
 function selectSpirit(id) {
   setState({ spirit: id }, true);
+  preloadSpiritAssets(id);
   document.querySelectorAll('[data-spirit]').forEach(card => {
     card.classList.toggle('is-selected', card.dataset.spirit === id);
     card.setAttribute('aria-checked', String(card.dataset.spirit === id));
@@ -138,6 +293,10 @@ function bindModeSelect() {
         enterStudio();
       }
     });
+  });
+
+  document.querySelector('[data-action="mode-back"]')?.addEventListener('click', () => {
+    navigateTo(SCREENS.SPIRITS);
   });
 }
 
@@ -395,12 +554,17 @@ function renderRecipeGrid() {
     const card = document.createElement('div');
     card.className = 'recipe-grid-card';
     card.dataset.recipe = recipe.id;
+    card.dataset.tutorialId = `recipe-${recipe.id}`;
     card.setAttribute('role', 'listitem');
+    card.setAttribute('tabindex', '0');
     card.innerHTML = `
-      <span class="recipe-grid-card__mood">${t(recipe.moodKey)}</span>
-      <strong class="recipe-grid-card__name">${t(recipe.nameKey)}</strong>
-      <span class="recipe-grid-card__desc">${t(recipe.descKey)}</span>
-      <span class="recipe-grid-card__meta">${t('recipes.steps', { n: recipe.ingredients.length })}</span>
+      <img class="recipe-grid-card__img" src="${recipe.image}" alt="${t(recipe.nameKey)}">
+      <div class="recipe-grid-card__body">
+        <span class="recipe-grid-card__mood">${t(recipe.moodKey)}</span>
+        <strong class="recipe-grid-card__name">${t(recipe.nameKey)}</strong>
+        <span class="recipe-grid-card__desc">${t(recipe.descKey)}</span>
+        <span class="recipe-grid-card__meta">${t('recipes.steps', { n: recipe.ingredients.length })}</span>
+      </div>
     `;
     grid.appendChild(card);
   }
