@@ -214,7 +214,7 @@ function bindLangDropdown() {
 
 function updateLangDisplay() {
   const codeEl = document.getElementById('lang-code');
-  const codes = { en: 'EN', zh: '中文', fr: 'FR', es: 'ES', de: 'DE', ja: '日本', hi: 'हिं' };
+  const codes = { en: 'EN', zh: '中文', fr: 'FR', es: 'ES', de: 'DE', ja: '日本', hi: 'हिं', ar: 'عر', ko: '한' };
   if (codeEl) codeEl.textContent = codes[state.lang] || 'EN';
 }
 
@@ -658,6 +658,7 @@ async function renderPostcardPreview() {
     isNight: getEffectiveTheme() === 'night',
     title,
     spiritName,
+    ingredientNames: active.map(id => t(ingredientById.get(id)?.nameKey || id)).join(' · '),
   });
 }
 
@@ -682,6 +683,7 @@ async function handleDownload() {
     isNight: getEffectiveTheme() === 'night',
     title,
     spiritName,
+    ingredientNames: active.map(id => t(ingredientById.get(id)?.nameKey || id)).join(' · '),
   });
 
   exportCanvas.toBlob(blob => {

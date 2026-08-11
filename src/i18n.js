@@ -7,7 +7,7 @@
 import { state, setState } from './state.js';
 import { recipeTranslations } from './i18n-recipes.js';
 
-const SUPPORTED_LANGS = ['en', 'zh', 'fr', 'es', 'de', 'ja', 'hi'];
+const SUPPORTED_LANGS = ['en', 'zh', 'fr', 'es', 'de', 'ja', 'hi', 'ar', 'ko'];
 
 const translations = {
   en: {
@@ -785,6 +785,80 @@ const translations = {
     'spirit.bee.recipeStep': 'अगला: {name}', 'spirit.bee.recipeDone': 'पूरा हो गया।',
     'howModal.title': 'कैसे खेलें', 'howModal.close': 'समझ गया',
   },
+
+  ar: {
+    'welcome.title': 'Picnic Symphony',
+    'welcome.body': 'افرد بساط النزهة وحوّل أصوات الفاكهة والحلوى والأكواب إلى إيقاع ولحن. امزج الأصوات التي تحبها واصنع مقطوعتك الصيفية الخاصة.',
+    'welcome.enter': 'ابدأ التأليف',
+    'spirits.title': 'رفيق موسيقي للمرج', 'spirits.subtitle': 'لكل رفيق طريقته في الاستماع. اختر الرفيق الذي تود أن يصاحبك.', 'spirits.continue': 'متابعة',
+    'spirit.bee.name': 'Aurelia', 'spirit.bee.type': 'نحلة · دافئة', 'spirit.bee.alt': 'Aurelia نحلة مرشدة',
+    'spirit.bird.name': 'Lark', 'spirit.bird.type': 'طائر · رقيق', 'spirit.bird.alt': 'Lark طائر مرشد',
+    'spirit.dragonfly.name': 'Rill', 'spirit.dragonfly.type': 'يعسوب · فضولي', 'spirit.dragonfly.alt': 'Rill يعسوب مرشد',
+    'spirit.butterfly.name': 'Iris', 'spirit.butterfly.type': 'فراشة · حالمة', 'spirit.butterfly.alt': 'Iris فراشة مرشدة',
+    'mode.title': 'كيف تود أن تصنع موسيقاك؟',
+    'mode.free.title': 'تأليف حر', 'mode.free.desc': 'امزج الأصوات كما يحلو لك.',
+    'mode.recipe.title': 'وصفات موسيقية', 'mode.recipe.desc': 'ابدأ بمزيج مقترح ثم عدّله.',
+    'studio.play': 'تشغيل', 'studio.pause': 'إيقاف', 'studio.clear': 'مسح', 'studio.surprise': 'مفاجأة',
+    'studio.tempo': 'السرعة', 'studio.volume': 'الأصوات', 'studio.ambience': 'الأجواء',
+    'studio.layerCount': '{n} / 6', 'studio.layerFull': 'الحد الأقصى ستة أصوات.',
+    'studio.pickRecipe': 'اختر مكوّنًا للبدء.', 'studio.finish': 'إنهاء', 'studio.recipeBook': 'الوصفات',
+    'recipes.title': 'الوصفات', 'recipes.subtitle': 'كل وصفة تروي قصة مختلفة.', 'recipes.back': 'عودة', 'recipes.steps': '{n} أصوات', 'recipes.complete': 'تم',
+    'postcard.title': 'عملك', 'postcard.download': 'تنزيل', 'postcard.newPicnic': 'نزهة جديدة',
+    'postcard.backToStudio': 'عودة', 'postcard.nameLabel': 'سمِّ مقطوعتك', 'postcard.namePlaceholder': 'ظهيرة في المرج',
+    'theme.auto': 'تلقائي', 'theme.day': 'نهار', 'theme.night': 'ليل', 'nav.back': 'عودة',
+    'ingredient.watermelon.name': 'بطيخ', 'ingredient.watermelon.role': 'إيقاع',
+    'ingredient.strawberry.name': 'فراولة', 'ingredient.strawberry.role': 'تصفيق',
+    'ingredient.cherry.name': 'كرز', 'ingredient.cherry.role': 'خشب',
+    'ingredient.grape.name': 'عنب', 'ingredient.grape.role': 'باص',
+    'ingredient.blueberry.name': 'توت أزرق', 'ingredient.blueberry.role': 'طبل',
+    'ingredient.lemonade.name': 'ليمون', 'ingredient.lemonade.role': 'لحن زجاجي',
+    'ingredient.peach.name': 'خوخ', 'ingredient.peach.role': 'لحن وتري',
+    'ingredient.cupcake.name': 'كب كيك', 'ingredient.cupcake.role': 'جرس',
+    'ingredient.cheese.name': 'جبن', 'ingredient.cheese.role': 'وتر',
+    'ingredient.honey.name': 'عسل', 'ingredient.honey.role': 'تناغم',
+    'ingredient.mint.name': 'نعناع', 'ingredient.mint.role': 'شيكر',
+    'ingredient.sandwich.name': 'شطيرة', 'ingredient.sandwich.role': 'فرشاة',
+    'tutorial.next': 'التالي', 'tutorial.back': 'السابق', 'tutorial.skip': 'تخطي', 'tutorial.finish': 'ابدأ',
+    'tutorial.step': 'خطوة {current} من {total}',
+    'spirit.bee.idle': 'اختر صوتك الأول.', 'spirit.bee.recipeStep': 'التالي: {name}', 'spirit.bee.recipeDone': 'تم.',
+  },
+
+  ko: {
+    'welcome.title': 'Picnic Symphony',
+    'welcome.body': '피크닉 담요를 펼치고 과일, 디저트, 유리잔의 소리를 리듬과 멜로디로 바꿔 보세요. 마음에 드는 소리를 겹쳐 나만의 여름 음악을 만들 수 있어요.',
+    'welcome.enter': '음악 만들기',
+    'spirits.title': '초원의 음악 안내자', 'spirits.subtitle': '안내자마다 소리를 듣는 방식이 달라요. 함께 음악을 만들 친구를 선택하세요.', 'spirits.continue': '계속',
+    'spirit.bee.name': 'Aurelia', 'spirit.bee.type': '꿀벌 · 따뜻한', 'spirit.bee.alt': 'Aurelia 꿀벌 안내자',
+    'spirit.bird.name': 'Lark', 'spirit.bird.type': '새 · 부드러운', 'spirit.bird.alt': 'Lark 새 안내자',
+    'spirit.dragonfly.name': 'Rill', 'spirit.dragonfly.type': '잠자리 · 호기심', 'spirit.dragonfly.alt': 'Rill 잠자리 안내자',
+    'spirit.butterfly.name': 'Iris', 'spirit.butterfly.type': '나비 · 몽환적', 'spirit.butterfly.alt': 'Iris 나비 안내자',
+    'mode.title': '어떻게 음악을 만들까요?',
+    'mode.free.title': '자유 작곡', 'mode.free.desc': '원하는 소리를 마음 가는 대로 겹쳐 보세요.',
+    'mode.recipe.title': '레시피로 시작', 'mode.recipe.desc': '추천 조합으로 시작한 뒤 바꿀 수 있어요.',
+    'studio.play': '재생', 'studio.pause': '일시정지', 'studio.clear': '전부 지우기', 'studio.surprise': '무작위',
+    'studio.tempo': '템포', 'studio.volume': '소리', 'studio.ambience': '배경',
+    'studio.layerCount': '{n} / 6', 'studio.layerFull': '최대 6개입니다. 하나를 빼고 추가하세요.',
+    'studio.pickRecipe': '시작할 재료를 선택하세요.', 'studio.finish': '완성', 'studio.recipeBook': '레시피',
+    'recipes.title': '레시피', 'recipes.subtitle': '각 조합이 다른 이야기를 들려줍니다.', 'recipes.back': '뒤로', 'recipes.steps': '{n} 소리', 'recipes.complete': '완성',
+    'postcard.title': '나의 작품', 'postcard.download': '다운로드', 'postcard.newPicnic': '새 피크닉',
+    'postcard.backToStudio': '돌아가기', 'postcard.nameLabel': '곡에 이름 붙이기', 'postcard.namePlaceholder': '풀밭의 오후',
+    'theme.auto': '자동', 'theme.day': '낮', 'theme.night': '밤', 'nav.back': '뒤로',
+    'ingredient.watermelon.name': '수박', 'ingredient.watermelon.role': '킥',
+    'ingredient.strawberry.name': '딸기', 'ingredient.strawberry.role': '클랩',
+    'ingredient.cherry.name': '체리', 'ingredient.cherry.role': '우드블록',
+    'ingredient.grape.name': '포도', 'ingredient.grape.role': '베이스',
+    'ingredient.blueberry.name': '블루베리', 'ingredient.blueberry.role': '로우탐',
+    'ingredient.lemonade.name': '레모네이드', 'ingredient.lemonade.role': '유리 멜로디',
+    'ingredient.peach.name': '복숭아', 'ingredient.peach.role': '현 멜로디',
+    'ingredient.cupcake.name': '컵케이크', 'ingredient.cupcake.role': '벨',
+    'ingredient.cheese.name': '치즈', 'ingredient.cheese.role': '코드 패드',
+    'ingredient.honey.name': '꿀', 'ingredient.honey.role': '지속 화음',
+    'ingredient.mint.name': '민트', 'ingredient.mint.role': '셰이커',
+    'ingredient.sandwich.name': '샌드위치', 'ingredient.sandwich.role': '브러시',
+    'tutorial.next': '다음', 'tutorial.back': '이전', 'tutorial.skip': '건너뛰기', 'tutorial.finish': '시작',
+    'tutorial.step': '{current} / {total} 단계',
+    'spirit.bee.idle': '첫 번째 소리를 선택하세요.', 'spirit.bee.recipeStep': '다음: {name}', 'spirit.bee.recipeDone': '완성되었습니다.',
+  },
 };
 
 
@@ -796,6 +870,8 @@ Object.assign(translations.es, recipeTranslations.es || {});
 Object.assign(translations.de, recipeTranslations.de || {});
 Object.assign(translations.ja, recipeTranslations.ja || {});
 Object.assign(translations.hi, recipeTranslations.hi || {});
+Object.assign(translations.ar, recipeTranslations.ar || {});
+Object.assign(translations.ko, recipeTranslations.ko || {});
 
 /**
  * Get translated string with {key} interpolation.
@@ -824,16 +900,18 @@ function t(key, vars = {}) {
 
 /** Switch language, persist, re-render */
 function setLanguage(lang) {
-  // Normalize language code
   if (lang && lang.startsWith('zh')) lang = 'zh';
   else if (lang && lang.startsWith('es')) lang = 'es';
   else if (lang && lang.startsWith('fr')) lang = 'fr';
   else if (lang && lang.startsWith('de')) lang = 'de';
   else if (lang && lang.startsWith('ja')) lang = 'ja';
   else if (lang && lang.startsWith('hi')) lang = 'hi';
+  else if (lang && lang.startsWith('ar')) lang = 'ar';
+  else if (lang && lang.startsWith('ko')) lang = 'ko';
   else if (!SUPPORTED_LANGS.includes(lang)) lang = 'en';
   setState({ lang }, true);
   document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
   applyTranslations();
 }
 
@@ -857,6 +935,8 @@ function detectLanguage() {
   if (nav.startsWith('de')) return 'de';
   if (nav.startsWith('ja')) return 'ja';
   if (nav.startsWith('hi')) return 'hi';
+  if (nav.startsWith('ar')) return 'ar';
+  if (nav.startsWith('ko')) return 'ko';
   return 'en';
 }
 
