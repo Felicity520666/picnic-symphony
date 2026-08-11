@@ -76,29 +76,26 @@ const translations = {
     // Tutorial UI
     'tutorial.next': 'Next',
     'tutorial.back': 'Back',
-    'tutorial.skip': 'Skip tour',
-    'tutorial.finish': 'Start making music',
+    'tutorial.skip': 'Skip',
+    'tutorial.finish': 'Start creating',
     'tutorial.step': 'Step {current} of {total}',
-    'tutorial.keepLight': 'Keep this light',
     // Tutorial steps
     'tutorial.steps.language.title': 'Choose your language',
-    'tutorial.steps.language.body': "Pick the language you'd like to use. You can change it anytime from this menu.",
-    'tutorial.steps.theme.title': 'Set the light',
-    'tutorial.steps.theme.body': 'Let the meadow follow your local time with Auto, or choose Day or Night whenever the mood changes.',
-    'tutorial.steps.spirit.title': 'Meet your guide',
-    'tutorial.steps.spirit.body': "Choose the companion you'd like beside you. They'll fly to each control and show you what to try next.",
-    'tutorial.steps.mode.title': 'Choose how you\'d like to play',
-    'tutorial.steps.mode.body': 'Build a song freely, or follow a recipe one sound at a time. You can explore both whenever you like.',
-    'tutorial.steps.ingredient.title': 'Add your first sound',
-    'tutorial.steps.ingredient.body': 'Every ingredient carries a different loop. Choose one to hear it, then add another to begin layering your song.',
-    'tutorial.steps.ingredientGuided.title': 'Begin with {name}',
-    'tutorial.steps.ingredientGuided.body': 'Select {name} to add its sound. Your guide will lead you through the rest of the recipe.',
-    'tutorial.steps.transport.title': 'Shape the whole picnic',
-    'tutorial.steps.transport.body': 'Play or pause everything here. Clear removes every layer, while Surprise creates a quick combination for you.',
-    'tutorial.steps.recipes.title': 'Keep exploring',
-    'tutorial.steps.recipes.body': 'Open Recipes whenever you want a new arrangement. When your picnic song feels complete, choose Finish to see what you made.',
-    'tutorial.steps.ready.title': "You're ready",
-    'tutorial.steps.ready.body': 'The blanket is yours. Follow a recipe, wander freely, or simply listen for what comes next.',
+    'tutorial.steps.language.body': 'Use the language menu in the top-right corner whenever you want to switch. The page and tutorial will update together.',
+    'tutorial.steps.theme.title': 'Choose day or night',
+    'tutorial.steps.theme.body': 'Let the scene follow your local time, or switch between day and night yourself.',
+    'tutorial.steps.spirit.title': 'Choose a musical guide',
+    'tutorial.steps.spirit.body': 'The bee, bird, dragonfly, and butterfly each guide you differently. Your chosen spirit will fly to the next control and point the way.',
+    'tutorial.steps.mode.title': 'Choose how to create',
+    'tutorial.steps.mode.body': 'Build freely by combining any sounds you like, or begin with a recipe if you would like a little inspiration.',
+    'tutorial.steps.ingredient.title': 'Turn picnic food into sound',
+    'tutorial.steps.ingredient.body': 'Select an ingredient to add its sound, then select it again to remove it. You can play up to six sounds together.',
+    'tutorial.steps.transport.title': 'Control your music',
+    'tutorial.steps.transport.body': 'Play or pause your composition, clear everything to begin again, or use Surprise to create a new combination.',
+    'tutorial.steps.recipes.title': 'Need a place to begin?',
+    'tutorial.steps.recipes.body': 'Open Recipes to try a ready-made combination. Listen to it as it is, or change any sound to make it yours.',
+    'tutorial.steps.ready.title': 'Keep your picnic symphony',
+    'tutorial.steps.ready.body': 'When you are ready, view the food arrangement created by your sounds and download a keepsake of your composition.',
 
     // Postcard
     'postcard.title': 'Your Composition',
@@ -179,9 +176,9 @@ const translations = {
 
   zh: {
     'welcome.title': '野餐交响曲',
-    'welcome.body': '有些午后，只需要一张草地上的毯子和一段倾听的时间。这里，水果守着节拍，玻璃杯盛住旋律，每一声细小的回响，都等着被收进一首歌里。',
-    'welcome.enter': '开始野餐',
-    'welcome.howItWorks': '了解玩法',
+    'welcome.body': '铺开野餐毯，让水果、甜点和玻璃杯变成节拍与旋律。挑选喜欢的声音，把它们组合成属于你的夏日音乐。',
+    'welcome.enter': '开始创作',
+    'welcome.howItWorks': '查看玩法',
 
     'spirits.title': '选择一位野餐向导',
     'spirits.subtitle': '每位向导聆听的方式不同。选择你信赖的那一位。',
@@ -235,29 +232,26 @@ const translations = {
     'recipes.complete': '完成',
 
     'tutorial.next': '下一步',
-    'tutorial.back': '上一步',
-    'tutorial.skip': '跳过导览',
-    'tutorial.finish': '开始创作音乐',
+    'tutorial.back': '返回',
+    'tutorial.skip': '跳过',
+    'tutorial.finish': '开始创作',
     'tutorial.step': '第 {current} 步，共 {total} 步',
-    'tutorial.keepLight': '就用这个',
-    'tutorial.steps.language.title': '选择你的语言',
-    'tutorial.steps.language.body': '选一种你想用的语言。随时可以从这里更换。',
-    'tutorial.steps.theme.title': '设置光线',
-    'tutorial.steps.theme.body': '让草地跟随你的本地时间自动切换，或者随心情选择白天和夜晚。',
-    'tutorial.steps.spirit.title': '认识你的向导',
-    'tutorial.steps.spirit.body': '选一个你喜欢的伙伴。它会飞到每个控件旁边，告诉你下一步试什么。',
-    'tutorial.steps.mode.title': '选择玩法',
-    'tutorial.steps.mode.body': '自由创作一首歌，或者跟着食谱一个声音一个声音地来。两种方式随时可以切换。',
-    'tutorial.steps.ingredient.title': '添加你的第一个声音',
-    'tutorial.steps.ingredient.body': '每种食材都有独特的循环音。点一个听听看，再加一个开始叠加你的歌曲。',
-    'tutorial.steps.ingredientGuided.title': '从{name}开始',
-    'tutorial.steps.ingredientGuided.body': '选择{name}来添加它的声音。你的向导会带你完成剩下的步骤。',
-    'tutorial.steps.transport.title': '掌控整场野餐',
-    'tutorial.steps.transport.body': '在这里播放或暂停所有声音。清空会移除所有层，随机会为你快速生成一个组合。',
-    'tutorial.steps.recipes.title': '继续探索',
-    'tutorial.steps.recipes.body': '想要新编排时打开食谱。当你的野餐之歌感觉完整时，选择完成看看你创作了什么。',
-    'tutorial.steps.ready.title': '准备好了',
-    'tutorial.steps.ready.body': '草地是你的了。跟着食谱走，自由漫步，或者静静听听接下来会发生什么。',
+    'tutorial.steps.language.title': '先选择你喜欢的语言',
+    'tutorial.steps.language.body': '点击右上角的语言按钮，就能随时切换语言。页面文字和教程会一起更新。',
+    'tutorial.steps.theme.title': '选择白天或夜晚',
+    'tutorial.steps.theme.body': '你可以让画面自动跟随时间，也可以手动切换白天和夜晚。',
+    'tutorial.steps.spirit.title': '选择一位音乐向导',
+    'tutorial.steps.spirit.body': '蜜蜂、小鸟、蜻蜓和蝴蝶会用不同的方式陪你创作。选好后，它会飞到需要操作的地方为你指路。',
+    'tutorial.steps.mode.title': '选择一种创作方式',
+    'tutorial.steps.mode.body': '自由创作可以随意组合声音；配方模式会提供几个搭配，适合第一次体验。',
+    'tutorial.steps.ingredient.title': '让野餐食物变成音乐',
+    'tutorial.steps.ingredient.body': '点击一种食物就能加入它的声音，再点一次可以关闭。你最多可以同时使用六种声音。',
+    'tutorial.steps.transport.title': '控制你的音乐',
+    'tutorial.steps.transport.body': '用播放和暂停控制音乐。想重新开始时可以清空，点"惊喜"则会自动生成一种新组合。',
+    'tutorial.steps.recipes.title': '不知道怎么搭配？',
+    'tutorial.steps.recipes.body': '打开"配方"，选择一种现成组合。你也可以先听听效果，再继续调整里面的声音。',
+    'tutorial.steps.ready.title': '保存你的野餐交响曲',
+    'tutorial.steps.ready.body': '完成后，你可以查看食物组成的画面，并把这首音乐的纪念卡下载下来。',
 
     'postcard.title': '你的作品',
     'postcard.download': '下载',
@@ -389,28 +383,25 @@ const translations = {
 
     'tutorial.next': 'Suivant',
     'tutorial.back': 'Retour',
-    'tutorial.skip': 'Passer la visite',
+    'tutorial.skip': 'Passer',
     'tutorial.finish': 'Commencer à créer',
     'tutorial.step': 'Étape {current} sur {total}',
-    'tutorial.keepLight': 'Garder cet éclairage',
     'tutorial.steps.language.title': 'Choisissez votre langue',
-    'tutorial.steps.language.body': 'Sélectionnez la langue que vous préférez. Vous pouvez la changer à tout moment depuis ce menu.',
-    'tutorial.steps.theme.title': "Réglez l'éclairage",
-    'tutorial.steps.theme.body': "Laissez la prairie suivre l'heure locale avec Auto, ou choisissez Jour ou Nuit selon votre humeur.",
-    'tutorial.steps.spirit.title': 'Rencontrez votre guide',
-    'tutorial.steps.spirit.body': 'Choisissez le compagnon qui vous accompagnera. Il volera vers chaque contrôle pour vous montrer quoi essayer.',
-    'tutorial.steps.mode.title': 'Comment voulez-vous jouer ?',
-    'tutorial.steps.mode.body': 'Composez librement ou suivez une recette son par son. Vous pouvez explorer les deux à tout moment.',
-    'tutorial.steps.ingredient.title': 'Ajoutez votre premier son',
-    'tutorial.steps.ingredient.body': 'Chaque ingrédient porte une boucle différente. Touchez-en un pour l\'entendre, puis ajoutez-en un autre.',
-    'tutorial.steps.ingredientGuided.title': 'Commencez par {name}',
-    'tutorial.steps.ingredientGuided.body': 'Sélectionnez {name} pour ajouter son son. Votre guide vous mènera à travers le reste de la recette.',
-    'tutorial.steps.transport.title': 'Orchestrez le pique-nique',
-    'tutorial.steps.transport.body': 'Jouez ou mettez en pause ici. Effacer retire toutes les couches, Surprise crée une combinaison rapide.',
-    'tutorial.steps.recipes.title': 'Continuez à explorer',
-    'tutorial.steps.recipes.body': 'Ouvrez les Recettes quand vous voulez un nouvel arrangement. Quand votre chanson vous plaît, choisissez Terminer.',
-    'tutorial.steps.ready.title': 'Vous êtes prêt',
-    'tutorial.steps.ready.body': 'La couverture est à vous. Suivez une recette, explorez librement, ou écoutez simplement ce qui vient.',
+    'tutorial.steps.language.body': 'Utilisez le menu en haut à droite pour changer de langue. La page et le tutoriel se mettront à jour ensemble.',
+    'tutorial.steps.theme.title': 'Jour ou nuit',
+    'tutorial.steps.theme.body': "Laissez la scène suivre l'heure locale, ou basculez manuellement entre jour et nuit.",
+    'tutorial.steps.spirit.title': 'Choisissez un guide musical',
+    'tutorial.steps.spirit.body': "L'abeille, l'oiseau, la libellule et le papillon vous accompagnent chacun différemment. Votre guide volera vers chaque contrôle.",
+    'tutorial.steps.mode.title': 'Comment voulez-vous créer ?',
+    'tutorial.steps.mode.body': 'Composez librement ou commencez par une recette pour un peu d\'inspiration.',
+    'tutorial.steps.ingredient.title': 'Transformez la nourriture en son',
+    'tutorial.steps.ingredient.body': "Sélectionnez un ingrédient pour ajouter son son, puis resélectionnez-le pour le retirer. Jusqu'à six sons ensemble.",
+    'tutorial.steps.transport.title': 'Contrôlez votre musique',
+    'tutorial.steps.transport.body': 'Jouez ou mettez en pause, effacez tout pour recommencer, ou utilisez Surprise pour une nouvelle combinaison.',
+    'tutorial.steps.recipes.title': 'Besoin d\'un point de départ ?',
+    'tutorial.steps.recipes.body': 'Ouvrez les Recettes pour essayer une combinaison toute faite. Écoutez-la telle quelle ou modifiez-la.',
+    'tutorial.steps.ready.title': 'Gardez votre symphonie',
+    'tutorial.steps.ready.body': 'Quand vous êtes prêt, consultez l\'arrangement créé par vos sons et téléchargez un souvenir de votre composition.',
 
     'postcard.title': 'Votre composition',
     'postcard.download': 'Télécharger',
@@ -542,28 +533,25 @@ const translations = {
 
     'tutorial.next': 'Siguiente',
     'tutorial.back': 'Atrás',
-    'tutorial.skip': 'Saltar la visita',
+    'tutorial.skip': 'Saltar',
     'tutorial.finish': 'Empezar a crear',
     'tutorial.step': 'Paso {current} de {total}',
-    'tutorial.keepLight': 'Dejar esta luz',
     'tutorial.steps.language.title': 'Elige tu idioma',
-    'tutorial.steps.language.body': 'Selecciona el idioma que prefieras. Puedes cambiarlo en cualquier momento desde este menú.',
-    'tutorial.steps.theme.title': 'Ajusta la luz',
-    'tutorial.steps.theme.body': 'Deja que el prado siga tu hora local con Auto, o elige Día o Noche cuando cambie tu ánimo.',
-    'tutorial.steps.spirit.title': 'Conoce a tu guía',
-    'tutorial.steps.spirit.body': 'Elige al compañero que te acompañará. Volará a cada control y te mostrará qué probar.',
-    'tutorial.steps.mode.title': '¿Cómo quieres jugar?',
-    'tutorial.steps.mode.body': 'Crea una canción libremente o sigue una receta sonido a sonido. Puedes explorar ambas cuando quieras.',
-    'tutorial.steps.ingredient.title': 'Añade tu primer sonido',
-    'tutorial.steps.ingredient.body': 'Cada ingrediente tiene un bucle diferente. Toca uno para escucharlo y luego añade otro para empezar a capas.',
-    'tutorial.steps.ingredientGuided.title': 'Empieza con {name}',
-    'tutorial.steps.ingredientGuided.body': 'Selecciona {name} para añadir su sonido. Tu guía te llevará por el resto de la receta.',
-    'tutorial.steps.transport.title': 'Da forma al picnic',
-    'tutorial.steps.transport.body': 'Reproduce o pausa todo aquí. Limpiar quita todas las capas, Sorpresa crea una combinación rápida.',
-    'tutorial.steps.recipes.title': 'Sigue explorando',
-    'tutorial.steps.recipes.body': 'Abre Recetas cuando quieras un nuevo arreglo. Cuando tu canción se sienta completa, elige Terminar.',
-    'tutorial.steps.ready.title': 'Listo',
-    'tutorial.steps.ready.body': 'La manta es tuya. Sigue una receta, explora libremente, o simplemente escucha lo que viene.',
+    'tutorial.steps.language.body': 'Usa el menú de idiomas en la esquina superior derecha cuando quieras cambiar. La página y el tutorial se actualizarán juntos.',
+    'tutorial.steps.theme.title': 'Día o noche',
+    'tutorial.steps.theme.body': 'Deja que la escena siga tu hora local, o cambia entre día y noche manualmente.',
+    'tutorial.steps.spirit.title': 'Elige un guía musical',
+    'tutorial.steps.spirit.body': 'La abeja, el pájaro, la libélula y la mariposa te acompañan de formas distintas. Tu guía volará al siguiente control.',
+    'tutorial.steps.mode.title': '¿Cómo quieres crear?',
+    'tutorial.steps.mode.body': 'Compón libremente combinando sonidos, o empieza con una receta para inspirarte.',
+    'tutorial.steps.ingredient.title': 'Convierte la comida en sonido',
+    'tutorial.steps.ingredient.body': 'Selecciona un ingrediente para añadir su sonido, selecciónalo de nuevo para quitarlo. Hasta seis sonidos juntos.',
+    'tutorial.steps.transport.title': 'Controla tu música',
+    'tutorial.steps.transport.body': 'Reproduce o pausa tu composición, limpia todo para empezar de nuevo, o usa Sorpresa para crear algo nuevo.',
+    'tutorial.steps.recipes.title': '¿Necesitas un punto de partida?',
+    'tutorial.steps.recipes.body': 'Abre Recetas para probar una combinación lista. Escúchala tal cual o cambia cualquier sonido.',
+    'tutorial.steps.ready.title': 'Guarda tu sinfonía',
+    'tutorial.steps.ready.body': 'Cuando estés listo, mira el arreglo creado por tus sonidos y descarga un recuerdo de tu composición.',
 
     'postcard.title': 'Tu composición',
     'postcard.download': 'Descargar',
@@ -653,13 +641,14 @@ function t(key, vars = {}) {
   const dict = translations[lang] || translations.en;
   let str = dict[key];
   if (str === undefined) {
+    // Fallback to English
     str = translations.en[key];
     if (str === undefined) {
-      console.warn(`Missing translation: ${lang}.${key}`);
-      return key;
+      console.warn(`[i18n] Missing "${key}" for locale "${lang}"`);
+      return ''; // Never show raw keys to users
     }
     if (lang !== 'en') {
-      console.warn(`Missing translation: ${lang}.${key}`);
+      console.warn(`[i18n] Missing "${key}" for locale "${lang}", using English fallback`);
     }
   }
   for (const [k, v] of Object.entries(vars)) {
@@ -670,7 +659,11 @@ function t(key, vars = {}) {
 
 /** Switch language, persist, re-render */
 function setLanguage(lang) {
-  if (!SUPPORTED_LANGS.includes(lang)) lang = 'en';
+  // Normalize language code
+  if (lang && lang.startsWith('zh')) lang = 'zh';
+  else if (lang && lang.startsWith('es')) lang = 'es';
+  else if (lang && lang.startsWith('fr')) lang = 'fr';
+  else if (!SUPPORTED_LANGS.includes(lang)) lang = 'en';
   setState({ lang }, true);
   document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
   applyTranslations();

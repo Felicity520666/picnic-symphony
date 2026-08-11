@@ -10,6 +10,7 @@ import { initTheme, setTheme, getEffectiveTheme } from './theme.js';
 import { spiritDefinitions, getSpiritPlaceholder, guideSpiritLayer, initSpiritSelectionAnimations, preloadSpiritAssets } from './spirits.js';
 import { ingredientDefinitions, ingredientById, MAX_LAYERS } from './ingredients.js';
 import { recipeDefinitions, recipeById, isRecipeUnlocked } from './recipes.js';
+import { assetUrl, renderFullComposition, renderIngredientComposition } from './composition.js';
 import {
   createAudioGraph, resumeAudio, startTransport, stopTransport, toggleTransport,
   setMusicVolume, setAmbienceVolume, toggleAmbienceMute, updateAmbienceDucking,
@@ -341,7 +342,10 @@ function bindStudio() {
     toggleIngredient(btn.dataset.ingredient);
   });
 
-  container.querySelector('[data-action="finish"]')?.addEventListener('click', () => navigateTo(SCREENS.POSTCARD));
+  container.querySelector('[data-action="finish"]')?.addEventListener('click', () => {
+    navigateTo(SCREENS.POSTCARD);
+    setTimeout(() => renderPostcardPreview(), 200);
+  });
   container.querySelector('[data-action="recipe-book"]')?.addEventListener('click', () => navigateTo(SCREENS.RECIPES));
 
   // Visual hit feedback
@@ -557,8 +561,9 @@ function renderRecipeGrid() {
     card.dataset.tutorialId = `recipe-${recipe.id}`;
     card.setAttribute('role', 'listitem');
     card.setAttribute('tabindex', '0');
+    const imgSrc = assetUrl(`recipes/${recipe.id}.png`);
     card.innerHTML = `
-      <img class="recipe-grid-card__img" src="${recipe.image}" alt="${t(recipe.nameKey)}">
+      <img class="recipe-grid-card__img" src="${imgSrc}" alt="${t(recipe.nameKey)}">
       <div class="recipe-grid-card__body">
         <span class="recipe-grid-card__mood">${t(recipe.moodKey)}</span>
         <strong class="recipe-grid-card__name">${t(recipe.nameKey)}</strong>
@@ -566,6 +571,9 @@ function renderRecipeGrid() {
         <span class="recipe-grid-card__meta">${t('recipes.steps', { n: recipe.ingredients.length })}</span>
       </div>
     `;
+    // Error logging for dev
+    const img = card.querySelector('img');
+    img.addEventListener('error', () => console.error('Missing Picnic Symphony asset:', img.src));
     grid.appendChild(card);
   }
 }
@@ -590,7 +598,7 @@ function startRecipe(recipeId) {
 // ─── Postcard ────────────────────────────────────────────────────────────────
 
 function bindPostcard() {
-  document.querySelector('[data-action="download-postcard"]')?.addEventListener('click', generatePostcard);
+  document.querySelector('[data-action="download-postcard"]')?.addEventListener('click', handleDownload);
   document.querySelector('[data-action="new-picnic"]')?.addEventListener('click', () => {
     clearAllLayers();
     setState({ selectedRecipeId: null, recipeStepIndex: 0 });
@@ -601,56 +609,53 @@ function bindPostcard() {
   });
 }
 
-function generatePostcard() {
-  const isNight = getEffectiveTheme() === 'night';
-  const canvas = document.getElementById('postcard-canvas') || document.createElement('canvas');
-  canvas.width = 800; canvas.height = 500;
-  const ctx = canvas.getContext('2d');
-
-  // Background gradient
-  const bg = ctx.createLinearGradient(0, 0, 0, 500);
-  if (isNight) { bg.addColorStop(0, '#26324A'); bg.addColorStop(1, '#1a2a3a'); }
-  else { bg.addColorStop(0, '#FFF8E8'); bg.addColorStop(1, '#f0eed8'); }
-  ctx.fillStyle = bg; ctx.fillRect(0, 0, 800, 500);
-
-  // Border
-  ctx.strokeStyle = isNight ? 'rgba(154,142,184,0.3)' : 'rgba(127,163,107,0.3)';
-  ctx.lineWidth = 1.5; ctx.setLineDash([6, 4]);
-  ctx.strokeRect(24, 24, 752, 452); ctx.setLineDash([]);
-
-  // Title
-  ctx.fillStyle = isNight ? '#e8e4dc' : '#34423E';
-  ctx.font = '600 32px Mali, serif'; ctx.textAlign = 'center';
-  ctx.fillText('Picnic Symphony', 400, 64);
-
-  // Mix name
-  const name = document.querySelector('.postcard-name-input')?.value || '';
-  if (name) { ctx.font = '18px Nunito, sans-serif'; ctx.fillStyle = isNight ? '#9A8EB8' : '#7FA36B'; ctx.fillText(name, 400, 100); }
-
-  // Spirit + date
-  ctx.font = '14px Nunito, sans-serif'; ctx.fillStyle = isNight ? '#a8b4a8' : '#5f6d5f';
-  const spiritName = state.spirit ? t(spiritDefinitions[state.spirit].nameKey) : '';
-  ctx.fillText(`${spiritName} · ${new Date().toLocaleDateString()}`, 400, 130);
-
-  // Ingredients
+/** Render preview when entering the postcard screen */
+async function renderPostcardPreview() {
+  const canvas = document.getElementById('postcard-canvas');
+  if (!canvas) return;
   const active = [...state.activeLayers];
-  ctx.textAlign = 'left'; ctx.font = '15px Nunito, sans-serif';
-  active.forEach((id, i) => {
-    const def = ingredientById.get(id); if (!def) return;
-    const col = i % 3; const row = Math.floor(i / 3);
-    const x = 140 + col * 190; const y = 180 + row * 36;
-    ctx.fillStyle = def.color; ctx.beginPath(); ctx.arc(x, y - 3, 5, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = isNight ? '#e8e4dc' : '#34423E'; ctx.fillText(t(def.nameKey), x + 14, y);
+  if (!active.length) return;
+
+  canvas.width = 800; canvas.height = 600;
+  const title = document.querySelector('.postcard-name-input')?.value || '';
+  const spiritName = state.spirit ? t(spiritDefinitions[state.spirit].nameKey) : '';
+  const recipeName = state.selectedRecipeId ? t(recipeById.get(state.selectedRecipeId)?.nameKey || '') : '';
+
+  await renderFullComposition(canvas, active, {
+    isNight: getEffectiveTheme() === 'night',
+    title,
+    spiritName,
+    recipeName,
+  });
+}
+
+async function handleDownload() {
+  const active = [...state.activeLayers];
+  if (!active.length) return;
+
+  // High-res export canvas
+  const exportCanvas = document.createElement('canvas');
+  exportCanvas.width = 1800;
+  exportCanvas.height = 1350;
+
+  const title = document.querySelector('.postcard-name-input')?.value || '';
+  const spiritName = state.spirit ? t(spiritDefinitions[state.spirit].nameKey) : '';
+  const recipeName = state.selectedRecipeId ? t(recipeById.get(state.selectedRecipeId)?.nameKey || '') : '';
+
+  await renderFullComposition(exportCanvas, active, {
+    isNight: getEffectiveTheme() === 'night',
+    title,
+    spiritName,
+    recipeName,
   });
 
-  // Footer
-  ctx.textAlign = 'center'; ctx.font = '11px Nunito, sans-serif';
-  ctx.fillStyle = isNight ? '#596783' : '#A9BE91';
-  ctx.fillText('picnicsymphony.app', 400, 468);
-
-  // Download
-  const link = document.createElement('a');
-  link.download = 'picnic-symphony.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+  exportCanvas.toBlob(blob => {
+    if (!blob) { console.error('Failed to create Picnic Symphony PNG.'); return; }
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `picnic-symphony-${new Date().toISOString().slice(0, 10)}.png`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }, 'image/png');
 }

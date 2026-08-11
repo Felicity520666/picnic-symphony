@@ -439,7 +439,7 @@ body.scroll-locked { overflow: hidden; }
 .recipe-subtitle { margin: 6px 0 20px; color: var(--ink-soft); font-size: 0.88rem; }
 .recipe-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   margin-bottom: 20px;
   text-align: left;
@@ -477,65 +477,41 @@ body.scroll-locked { overflow: hidden; }
 /* ─── Tutorial ──────────────────────────────────── */
 .tutorial-screen { display: none !important; }
 
-/* Overlay dim */
+/* Dim overlay */
 .tut-overlay {
   position: fixed; inset: 0;
   background: rgba(25, 30, 25, 0.52);
   z-index: 10000;
-  pointer-events: auto;
+  pointer-events: none;
   opacity: 0;
   transition: opacity 350ms ease;
   display: none;
 }
-.tut-overlay.is-active { display: block; opacity: 1; }
+.tut-overlay.is-active { display: block; opacity: 1; pointer-events: auto; }
 
-/* Spirit portal */
-.tutorial-spirit-portal {
+/* Tutorial root */
+.tut-root {
   position: fixed; inset: 0;
-  z-index: 10002;
+  z-index: 10003;
   pointer-events: none;
   display: none;
 }
-.tut-spirit {
-  position: absolute;
-  width: 80px; height: 80px;
-  object-fit: contain;
-  pointer-events: none;
-  transition: left 750ms cubic-bezier(0.25, 1, 0.5, 1),
-              top 750ms cubic-bezier(0.25, 1, 0.5, 1);
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15));
-}
 
-/* Highlighted target */
-[data-tutorial-highlighted="true"] {
-  position: relative !important;
-  z-index: 10001 !important;
-  box-shadow: 0 0 0 4px rgba(169,190,145,0.6), 0 0 16px rgba(169,190,145,0.25) !important;
-  border-radius: var(--radius-md) !important;
-  pointer-events: auto !important;
-}
-
-/* Speech bubble */
-.tut-bubble {
-  position: fixed;
-  z-index: 10003;
-  width: clamp(340px, 28vw, 460px);
+/* Tutorial card */
+.tut-card {
+  pointer-events: auto;
+  width: min(420px, calc(100vw - 32px));
   padding: 24px 28px;
   border-radius: 24px;
   background: var(--card-bg);
   border: 1.5px solid rgba(169,190,145,0.35);
   box-shadow: 0 12px 40px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.06);
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 300ms ease, transform 300ms ease, top 400ms ease, left 400ms ease;
-  display: none;
-  pointer-events: auto;
+  font-family: var(--font-ui);
 }
-.tut-bubble.is-visible { opacity: 1; transform: translateY(0); }
 
-.tut-bubble__progress {
+.tut-card__progress {
   display: flex; align-items: center; gap: 5px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 .tut-dot {
   width: 7px; height: 7px; border-radius: 50%;
@@ -544,60 +520,71 @@ body.scroll-locked { overflow: hidden; }
 }
 .tut-dot.is-active { background: var(--meadow); transform: scale(1.4); }
 .tut-dot.is-done { background: var(--sage); }
-.tut-bubble__step-label {
-  margin-left: 8px; font-size: 0.7rem; color: var(--ink-soft); font-weight: 500;
+.tut-card__step-num {
+  margin-left: 8px; font-size: 0.72rem; color: var(--ink-soft); font-weight: 500;
 }
 
-.tut-bubble__title {
+.tut-card__title {
   margin: 0 0 8px;
-  font-family: var(--font-display);
-  font-size: clamp(22px, 2vw, 28px);
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 600;
   color: var(--ink);
-  line-height: 1.2;
+  line-height: 1.25;
 }
-.tut-bubble__body {
-  margin: 0 0 18px;
-  font-size: clamp(15px, 1.2vw, 18px);
-  line-height: 1.55;
+.tut-card__body {
+  margin: 0 0 20px;
+  font-size: 16px;
+  line-height: 1.65;
   color: var(--ink-soft);
 }
 
-.tut-bubble__actions {
+.tut-card__actions {
   display: flex; align-items: center; justify-content: space-between;
 }
-.tut-bubble__right { display: flex; gap: 8px; }
+.tut-card__right { display: flex; gap: 8px; }
 
-.tut-btn {
+.tut-action {
   border: 0; border-radius: 999px; cursor: pointer;
   font-family: var(--font-ui); font-weight: 600;
+  min-height: 44px; padding: 0 18px;
   transition: transform 150ms ease, box-shadow 200ms ease;
 }
-.tut-btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
-.tut-btn--skip {
+.tut-action:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.tut-action--skip {
   background: transparent; color: var(--ink-soft);
-  font-size: 0.82rem; padding: 8px 4px;
-  text-decoration: underline; text-underline-offset: 2px;
+  font-size: 0.82rem; padding: 8px 12px; min-height: auto;
 }
-.tut-btn--back {
+.tut-action--back {
   background: transparent; color: var(--ink-soft); border: 1.5px solid var(--card-border);
-  font-size: 0.88rem; padding: 10px 18px;
+  font-size: 0.88rem;
 }
-.tut-btn--next {
+.tut-action--primary {
   background: var(--meadow); color: #fff;
-  font-size: 0.92rem; padding: 12px 22px;
+  font-size: 0.92rem;
   box-shadow: 0 3px 12px rgba(127,163,107,0.2);
-  min-height: 46px;
 }
-.tut-btn--next:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(127,163,107,0.3); }
+.tut-action--primary:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(127,163,107,0.3); }
 
-/* Mobile bottom-sheet variant */
+/* Highlighted tutorial target */
+[data-tutorial-highlighted="true"] {
+  position: relative !important;
+  z-index: 10001 !important;
+  box-shadow: 0 0 0 4px rgba(169,190,145,0.6), 0 0 16px rgba(169,190,145,0.25) !important;
+  border-radius: var(--radius-md) !important;
+  pointer-events: auto !important;
+}
+
+/* Spirit portal (kept for guide spirit layer compatibility) */
+.tutorial-spirit-portal { display: none; }
+
+/* Mobile: card at bottom */
 @media (max-width: 600px) {
-  .tut-bubble {
-    bottom: 0; left: 0 !important; right: 0;
+  .tut-card {
+    position: fixed !important;
+    bottom: 16px !important; left: 16px !important; right: 16px !important;
     top: auto !important;
-    width: 100% !important;
-    border-radius: 24px 24px 0 0;
-    padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+    width: auto !important;
+    transform: none !important;
   }
 }
 
