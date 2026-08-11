@@ -35,7 +35,7 @@
   <!-- Global toolbar -->
   <nav class="global-toolbar" aria-label="Settings">
     <div class="lang-dropdown" id="lang-dropdown">
-      <button class="toolbar-btn lang-dropdown__trigger" type="button" id="lang-trigger" data-tutorial-id="language-menu" aria-haspopup="listbox" aria-expanded="false" aria-label="Language">
+      <button class="toolbar-btn lang-dropdown__trigger" type="button" id="lang-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Language">
         <span class="lang-dropdown__globe" aria-hidden="true">&#127760;</span>
         <span class="lang-dropdown__code" id="lang-code">EN</span>
         <span class="lang-dropdown__chevron" aria-hidden="true">&#9662;</span>
@@ -64,7 +64,6 @@
       <p class="welcome-body" data-i18n="welcome.body">Some afternoons ask nothing of us but a blanket in the grass and time enough to listen.</p>
       <div class="welcome-actions">
         <button class="btn btn--primary" type="button" data-action="enter-meadow" data-i18n="welcome.enter">Begin the Picnic</button>
-        <button class="btn btn--ghost" type="button" data-action="how-it-works" data-i18n="welcome.howItWorks">How It Works</button>
       </div>
     </div>
   </section>
@@ -138,110 +137,104 @@
   <section data-screen="studio" class="screen studio-screen" hidden aria-labelledby="studio-heading">
     <h2 id="studio-heading" class="sr-only">Studio</h2>
 
-    <header class="studio-topbar">
-      <div class="studio-transport">
-        <button class="btn btn--control" type="button" data-action="play-pause" data-tutorial-id="play-pause" data-i18n="studio.play">Play</button>
-        <button class="btn btn--control" type="button" data-action="clear-mix" data-i18n="studio.clear">Clear</button>
-        <button class="btn btn--control" type="button" data-action="surprise" data-i18n="studio.surprise">Surprise</button>
-      </div>
-      <div class="studio-sliders">
-        <label class="range-control"><span data-i18n="studio.tempo">Tempo</span><input type="range" min="60" max="140" value="96" data-action="tempo"><span data-display="tempo">96</span></label>
-        <label class="range-control"><span data-i18n="studio.volume">Music</span><input type="range" min="0" max="100" value="70" data-action="music-volume"></label>
-        <label class="range-control"><span data-i18n="studio.ambience">Ambience</span><input type="range" min="0" max="100" value="30" data-action="ambience-volume"></label>
-      </div>
-    </header>
-
-    <div class="studio-status">
-      <span class="status-label" data-i18n="studio.layers">Active layers</span>
-      <strong data-display="layer-count">0 of 6</strong>
-      <span data-display="beat-label" data-i18n="studio.pickRecipe">Choose a sound to begin</span>
-      <p class="layer-message" data-display="layer-message" hidden></p>
-    </div>
-
-    <div class="studio-layout">
-      <aside class="spirit-panel">
-        <div class="spirit-panel__portrait" id="studio-spirit-art"></div>
-        <div class="spirit-speech"><p data-display="spirit-speech"></p></div>
-      </aside>
-
-      <div class="meadow">
-        <div class="meadow-env" aria-hidden="true">
-          <div class="env-cloud env-cloud--1"></div>
-          <div class="env-cloud env-cloud--2"></div>
-          <div class="env-sun"></div>
-          <div class="env-grass"></div>
-          <div class="env-fireflies"></div>
+    <div class="studio-shell">
+      <header class="studio-toolbar">
+        <div class="studio-transport">
+          <button class="btn btn--control" type="button" data-action="play-pause" data-i18n="studio.play">Play</button>
+          <button class="btn btn--control" type="button" data-action="clear-mix" data-i18n="studio.clear">Clear</button>
+          <button class="btn btn--control" type="button" data-action="surprise" data-i18n="studio.surprise">Surprise</button>
         </div>
+        <div class="studio-sliders">
+          <label class="range-control"><span data-i18n="studio.tempo">Tempo</span><input type="range" min="60" max="140" value="96" data-action="tempo"><span data-display="tempo">96</span></label>
+          <label class="range-control"><span data-i18n="studio.volume">Music</span><input type="range" min="0" max="100" value="70" data-action="music-volume"></label>
+          <label class="range-control"><span data-i18n="studio.ambience">Ambience</span><input type="range" min="0" max="100" value="30" data-action="ambience-volume"></label>
+        </div>
+      </header>
 
-        <div class="ingredient-grid">
-          <button class="ingredient-btn" type="button" data-ingredient="watermelon" aria-pressed="false">
-            <img src="assets/ingredients/watermelon.png" alt="" class="ingredient-btn__img">
-            <span class="ingredient-btn__name" data-i18n="ingredient.watermelon.name">Watermelon</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.watermelon.role">Kick</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="strawberry" aria-pressed="false">
-            <img src="assets/ingredients/strawberry.png" alt="" class="ingredient-btn__img">
-            <span class="ingredient-btn__name" data-i18n="ingredient.strawberry.name">Strawberry</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.strawberry.role">Clap</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="cherry" aria-pressed="false">
-            <img src="assets/ingredients/cherry.png" alt="" class="ingredient-btn__img">
-            <span class="ingredient-btn__name" data-i18n="ingredient.cherry.name">Cherry</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.cherry.role">Woodblock</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="grape" aria-pressed="false">
-            <img src="assets/ingredients/grapes.png" alt="" class="ingredient-btn__img">
-            <span class="ingredient-btn__name" data-i18n="ingredient.grape.name">Grapes</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.grape.role">Plucked bass</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="blueberry" aria-pressed="false">
-            <img src="assets/ingredients/blueberry.png" alt="" class="ingredient-btn__img">
-            <span class="ingredient-btn__name" data-i18n="ingredient.blueberry.name">Blueberry</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.blueberry.role">Low tom</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="lemonade" data-tutorial-id="ingredient-lemonade" aria-pressed="false">
-            <img src="assets/ingredients/lemonade.png" alt="" class="ingredient-btn__img">
-            <span class="ingredient-btn__name" data-i18n="ingredient.lemonade.name">Lemonade</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.lemonade.role">Glass melody</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="peach" aria-pressed="false">
-            <img src="assets/ingredients/peach.png" alt="" class="ingredient-btn__img">
-            <span class="ingredient-btn__name" data-i18n="ingredient.peach.name">Peach</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.peach.role">Plucked melody</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="cupcake" aria-pressed="false">
-            <img src="assets/ingredients/cupcake.png" alt="" class="ingredient-btn__img">
-            <span class="ingredient-btn__name" data-i18n="ingredient.cupcake.name">Cupcake</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.cupcake.role">Bell</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="cheese" aria-pressed="false">
-            <img src="assets/ingredients/cheese.png" alt="" class="ingredient-btn__img">
-            <span class="ingredient-btn__name" data-i18n="ingredient.cheese.name">Cheese</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.cheese.role">Chord pad</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="honey" aria-pressed="false">
-            <img src="assets/ingredients/honey.png" alt="" class="ingredient-btn__img">
-            <span class="ingredient-btn__name" data-i18n="ingredient.honey.name">Honey</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.honey.role">Sustained harmony</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="mint" aria-pressed="false">
-            <img src="assets/ingredients/mint.png" alt="" class="ingredient-btn__img">
-            <span class="ingredient-btn__name" data-i18n="ingredient.mint.name">Mint</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.mint.role">Shaker</span>
-          </button>
-          <button class="ingredient-btn" type="button" data-ingredient="sandwich" aria-pressed="false">
-            <img src="assets/ingredients/sandwich.png" alt="" class="ingredient-btn__img">
-            <span class="ingredient-btn__name" data-i18n="ingredient.sandwich.name">Sandwich</span>
-            <span class="ingredient-btn__role" data-i18n="ingredient.sandwich.role">Brushed texture</span>
-          </button>
+      <div class="studio-status">
+        <span data-display="layer-count">0 of 6</span>
+        <span class="studio-status__sep">·</span>
+        <span data-display="beat-label" data-i18n="studio.pickRecipe">Choose an ingredient to begin</span>
+        <p class="layer-message" data-display="layer-message" hidden></p>
+      </div>
+
+      <div class="studio-content">
+        <aside class="spirit-panel">
+          <div class="spirit-panel__portrait" id="studio-spirit-art"></div>
+          <div class="spirit-speech"><p data-display="spirit-speech"></p></div>
+        </aside>
+
+        <div class="ingredient-panel">
+          <div class="ingredient-grid">
+            <button class="ingredient-btn" type="button" data-ingredient="watermelon" aria-pressed="false">
+              <img src="assets/ingredients/watermelon.png" alt="" class="ingredient-btn__img">
+              <span class="ingredient-btn__name" data-i18n="ingredient.watermelon.name">Watermelon</span>
+              <span class="ingredient-btn__role" data-i18n="ingredient.watermelon.role">Kick</span>
+            </button>
+            <button class="ingredient-btn" type="button" data-ingredient="strawberry" aria-pressed="false">
+              <img src="assets/ingredients/strawberry.png" alt="" class="ingredient-btn__img">
+              <span class="ingredient-btn__name" data-i18n="ingredient.strawberry.name">Strawberry</span>
+              <span class="ingredient-btn__role" data-i18n="ingredient.strawberry.role">Clap</span>
+            </button>
+            <button class="ingredient-btn" type="button" data-ingredient="cherry" aria-pressed="false">
+              <img src="assets/ingredients/cherry.png" alt="" class="ingredient-btn__img">
+              <span class="ingredient-btn__name" data-i18n="ingredient.cherry.name">Cherry</span>
+              <span class="ingredient-btn__role" data-i18n="ingredient.cherry.role">Woodblock</span>
+            </button>
+            <button class="ingredient-btn" type="button" data-ingredient="grape" aria-pressed="false">
+              <img src="assets/ingredients/grapes.png" alt="" class="ingredient-btn__img">
+              <span class="ingredient-btn__name" data-i18n="ingredient.grape.name">Grapes</span>
+              <span class="ingredient-btn__role" data-i18n="ingredient.grape.role">Plucked bass</span>
+            </button>
+            <button class="ingredient-btn" type="button" data-ingredient="blueberry" aria-pressed="false">
+              <img src="assets/ingredients/blueberry.png" alt="" class="ingredient-btn__img">
+              <span class="ingredient-btn__name" data-i18n="ingredient.blueberry.name">Blueberry</span>
+              <span class="ingredient-btn__role" data-i18n="ingredient.blueberry.role">Low tom</span>
+            </button>
+            <button class="ingredient-btn" type="button" data-ingredient="lemonade" aria-pressed="false">
+              <img src="assets/ingredients/lemonade.png" alt="" class="ingredient-btn__img">
+              <span class="ingredient-btn__name" data-i18n="ingredient.lemonade.name">Lemonade</span>
+              <span class="ingredient-btn__role" data-i18n="ingredient.lemonade.role">Glass melody</span>
+            </button>
+            <button class="ingredient-btn" type="button" data-ingredient="peach" aria-pressed="false">
+              <img src="assets/ingredients/peach.png" alt="" class="ingredient-btn__img">
+              <span class="ingredient-btn__name" data-i18n="ingredient.peach.name">Peach</span>
+              <span class="ingredient-btn__role" data-i18n="ingredient.peach.role">Plucked melody</span>
+            </button>
+            <button class="ingredient-btn" type="button" data-ingredient="cupcake" aria-pressed="false">
+              <img src="assets/ingredients/cupcake.png" alt="" class="ingredient-btn__img">
+              <span class="ingredient-btn__name" data-i18n="ingredient.cupcake.name">Cupcake</span>
+              <span class="ingredient-btn__role" data-i18n="ingredient.cupcake.role">Bell</span>
+            </button>
+            <button class="ingredient-btn" type="button" data-ingredient="cheese" aria-pressed="false">
+              <img src="assets/ingredients/cheese.png" alt="" class="ingredient-btn__img">
+              <span class="ingredient-btn__name" data-i18n="ingredient.cheese.name">Cheese</span>
+              <span class="ingredient-btn__role" data-i18n="ingredient.cheese.role">Chord pad</span>
+            </button>
+            <button class="ingredient-btn" type="button" data-ingredient="honey" aria-pressed="false">
+              <img src="assets/ingredients/honey.png" alt="" class="ingredient-btn__img">
+              <span class="ingredient-btn__name" data-i18n="ingredient.honey.name">Honey</span>
+              <span class="ingredient-btn__role" data-i18n="ingredient.honey.role">Sustained harmony</span>
+            </button>
+            <button class="ingredient-btn" type="button" data-ingredient="mint" aria-pressed="false">
+              <img src="assets/ingredients/mint.png" alt="" class="ingredient-btn__img">
+              <span class="ingredient-btn__name" data-i18n="ingredient.mint.name">Mint</span>
+              <span class="ingredient-btn__role" data-i18n="ingredient.mint.role">Shaker</span>
+            </button>
+            <button class="ingredient-btn" type="button" data-ingredient="sandwich" aria-pressed="false">
+              <img src="assets/ingredients/sandwich.png" alt="" class="ingredient-btn__img">
+              <span class="ingredient-btn__name" data-i18n="ingredient.sandwich.name">Sandwich</span>
+              <span class="ingredient-btn__role" data-i18n="ingredient.sandwich.role">Brushed texture</span>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <footer class="studio-footer">
-      <button class="btn btn--ghost" type="button" data-action="recipe-book" data-tutorial-id="open-recipes" data-i18n="studio.recipeBook">Recipes</button>
-      <button class="btn btn--primary" type="button" data-action="finish" data-tutorial-id="finish" data-i18n="studio.finish">Finish</button>
-    </footer>
+      <footer class="studio-actions">
+        <button class="btn btn--ghost" type="button" data-action="recipe-book" data-i18n="studio.recipeBook">Recipes</button>
+        <button class="btn btn--primary" type="button" data-action="finish" data-i18n="studio.finish">Finish</button>
+      </footer>
+    </div>
   </section>
 
   <!-- SCREEN: Recipes -->
@@ -271,17 +264,9 @@
     </div>
   </section>
 
-  <!-- SCREEN: Tutorial (legacy section, hidden — tutorial uses portal now) -->
-  <section data-screen="tutorial" class="screen tutorial-screen" hidden aria-labelledby="tutorial-heading">
-    <h2 id="tutorial-heading" class="sr-only">Guide</h2>
-  </section>
-
   <!-- Guide spirit floating layer (above all screens) -->
   <div id="guide-spirit-layer" class="guide-spirit-layer" aria-hidden="true"></div>
 
-  <!-- Tutorial spirit portal (viewport-level, outside all overflow:hidden containers) -->
-  <div id="tutorial-spirit-portal" class="tutorial-spirit-portal" aria-hidden="true"></div>
-
-  <script type="module" src="src/main.js"></script>
+  <script type="module" src="src/main.js?v=2"></script>
 </body>
 </html>

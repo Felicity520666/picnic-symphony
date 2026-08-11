@@ -1,6 +1,6 @@
 /**
  * main.js — Application entry point.
- * Wires all modules together: router, i18n, theme, audio, studio, recipes, tutorial, particles.
+ * Wires all modules together: router, i18n, theme, audio, studio, recipes, particles.
  */
 
 import { state, loadPersistedState, setState, SCREENS, MODES } from './state.js';
@@ -17,7 +17,6 @@ import {
   setTempo, previewIngredient, clearAllLayers, canAddLayer, onVisualHit,
   startAmbience, DEFAULT_BPM,
 } from './audio.js';
-import { startTutorial, bindTutorial } from './tutorial.js';
 import { initParticles } from './particles.js';
 
 // ─── Bootstrap ───────────────────────────────────────────────────────────────
@@ -45,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
   bindStudio();
   bindRecipes();
   bindPostcard();
-  bindTutorial();
   initParticles();
 });
 
@@ -242,9 +240,6 @@ function bindWelcome() {
     startAmbience();
     navigateTo(SCREENS.SPIRITS);
   });
-  document.querySelector('[data-action="how-it-works"]')?.addEventListener('click', () => {
-    startTutorial();
-  });
 }
 
 // ─── Spirit Selection ────────────────────────────────────────────────────────
@@ -308,6 +303,7 @@ function bindStudio() {
   if (!container) return;
 
   container.querySelector('[data-action="play-pause"]')?.addEventListener('click', () => {
+    if (!state.context) createAudioGraph();
     toggleTransport();
     updateTransportUI();
   });
@@ -381,12 +377,21 @@ function enterStudio() {
   resumeAudio().then(() => {
     if (!state.playing) startTransport();
     updateStudioUI();
+  }).catch(() => {
+    // Audio context may fail on some browsers — still update UI
+    updateStudioUI();
   });
 }
 
 function toggleIngredient(id) {
   const btn = document.querySelector(`[data-ingredient="${id}"]`);
   if (!btn) return;
+
+  // Ensure audio context is ready (user gesture)
+  if (!state.context) createAudioGraph();
+  if (state.context && state.context.state === 'suspended') {
+    state.context.resume();
+  }
 
   if (state.activeLayers.has(id)) {
     // Remove
@@ -437,6 +442,8 @@ function advanceRecipeStep() {
 }
 
 function surpriseBasket() {
+  if (!state.context) createAudioGraph();
+  if (state.context && state.context.state === 'suspended') state.context.resume();
   clearAllLayers();
   const shuffled = [...ingredientDefinitions].sort(() => Math.random() - 0.5);
   const count = 3 + Math.floor(Math.random() * 3); // 3–5
@@ -450,6 +457,10 @@ function surpriseBasket() {
   });
   updateAmbienceDucking();
   updateStudioUI();
+  // Start transport if not playing
+  if (!state.playing) {
+    resumeAudio().then(() => startTransport());
+  }
 }
 
 function updateTransportUI() {
@@ -558,7 +569,6 @@ function renderRecipeGrid() {
     const card = document.createElement('div');
     card.className = 'recipe-grid-card';
     card.dataset.recipe = recipe.id;
-    card.dataset.tutorialId = `recipe-${recipe.id}`;
     card.setAttribute('role', 'listitem');
     card.setAttribute('tabindex', '0');
     const imgSrc = assetUrl(`recipes/${recipe.id}.png`);

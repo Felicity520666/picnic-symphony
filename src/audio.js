@@ -15,13 +15,13 @@ const SCHEDULE_AHEAD_TIME = 0.1;
 const SCHEDULE_INTERVAL_MS = 25;
 const DEFAULT_BPM = 96;
 
-// Bus gain levels (linear, approximate dB targets)
+// Bus gain levels (linear) — louder for audibility, compressor prevents clipping
 const BUS_GAINS = {
-  rhythm:  0.25,  // ~-12 dB
-  bass:    0.20,  // ~-14 dB
-  melody:  0.16,  // ~-16 dB
-  harmony: 0.10,  // ~-20 dB
-  texture: 0.06,  // ~-24 dB
+  rhythm:  4.0,
+  bass:    3.5,
+  melody:  3.2,
+  harmony: 2.8,
+  texture: 2.2,
 };
 
 let buses = {};
@@ -33,17 +33,17 @@ function createAudioGraph() {
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   const ctx = new AudioCtx();
 
-  // Master limiter/compressor to prevent clipping
+  // Limiter to prevent clipping (gentle settings)
   const compressor = ctx.createDynamicsCompressor();
-  compressor.threshold.value = -6;
-  compressor.knee.value = 6;
-  compressor.ratio.value = 4;
-  compressor.attack.value = 0.003;
-  compressor.release.value = 0.15;
+  compressor.threshold.value = -1;
+  compressor.knee.value = 12;
+  compressor.ratio.value = 2.5;
+  compressor.attack.value = 0.005;
+  compressor.release.value = 0.2;
 
-  // Master gain (headroom at ~-6dB)
+  // Master gain (comfortable listening level)
   const masterGain = ctx.createGain();
-  masterGain.gain.value = state.volume * 0.5; // keep headroom
+  masterGain.gain.value = state.volume * 1.0;
   masterGain.connect(compressor);
   compressor.connect(ctx.destination);
 
@@ -56,9 +56,9 @@ function createAudioGraph() {
     buses[name] = g;
   }
 
-  // Ambience on separate path (bypasses compressor)
+  // Ambience on separate path (default off — no real ambient track exists)
   const ambienceGain = ctx.createGain();
-  ambienceGain.gain.value = state.ambienceMuted ? 0 : state.ambienceVolume * 0.3;
+  ambienceGain.gain.value = 0;
   ambienceGain.connect(ctx.destination);
 
   setState({ context: ctx, masterGain, ambienceGain, compressor });
@@ -153,7 +153,7 @@ function canAddLayer() {
 function setMusicVolume(value) {
   setState({ volume: value }, true);
   if (state.masterGain) {
-    state.masterGain.gain.setTargetAtTime(value * 0.5, state.context.currentTime, 0.03);
+    state.masterGain.gain.setTargetAtTime(value * 1.0, state.context.currentTime, 0.03);
   }
 }
 
@@ -205,21 +205,10 @@ function clearAllLayers() {
   updateAmbienceDucking();
 }
 
-/** Start quiet environmental ambience */
+/** Start quiet environmental ambience (only if user enables it) */
 function startAmbience() {
-  if (!state.context || !state.ambienceGain) return;
-  const ctx = state.context;
-  // Very quiet filtered noise loop as environmental bed
-  const duration = 4;
-  const buf = ctx.createBuffer(1, Math.floor(duration * ctx.sampleRate), ctx.sampleRate);
-  const d = buf.getChannelData(0);
-  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * 0.15;
-  const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
-  const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 300; lp.Q.value = 0.2;
-  const g = ctx.createGain(); g.gain.value = 0.4;
-  src.connect(lp).connect(g).connect(state.ambienceGain);
-  src.start();
-  state._ambienceSource = src;
+  // No real ambient audio file exists — skip synthetic noise
+  // If a real lofi track is added later, load it here
 }
 
 function stopAmbience() {

@@ -97,8 +97,17 @@ const translations = {
     'tutorial.steps.ready.title': 'Keep your picnic symphony',
     'tutorial.steps.ready.body': 'When you are ready, view the food arrangement created by your sounds and download a keepsake of your composition.',
 
+    // How It Works modal
+    'howModal.title': 'How It Works',
+    'howModal.step1Title': 'Choose a guide',
+    'howModal.step1Body': 'Pick a bee, bird, dragonfly, or butterfly to accompany you.',
+    'howModal.step2Title': 'Mix your sounds',
+    'howModal.step2Body': 'Select up to six picnic ingredients. Each adds a different beat, melody, or texture.',
+    'howModal.step3Title': 'Keep your composition',
+    'howModal.step3Body': 'Play with the mix, try a recipe, and download a picture of your finished Picnic Symphony.',
+    'howModal.close': 'Got it',
+
     // Postcard
-    'postcard.title': 'Your Composition',
     'postcard.download': 'Download',
     'postcard.newPicnic': 'New Picnic',
     'postcard.backToStudio': 'Return',
@@ -253,6 +262,15 @@ const translations = {
     'tutorial.steps.ready.title': '保存你的野餐交响曲',
     'tutorial.steps.ready.body': '完成后，你可以查看食物组成的画面，并把这首音乐的纪念卡下载下来。',
 
+    'howModal.title': '玩法说明',
+    'howModal.step1Title': '选择向导',
+    'howModal.step1Body': '从蜜蜂、小鸟、蜻蜓和蝴蝶中选择一位陪伴你的音乐向导。',
+    'howModal.step2Title': '组合声音',
+    'howModal.step2Body': '最多选择六种野餐食物。每种食物都会加入不同的节拍、旋律或音色。',
+    'howModal.step3Title': '保存作品',
+    'howModal.step3Body': '试听你的组合、尝试音乐配方，并下载属于你的《野餐交响曲》纪念图。',
+    'howModal.close': '知道了',
+
     'postcard.title': '你的作品',
     'postcard.download': '下载',
     'postcard.newPicnic': '新野餐',
@@ -403,6 +421,15 @@ const translations = {
     'tutorial.steps.ready.title': 'Gardez votre symphonie',
     'tutorial.steps.ready.body': 'Quand vous êtes prêt, consultez l\'arrangement créé par vos sons et téléchargez un souvenir de votre composition.',
 
+    'howModal.title': 'Comment ça marche',
+    'howModal.step1Title': 'Choisissez un guide',
+    'howModal.step1Body': 'Choisissez une abeille, un oiseau, une libellule ou un papillon pour vous accompagner.',
+    'howModal.step2Title': 'Mélangez vos sons',
+    'howModal.step2Body': "Sélectionnez jusqu'à six ingrédients. Chacun ajoute un rythme, une mélodie ou une texture.",
+    'howModal.step3Title': 'Gardez votre composition',
+    'howModal.step3Body': 'Jouez avec le mix, essayez une recette, et téléchargez une image de votre Picnic Symphony.',
+    'howModal.close': 'Compris',
+
     'postcard.title': 'Votre composition',
     'postcard.download': 'Télécharger',
     'postcard.newPicnic': 'Nouveau pique-nique',
@@ -552,6 +579,15 @@ const translations = {
     'tutorial.steps.recipes.body': 'Abre Recetas para probar una combinación lista. Escúchala tal cual o cambia cualquier sonido.',
     'tutorial.steps.ready.title': 'Guarda tu sinfonía',
     'tutorial.steps.ready.body': 'Cuando estés listo, mira el arreglo creado por tus sonidos y descarga un recuerdo de tu composición.',
+
+    'howModal.title': 'Cómo funciona',
+    'howModal.step1Title': 'Elige un guía',
+    'howModal.step1Body': 'Escoge una abeja, pájaro, libélula o mariposa para que te acompañe.',
+    'howModal.step2Title': 'Mezcla tus sonidos',
+    'howModal.step2Body': 'Selecciona hasta seis ingredientes de picnic. Cada uno añade un ritmo, melodía o textura diferente.',
+    'howModal.step3Title': 'Guarda tu composición',
+    'howModal.step3Body': 'Juega con la mezcla, prueba una receta y descarga una imagen de tu Picnic Symphony terminado.',
+    'howModal.close': 'Entendido',
 
     'postcard.title': 'Tu composición',
     'postcard.download': 'Descargar',
