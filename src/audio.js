@@ -17,11 +17,11 @@ const DEFAULT_BPM = 96;
 
 // Bus gain levels (linear) — louder for audibility, compressor prevents clipping
 const BUS_GAINS = {
-  rhythm:  4.0,
-  bass:    3.5,
-  melody:  3.2,
-  harmony: 2.8,
-  texture: 2.2,
+  rhythm:  1.0,
+  bass:    0.9,
+  melody:  0.8,
+  harmony: 0.7,
+  texture: 0.6,
 };
 
 let buses = {};
@@ -35,9 +35,9 @@ function createAudioGraph() {
 
   // Limiter to prevent clipping (gentle settings)
   const compressor = ctx.createDynamicsCompressor();
-  compressor.threshold.value = -1;
-  compressor.knee.value = 12;
-  compressor.ratio.value = 2.5;
+  compressor.threshold.value = -6;
+  compressor.knee.value = 8;
+  compressor.ratio.value = 3;
   compressor.attack.value = 0.005;
   compressor.release.value = 0.2;
 

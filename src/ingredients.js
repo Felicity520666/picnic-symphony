@@ -70,7 +70,7 @@ const ingredientDefinitions = [
       const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(4000, time);
       const g = ctx.createGain();
       g.gain.setValueAtTime(0.0001, time);
-      g.gain.linearRampToValueAtTime(0.60, time + 0.002);
+      g.gain.linearRampToValueAtTime(0.24, time + 0.002);
       g.gain.exponentialRampToValueAtTime(0.0001, time + 0.035);
       src.connect(bp).connect(lp).connect(g).connect(gain);
       src.start(time); src.stop(time + len);
@@ -92,7 +92,7 @@ const ingredientDefinitions = [
       osc.type = 'sine';
       osc.frequency.setValueAtTime(800, time);
       g.gain.setValueAtTime(0.0001, time);
-      g.gain.linearRampToValueAtTime(0.60, time + 0.001);
+      g.gain.linearRampToValueAtTime(0.24, time + 0.001);
       g.gain.exponentialRampToValueAtTime(0.0001, time + 0.06);
       osc.connect(g).connect(gain);
       osc.start(time); osc.stop(time + 0.07);
@@ -119,7 +119,7 @@ const ingredientDefinitions = [
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(freq, time);
       g.gain.setValueAtTime(0.0001, time);
-      g.gain.linearRampToValueAtTime(0.80, time + 0.008);
+      g.gain.linearRampToValueAtTime(0.32, time + 0.008);
       g.gain.exponentialRampToValueAtTime(0.0001, time + 0.22);
       osc.connect(lp).connect(g).connect(gain);
       osc.start(time); osc.stop(time + 0.24);
@@ -142,7 +142,7 @@ const ingredientDefinitions = [
       osc.frequency.setValueAtTime(110, time);
       osc.frequency.exponentialRampToValueAtTime(60, time + 0.1);
       g.gain.setValueAtTime(0.0001, time);
-      g.gain.linearRampToValueAtTime(0.80, time + 0.005);
+      g.gain.linearRampToValueAtTime(0.32, time + 0.005);
       g.gain.exponentialRampToValueAtTime(0.0001, time + 0.2);
       osc.connect(g).connect(gain);
       osc.start(time); osc.stop(time + 0.22);
@@ -168,7 +168,7 @@ const ingredientDefinitions = [
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, time);
       g.gain.setValueAtTime(0.0001, time);
-      g.gain.linearRampToValueAtTime(0.70, time + 0.01);
+      g.gain.linearRampToValueAtTime(0.28, time + 0.01);
       g.gain.exponentialRampToValueAtTime(0.0001, time + 0.3);
       osc.connect(g).connect(gain);
       osc.start(time); osc.stop(time + 0.32);
@@ -193,7 +193,7 @@ const ingredientDefinitions = [
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(freq, time);
       g.gain.setValueAtTime(0.0001, time);
-      g.gain.linearRampToValueAtTime(0.70, time + 0.008);
+      g.gain.linearRampToValueAtTime(0.28, time + 0.008);
       g.gain.exponentialRampToValueAtTime(0.0001, time + 0.28);
       osc.connect(lp).connect(g).connect(gain);
       osc.start(time); osc.stop(time + 0.3);
@@ -217,7 +217,7 @@ const ingredientDefinitions = [
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, time);
       g.gain.setValueAtTime(0.0001, time);
-      g.gain.linearRampToValueAtTime(0.60, time + 0.003);
+      g.gain.linearRampToValueAtTime(0.24, time + 0.003);
       g.gain.exponentialRampToValueAtTime(0.0001, time + 0.4);
       osc.connect(g).connect(gain);
       osc.start(time); osc.stop(time + 0.42);
@@ -242,8 +242,8 @@ const ingredientDefinitions = [
       const gG = ctx.createGain();
       const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(1200, time); lp.Q.value = 0.3;
       gG.gain.setValueAtTime(0.0001, time);
-      gG.gain.linearRampToValueAtTime(0.50, time + 0.1);
-      gG.gain.linearRampToValueAtTime(0.50, time + 1.2);
+      gG.gain.linearRampToValueAtTime(0.20, time + 0.1);
+      gG.gain.linearRampToValueAtTime(0.20, time + 1.2);
       gG.gain.linearRampToValueAtTime(0.0001, time + 1.8);
       chord.forEach((n) => {
         const o = ctx.createOscillator(); o.type = 'sine';
@@ -271,8 +271,8 @@ const ingredientDefinitions = [
       osc.frequency.setValueAtTime(midi(48), time); // C3
       osc2.frequency.setValueAtTime(midi(55), time); // G3
       g.gain.setValueAtTime(0.0001, time);
-      g.gain.linearRampToValueAtTime(0.40, time + 0.5);
-      g.gain.linearRampToValueAtTime(0.40, time + 2.0);
+      g.gain.linearRampToValueAtTime(0.16, time + 0.5);
+      g.gain.linearRampToValueAtTime(0.16, time + 2.0);
       g.gain.linearRampToValueAtTime(0.0001, time + 2.8);
       osc.connect(lp); osc2.connect(lp); lp.connect(g).connect(gain);
       osc.start(time); osc2.start(time);
@@ -302,7 +302,7 @@ const ingredientDefinitions = [
       const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(5000, time);
       const g = ctx.createGain();
       g.gain.setValueAtTime(0.0001, time);
-      g.gain.linearRampToValueAtTime(0.30, time + 0.01);
+      g.gain.linearRampToValueAtTime(0.12, time + 0.01);
       g.gain.linearRampToValueAtTime(0.0001, time + 0.12);
       src.connect(bp).connect(lp).connect(g).connect(gain);
       src.start(time); src.stop(time + len);
@@ -327,7 +327,7 @@ const ingredientDefinitions = [
       const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(3500, time);
       const g = ctx.createGain();
       g.gain.setValueAtTime(0.0001, time);
-      g.gain.linearRampToValueAtTime(0.24, time + 0.002);
+      g.gain.linearRampToValueAtTime(0.10, time + 0.002);
       g.gain.linearRampToValueAtTime(0.0001, time + 0.025);
       src.connect(lp).connect(g).connect(gain);
       src.start(time); src.stop(time + len);
