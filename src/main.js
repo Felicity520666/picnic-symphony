@@ -339,6 +339,11 @@ function bindStudio() {
   });
 
   container.querySelector('[data-action="finish"]')?.addEventListener('click', () => {
+    // If recipe mode, validate ingredients match before using recipe name
+    if (state.selectedRecipeId && !ingredientsExactlyMatchRecipe()) {
+      showRecipeMismatchFeedback();
+      return;
+    }
     navigateTo(SCREENS.POSTCARD);
     setTimeout(() => renderPostcardPreview(), 200);
   });
@@ -629,6 +634,79 @@ function ingredientsExactlyMatchRecipe() {
   const active = [...state.activeLayers].sort();
   const required = [...recipe.ingredients].sort();
   return active.length === required.length && active.every((id, i) => id === required[i]);
+}
+
+/** Show feedback when recipe ingredients don't match */
+function showRecipeMismatchFeedback() {
+  const recipe = recipeById.get(state.selectedRecipeId);
+  if (!recipe) return;
+
+  const active = new Set(state.activeLayers);
+  const required = new Set(recipe.ingredients);
+
+  // Find missing ingredients (in recipe but not active)
+  const missing = [...required].filter(id => !active.has(id));
+  // Find extra ingredients (active but not in recipe)
+  const extra = [...active].filter(id => !required.has(id));
+
+  // Highlight missing ingredients with soft red shake
+  missing.forEach(id => {
+    const btn = document.querySelector(`[data-ingredient="${id}"]`);
+    if (btn) {
+      btn.classList.add('is-recipe-missing');
+      setTimeout(() => btn.classList.remove('is-recipe-missing'), 2000);
+    }
+  });
+
+  // Highlight extra ingredients with soft amber
+  extra.forEach(id => {
+    const btn = document.querySelector(`[data-ingredient="${id}"]`);
+    if (btn) {
+      btn.classList.add('is-recipe-extra');
+      setTimeout(() => btn.classList.remove('is-recipe-extra'), 2000);
+    }
+  });
+
+  // Show spirit speech bubble
+  const speechEl = document.querySelector('[data-display="spirit-speech"]');
+  if (speechEl) {
+    const missingNames = missing.map(id => t(ingredientById.get(id)?.nameKey || id)).join(', ');
+    let msg = t('recipe.mismatch.message');
+    if (missing.length > 0) {
+      msg += ' ' + t('recipe.mismatch.missing', { names: missingNames });
+    }
+    speechEl.textContent = msg;
+    speechEl.closest('.spirit-speech')?.classList.add('is-warning');
+    setTimeout(() => {
+      speechEl.closest('.spirit-speech')?.classList.remove('is-warning');
+      updateSpiritMessage();
+    }, 4000);
+  }
+
+  // User can still finish as free composition — offer that option
+  // Show a brief message that they can tap Finish again to save as original
+  const msgEl = document.querySelector('[data-display="layer-message"]');
+  if (msgEl) {
+    msgEl.textContent = t('recipe.mismatch.hint');
+    msgEl.hidden = false;
+    setTimeout(() => { msgEl.hidden = true; }, 4000);
+  }
+
+  // Clear selectedRecipeId so next Finish attempt treats it as free composition
+  setState({ selectedRecipeId: null, mode: MODES.FREE });
+}
+
+/** Generate a creative name based on ingredient combination */
+function generateCreativeName(ingredientIds) {
+  if (!ingredientIds.length) return t('postcard.namePlaceholder');
+  // Use the first ingredient as the base flavor
+  const firstIngr = ingredientById.get(ingredientIds[0]);
+  const firstName = firstIngr ? t(firstIngr.nameKey) : '';
+  const count = ingredientIds.length;
+  if (count === 1) return t('creative.solo', { name: firstName });
+  if (count === 2) return t('creative.duo', { name: firstName });
+  if (count <= 4) return t('creative.blend', { name: firstName });
+  return t('creative.feast', { name: firstName });
 }
 
 /** Render preview when entering the postcard screen */

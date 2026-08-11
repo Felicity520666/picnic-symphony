@@ -73,7 +73,14 @@ const translations = {
     'recipes.steps': '{n} layers',
     'recipes.complete': 'Complete',
 
-    // Tutorial UI
+    // Recipe mismatch feedback
+    'recipe.mismatch.message': "That's not quite the recipe yet!",
+    'recipe.mismatch.missing': 'Still needed: {names}',
+    'recipe.mismatch.hint': 'Tap Finish again to save as your own creation.',
+    'creative.solo': '{name} Solo',
+    'creative.duo': '{name} Duet',
+    'creative.blend': '{name} Blend',
+    'creative.feast': '{name} Feast',
     'tutorial.next': 'Next',
     'tutorial.back': 'Back',
     'tutorial.skip': 'Skip',
@@ -116,7 +123,9 @@ const translations = {
 
     // Theme
     'theme.auto': 'Auto',
+    'theme.dawn': 'Dawn',
     'theme.day': 'Day',
+    'theme.dusk': 'Dusk',
     'theme.night': 'Night',
 
     // Language
@@ -240,7 +249,13 @@ const translations = {
     'recipes.steps': '{n} 层',
     'recipes.complete': '完成',
 
-    'tutorial.next': '下一步',
+    'recipe.mismatch.message': '还不太对哦！',
+    'recipe.mismatch.missing': '还需要：{names}',
+    'recipe.mismatch.hint': '再点一次"完成"可以保存为你的原创作品。',
+    'creative.solo': '{name}独奏',
+    'creative.duo': '{name}二重奏',
+    'creative.blend': '{name}混搭',
+    'creative.feast': '{name}盛宴',
     'tutorial.back': '返回',
     'tutorial.skip': '跳过',
     'tutorial.finish': '开始创作',
@@ -279,7 +294,9 @@ const translations = {
     'postcard.namePlaceholder': '草地上的午后',
 
     'theme.auto': '自动',
+    'theme.dawn': '黎明',
     'theme.day': '白天',
+    'theme.dusk': '黄昏',
     'theme.night': '夜晚',
     'lang.label': '语言',
     'nav.back': '返回',
@@ -343,7 +360,7 @@ const translations = {
   },
 
   fr: {
-    'welcome.title': 'Picnic Symphony',
+    'welcome.title': 'Symphonie du Pique-nique',
     'welcome.body': "Certains après-midi ne demandent rien d'autre qu'une couverture dans l'herbe et le temps d'écouter. Ici, les fruits gardent le rythme, le verre recueille la mélodie, et chaque petit son attend de trouver sa place dans une chanson.",
     'welcome.enter': 'Commencer le pique-nique',
     'welcome.howItWorks': 'Comment ça marche',
@@ -399,7 +416,13 @@ const translations = {
     'recipes.steps': '{n} couches',
     'recipes.complete': 'Terminé',
 
-    'tutorial.next': 'Suivant',
+    'recipe.mismatch.message': 'Ce n\'est pas tout à fait la recette !',
+    'recipe.mismatch.missing': 'Il manque : {names}',
+    'recipe.mismatch.hint': 'Appuyez à nouveau sur Terminer pour sauvegarder comme création originale.',
+    'creative.solo': 'Solo de {name}',
+    'creative.duo': 'Duo de {name}',
+    'creative.blend': 'Mélange de {name}',
+    'creative.feast': 'Festin de {name}',
     'tutorial.back': 'Retour',
     'tutorial.skip': 'Passer',
     'tutorial.finish': 'Commencer à créer',
@@ -438,7 +461,9 @@ const translations = {
     'postcard.namePlaceholder': "Un après-midi dans l'herbe",
 
     'theme.auto': 'Auto',
+    'theme.dawn': 'Aube',
     'theme.day': 'Jour',
+    'theme.dusk': 'Crépuscule',
     'theme.night': 'Nuit',
     'lang.label': 'Langue',
     'nav.back': 'Retour',
@@ -502,7 +527,7 @@ const translations = {
   },
 
   es: {
-    'welcome.title': 'Picnic Symphony',
+    'welcome.title': 'Sinfonía del Picnic',
     'welcome.body': 'Hay tardes que no piden nada más que una manta sobre la hierba y tiempo para escuchar. Aquí, la fruta sostiene el ritmo, el cristal recoge la melodía y cada pequeño sonido espera encontrar su lugar en una canción.',
     'welcome.enter': 'Empezar el picnic',
     'welcome.howItWorks': 'Cómo funciona',
@@ -558,7 +583,13 @@ const translations = {
     'recipes.steps': '{n} capas',
     'recipes.complete': 'Completa',
 
-    'tutorial.next': 'Siguiente',
+    'recipe.mismatch.message': '¡Aún no es la receta completa!',
+    'recipe.mismatch.missing': 'Faltan: {names}',
+    'recipe.mismatch.hint': 'Pulsa Terminar de nuevo para guardar como creación propia.',
+    'creative.solo': 'Solo de {name}',
+    'creative.duo': 'Dúo de {name}',
+    'creative.blend': 'Mezcla de {name}',
+    'creative.feast': 'Festín de {name}',
     'tutorial.back': 'Atrás',
     'tutorial.skip': 'Saltar',
     'tutorial.finish': 'Empezar a crear',
@@ -597,7 +628,9 @@ const translations = {
     'postcard.namePlaceholder': 'Una tarde en la hierba',
 
     'theme.auto': 'Auto',
+    'theme.dawn': 'Amanecer',
     'theme.day': 'Día',
+    'theme.dusk': 'Atardecer',
     'theme.night': 'Noche',
     'lang.label': 'Idioma',
     'nav.back': 'Volver',
@@ -661,7 +694,7 @@ const translations = {
   },
 
   de: {
-    'welcome.title': 'Picnic Symphony',
+    'welcome.title': 'Picknick-Sinfonie',
     'welcome.body': 'Breite die Picknickdecke aus und verwandle Obst, Gebäck und Gläser in Rhythmus und Melodie. Wähle deine Lieblingsklänge und forme daraus deinen eigenen Sommersong.',
     'welcome.enter': 'Jetzt komponieren',
     'spirits.title': 'Ein musikalischer Begleiter',
@@ -680,9 +713,11 @@ const translations = {
     'studio.pickRecipe': 'Wähle eine Zutat, um zu beginnen.', 'studio.finish': 'Fertig', 'studio.recipeBook': 'Rezepte',
     'recipes.title': 'Rezepte', 'recipes.subtitle': 'Jedes Arrangement erzählt eine andere Geschichte.',
     'recipes.back': 'Zurück', 'recipes.steps': '{n} Klänge', 'recipes.complete': 'Fertig',
+    'recipe.mismatch.message': 'Das ist noch nicht ganz das Rezept!', 'recipe.mismatch.missing': 'Es fehlt noch: {names}', 'recipe.mismatch.hint': 'Noch einmal Fertig tippen, um als eigenes Stück zu speichern.',
+    'creative.solo': '{name}-Solo', 'creative.duo': '{name}-Duett', 'creative.blend': '{name}-Mix', 'creative.feast': '{name}-Festmahl',
     'postcard.title': 'Deine Komposition', 'postcard.download': 'Herunterladen', 'postcard.newPicnic': 'Neues Picknick',
     'postcard.backToStudio': 'Zurück', 'postcard.nameLabel': 'Gib deinem Stück einen Namen', 'postcard.namePlaceholder': 'Ein Nachmittag im Grünen',
-    'theme.auto': 'Auto', 'theme.day': 'Tag', 'theme.night': 'Nacht', 'nav.back': 'Zurück',
+    'theme.auto': 'Auto', 'theme.dawn': 'Morgen', 'theme.day': 'Tag', 'theme.dusk': 'Dämmerung', 'theme.night': 'Nacht', 'nav.back': 'Zurück',
     'ingredient.watermelon.name': 'Wassermelone', 'ingredient.watermelon.role': 'Kick',
     'ingredient.strawberry.name': 'Erdbeere', 'ingredient.strawberry.role': 'Klatscher',
     'ingredient.cherry.name': 'Kirsche', 'ingredient.cherry.role': 'Holzblock',
@@ -703,7 +738,7 @@ const translations = {
   },
 
   ja: {
-    'welcome.title': 'Picnic Symphony',
+    'welcome.title': 'ピクニック・シンフォニー',
     'welcome.body': 'ピクニックシートを広げて、果物やお菓子、グラスの音をリズムとメロディーに変えてみましょう。好きな音を重ねて、自分だけの夏の曲を作れます。',
     'welcome.enter': '曲を作る',
     'spirits.title': '草原を旅する音の案内役',
@@ -722,9 +757,11 @@ const translations = {
     'studio.pickRecipe': '音をひとつ選んで始めましょう。', 'studio.finish': '完成', 'studio.recipeBook': 'レシピ',
     'recipes.title': 'レシピ', 'recipes.subtitle': 'それぞれの組み合わせが異なる物語を語ります。',
     'recipes.back': '戻る', 'recipes.steps': '{n} 音', 'recipes.complete': '完成',
+    'recipe.mismatch.message': 'まだレシピ通りではないようです！', 'recipe.mismatch.missing': '不足：{names}', 'recipe.mismatch.hint': 'もう一度「完成」を押すとオリジナル作品として保存できます。',
+    'creative.solo': '{name}ソロ', 'creative.duo': '{name}デュエット', 'creative.blend': '{name}ブレンド', 'creative.feast': '{name}フィースト',
     'postcard.title': 'あなたの作品', 'postcard.download': 'ダウンロード', 'postcard.newPicnic': '新しいピクニック',
     'postcard.backToStudio': '戻る', 'postcard.nameLabel': '曲に名前をつける', 'postcard.namePlaceholder': '草原の午後',
-    'theme.auto': '自動', 'theme.day': '昼', 'theme.night': '夜', 'nav.back': '戻る',
+    'theme.auto': '自動', 'theme.dawn': '夜明け', 'theme.day': '昼', 'theme.dusk': '夕暮れ', 'theme.night': '夜', 'nav.back': '戻る',
     'ingredient.watermelon.name': 'スイカ', 'ingredient.watermelon.role': 'キック',
     'ingredient.strawberry.name': 'イチゴ', 'ingredient.strawberry.role': 'クラップ',
     'ingredient.cherry.name': 'サクランボ', 'ingredient.cherry.role': 'ウッドブロック',
@@ -745,7 +782,7 @@ const translations = {
   },
 
   hi: {
-    'welcome.title': 'Picnic Symphony',
+    'welcome.title': 'पिकनिक सिम्फ़नी',
     'welcome.body': 'पिकनिक की चादर बिछाइए और फलों, मिठाइयों व गिलासों की आवाज़ों को ताल और धुन में बदलिए। अपनी पसंद की आवाज़ें मिलाकर गर्मियों की अपनी खास धुन बनाइए।',
     'welcome.enter': 'धुन बनाना शुरू करें',
     'spirits.title': 'घास के मैदान का संगीत साथी',
@@ -764,9 +801,11 @@ const translations = {
     'studio.pickRecipe': 'शुरू करने के लिए एक सामग्री चुनें।', 'studio.finish': 'पूरा करें', 'studio.recipeBook': 'रेसिपी',
     'recipes.title': 'रेसिपी', 'recipes.subtitle': 'हर रेसिपी एक अलग कहानी कहती है।',
     'recipes.back': 'वापस', 'recipes.steps': '{n} ध्वनियाँ', 'recipes.complete': 'पूरा',
+    'recipe.mismatch.message': 'अभी रेसिपी पूरी नहीं हुई!', 'recipe.mismatch.missing': 'अभी चाहिए: {names}', 'recipe.mismatch.hint': 'फिर से "पूरा करें" दबाएँ और अपनी मौलिक रचना सहेजें।',
+    'creative.solo': '{name} एकल', 'creative.duo': '{name} जोड़ी', 'creative.blend': '{name} मिश्रण', 'creative.feast': '{name} दावत',
     'postcard.title': 'आपकी रचना', 'postcard.download': 'डाउनलोड करें', 'postcard.newPicnic': 'नई पिकनिक',
     'postcard.backToStudio': 'वापस जाएँ', 'postcard.nameLabel': 'अपनी धुन को नाम दें', 'postcard.namePlaceholder': 'घास पर एक दोपहर',
-    'theme.auto': 'स्वचालित', 'theme.day': 'दिन', 'theme.night': 'रात', 'nav.back': 'वापस',
+    'theme.auto': 'स्वचालित', 'theme.dawn': 'भोर', 'theme.day': 'दिन', 'theme.dusk': 'संध्या', 'theme.night': 'रात', 'nav.back': 'वापस',
     'ingredient.watermelon.name': 'तरबूज़', 'ingredient.watermelon.role': 'किक',
     'ingredient.strawberry.name': 'स्ट्रॉबेरी', 'ingredient.strawberry.role': 'ताली',
     'ingredient.cherry.name': 'चेरी', 'ingredient.cherry.role': 'वुडब्लॉक',
@@ -787,7 +826,7 @@ const translations = {
   },
 
   ar: {
-    'welcome.title': 'Picnic Symphony',
+    'welcome.title': 'سيمفونية النزهة',
     'welcome.body': 'افرد بساط النزهة وحوّل أصوات الفاكهة والحلوى والأكواب إلى إيقاع ولحن. امزج الأصوات التي تحبها واصنع مقطوعتك الصيفية الخاصة.',
     'welcome.enter': 'ابدأ التأليف',
     'spirits.title': 'رفيق موسيقي للمرج', 'spirits.subtitle': 'لكل رفيق طريقته في الاستماع. اختر الرفيق الذي تود أن يصاحبك.', 'spirits.continue': 'متابعة',
@@ -803,9 +842,11 @@ const translations = {
     'studio.layerCount': '{n} / 6', 'studio.layerFull': 'الحد الأقصى ستة أصوات.',
     'studio.pickRecipe': 'اختر مكوّنًا للبدء.', 'studio.finish': 'إنهاء', 'studio.recipeBook': 'الوصفات',
     'recipes.title': 'الوصفات', 'recipes.subtitle': 'كل وصفة تروي قصة مختلفة.', 'recipes.back': 'عودة', 'recipes.steps': '{n} أصوات', 'recipes.complete': 'تم',
+    'recipe.mismatch.message': 'لم تكتمل الوصفة بعد!', 'recipe.mismatch.missing': 'ما زلت بحاجة إلى: {names}', 'recipe.mismatch.hint': 'اضغط "إنهاء" مرة أخرى لحفظها كإبداعك الخاص.',
+    'creative.solo': 'منفرد {name}', 'creative.duo': 'ثنائي {name}', 'creative.blend': 'مزيج {name}', 'creative.feast': 'وليمة {name}',
     'postcard.title': 'عملك', 'postcard.download': 'تنزيل', 'postcard.newPicnic': 'نزهة جديدة',
     'postcard.backToStudio': 'عودة', 'postcard.nameLabel': 'سمِّ مقطوعتك', 'postcard.namePlaceholder': 'ظهيرة في المرج',
-    'theme.auto': 'تلقائي', 'theme.day': 'نهار', 'theme.night': 'ليل', 'nav.back': 'عودة',
+    'theme.auto': 'تلقائي', 'theme.dawn': 'فجر', 'theme.day': 'نهار', 'theme.dusk': 'غسق', 'theme.night': 'ليل', 'nav.back': 'عودة',
     'ingredient.watermelon.name': 'بطيخ', 'ingredient.watermelon.role': 'إيقاع',
     'ingredient.strawberry.name': 'فراولة', 'ingredient.strawberry.role': 'تصفيق',
     'ingredient.cherry.name': 'كرز', 'ingredient.cherry.role': 'خشب',
@@ -824,7 +865,7 @@ const translations = {
   },
 
   ko: {
-    'welcome.title': 'Picnic Symphony',
+    'welcome.title': '피크닉 심포니',
     'welcome.body': '피크닉 담요를 펼치고 과일, 디저트, 유리잔의 소리를 리듬과 멜로디로 바꿔 보세요. 마음에 드는 소리를 겹쳐 나만의 여름 음악을 만들 수 있어요.',
     'welcome.enter': '음악 만들기',
     'spirits.title': '초원의 음악 안내자', 'spirits.subtitle': '안내자마다 소리를 듣는 방식이 달라요. 함께 음악을 만들 친구를 선택하세요.', 'spirits.continue': '계속',
@@ -840,9 +881,11 @@ const translations = {
     'studio.layerCount': '{n} / 6', 'studio.layerFull': '최대 6개입니다. 하나를 빼고 추가하세요.',
     'studio.pickRecipe': '시작할 재료를 선택하세요.', 'studio.finish': '완성', 'studio.recipeBook': '레시피',
     'recipes.title': '레시피', 'recipes.subtitle': '각 조합이 다른 이야기를 들려줍니다.', 'recipes.back': '뒤로', 'recipes.steps': '{n} 소리', 'recipes.complete': '완성',
+    'recipe.mismatch.message': '아직 레시피와 맞지 않아요!', 'recipe.mismatch.missing': '부족한 재료: {names}', 'recipe.mismatch.hint': '다시 "완성"을 누르면 나만의 작품으로 저장됩니다.',
+    'creative.solo': '{name} 솔로', 'creative.duo': '{name} 듀엣', 'creative.blend': '{name} 블렌드', 'creative.feast': '{name} 페스트',
     'postcard.title': '나의 작품', 'postcard.download': '다운로드', 'postcard.newPicnic': '새 피크닉',
     'postcard.backToStudio': '돌아가기', 'postcard.nameLabel': '곡에 이름 붙이기', 'postcard.namePlaceholder': '풀밭의 오후',
-    'theme.auto': '자동', 'theme.day': '낮', 'theme.night': '밤', 'nav.back': '뒤로',
+    'theme.auto': '자동', 'theme.dawn': '새벽', 'theme.day': '낮', 'theme.dusk': '해질녘', 'theme.night': '밤', 'nav.back': '뒤로',
     'ingredient.watermelon.name': '수박', 'ingredient.watermelon.role': '킥',
     'ingredient.strawberry.name': '딸기', 'ingredient.strawberry.role': '클랩',
     'ingredient.cherry.name': '체리', 'ingredient.cherry.role': '우드블록',

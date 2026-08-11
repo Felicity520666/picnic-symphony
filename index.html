@@ -12,11 +12,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Noto+Sans+SC:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="preload" as="image" href="assets/backgrounds/meadow-dawn.webp">
+  <link rel="preload" as="image" href="assets/backgrounds/meadow-day.webp">
+  <link rel="preload" as="image" href="assets/backgrounds/meadow-dusk.webp">
+  <link rel="preload" as="image" href="assets/backgrounds/meadow-night.webp">
 </head>
 <body>
   <!-- Environment background layers -->
   <div class="env-bg" aria-hidden="true">
+    <div class="env-bg__dawn"></div>
     <div class="env-bg__day"></div>
+    <div class="env-bg__dusk"></div>
     <div class="env-bg__night"></div>
   </div>
 
@@ -54,7 +60,9 @@
     </div>
     <div class="theme-toggle" role="group" aria-label="Theme">
       <button type="button" data-action="set-theme" data-theme="auto" class="theme-btn is-active" data-i18n="theme.auto">Auto</button>
+      <button type="button" data-action="set-theme" data-theme="dawn" class="theme-btn" data-i18n="theme.dawn">Dawn</button>
       <button type="button" data-action="set-theme" data-theme="day" class="theme-btn" data-i18n="theme.day">Day</button>
+      <button type="button" data-action="set-theme" data-theme="dusk" class="theme-btn" data-i18n="theme.dusk">Dusk</button>
       <button type="button" data-action="set-theme" data-theme="night" class="theme-btn" data-i18n="theme.night">Night</button>
     </div>
   </nav>
@@ -272,6 +280,6 @@
   <!-- Guide spirit floating layer (above all screens) -->
   <div id="guide-spirit-layer" class="guide-spirit-layer" aria-hidden="true"></div>
 
-  <script type="module" src="src/main.js?v=6"></script>
+  <script type="module" src="src/main.js?v=9"></script>
 </body>
 </html>

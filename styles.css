@@ -105,22 +105,28 @@ body.scroll-locked { overflow: hidden; }
   z-index: 0;
   pointer-events: none;
 }
+.env-bg__dawn,
 .env-bg__day,
+.env-bg__dusk,
 .env-bg__night {
   position: absolute; inset: 0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   transition: opacity 1.8s ease;
-}
-.env-bg__day {
-  background-image: url('assets/backgrounds/meadow-day.webp');
-  opacity: 1;
-}
-.env-bg__night {
-  background-image: url('assets/backgrounds/meadow-night.webp');
   opacity: 0;
 }
+.env-bg__dawn { background-image: url('assets/backgrounds/meadow-dawn.webp'); }
+.env-bg__day { background-image: url('assets/backgrounds/meadow-day.webp'); opacity: 1; }
+.env-bg__dusk { background-image: url('assets/backgrounds/meadow-dusk.webp'); }
+.env-bg__night { background-image: url('assets/backgrounds/meadow-night.webp'); }
+
+/* Theme-driven opacity switching */
+:root[data-theme="dawn"] .env-bg__dawn { opacity: 1; }
+:root[data-theme="dawn"] .env-bg__day { opacity: 0; }
+:root[data-theme="day"] .env-bg__day { opacity: 1; }
+:root[data-theme="dusk"] .env-bg__day { opacity: 0; }
+:root[data-theme="dusk"] .env-bg__dusk { opacity: 1; }
 :root[data-theme="night"] .env-bg__day { opacity: 0; }
 :root[data-theme="night"] .env-bg__night { opacity: 1; }
 
@@ -144,6 +150,12 @@ body.scroll-locked { overflow: hidden; }
 :root[data-theme="night"] .env-foreground__grass {
   filter: brightness(0.58) saturate(0.82) hue-rotate(8deg);
 }
+:root[data-theme="dusk"] .env-foreground__grass {
+  filter: brightness(0.78) saturate(0.9) hue-rotate(4deg);
+}
+:root[data-theme="dawn"] .env-foreground__grass {
+  filter: brightness(0.92) saturate(1.05) hue-rotate(-2deg);
+}
 
 @keyframes grassSwayForeground {
   0%, 100% { transform: translateX(0) skewX(0deg); }
@@ -163,6 +175,9 @@ body.scroll-locked { overflow: hidden; }
 }
 :root[data-theme="night"] .env-lantern {
   opacity: 1;
+}
+:root[data-theme="dusk"] .env-lantern {
+  opacity: 0.6;
 }
 .env-lantern__img {
   width: 100%; height: 100%;
@@ -190,8 +205,9 @@ body.scroll-locked { overflow: hidden; }
 
 /* ─── Global Toolbar ────────────────────────────── */
 .global-toolbar {
-  position: fixed; top: 10px; right: 12px;
+  position: fixed; top: 10px; right: 12px; left: auto;
   display: flex; gap: 6px; align-items: center; z-index: var(--z-header);
+  direction: ltr; /* Always LTR for toolbar positioning regardless of page direction */
 }
 .toolbar-btn {
   padding: 5px 12px; border: 1px solid var(--card-border);
@@ -358,6 +374,11 @@ body.scroll-locked { overflow: hidden; }
   border-color: rgba(197, 218, 178, 0.18);
   box-shadow: 0 18px 55px rgba(0, 0, 0, 0.3);
 }
+:root[data-theme="dusk"] .studio-shell {
+  background: rgba(35, 30, 48, 0.78);
+  border-color: rgba(197, 180, 210, 0.18);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+}
 
 .studio-toolbar {
   display: flex; align-items: center; justify-content: space-between;
@@ -432,6 +453,29 @@ body.scroll-locked { overflow: hidden; }
 .ingredient-btn__img { width: 58px; height: 58px; object-fit: contain; }
 .ingredient-btn__name { font-size: 0.9rem; font-weight: 600; color: var(--ink); line-height: 1.2; }
 .ingredient-btn__role { font-size: 0.68rem; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+
+/* Recipe feedback: missing ingredient */
+.ingredient-btn.is-recipe-missing {
+  border-color: #e88; box-shadow: 0 0 0 3px rgba(220,80,80,0.2);
+  animation: recipeMissingShake 400ms ease-out;
+}
+.ingredient-btn.is-recipe-extra {
+  border-color: #dda644; box-shadow: 0 0 0 3px rgba(220,166,68,0.2);
+  animation: recipeMissingShake 400ms ease-out;
+}
+@keyframes recipeMissingShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+
+/* Spirit speech warning state */
+.spirit-speech.is-warning {
+  background: rgba(220,100,80,0.08);
+  border-color: rgba(220,100,80,0.2);
+}
 
 /* Studio actions */
 .studio-actions { display: flex; justify-content: flex-end; align-items: center; gap: 14px; }
@@ -751,7 +795,9 @@ body.scroll-locked { overflow: hidden; }
     transition-duration: 0.001ms !important;
   }
   /* Allow background cross-fades (opacity only, no motion) */
+  .env-bg__dawn,
   .env-bg__day,
+  .env-bg__dusk,
   .env-bg__night,
   .env-foreground__grass,
   .env-lantern {
