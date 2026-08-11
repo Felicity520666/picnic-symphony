@@ -445,6 +445,8 @@ function surpriseBasket() {
   if (!state.context) createAudioGraph();
   if (state.context && state.context.state === 'suspended') state.context.resume();
   clearAllLayers();
+  // Surprise cancels any active recipe
+  setState({ selectedRecipeId: null, recipeStepIndex: 0, mode: MODES.FREE });
   const shuffled = [...ingredientDefinitions].sort(() => Math.random() - 0.5);
   const count = 3 + Math.floor(Math.random() * 3); // 3–5
   for (let i = 0; i < Math.min(count, MAX_LAYERS); i++) {
@@ -457,7 +459,6 @@ function surpriseBasket() {
   });
   updateAmbienceDucking();
   updateStudioUI();
-  // Start transport if not playing
   if (!state.playing) {
     resumeAudio().then(() => startTransport());
   }
@@ -619,6 +620,17 @@ function bindPostcard() {
   });
 }
 
+// ─── Recipe match helper ─────────────────────────────────────────────────────
+
+function ingredientsExactlyMatchRecipe() {
+  if (!state.selectedRecipeId) return false;
+  const recipe = recipeById.get(state.selectedRecipeId);
+  if (!recipe) return false;
+  const active = [...state.activeLayers].sort();
+  const required = [...recipe.ingredients].sort();
+  return active.length === required.length && active.every((id, i) => id === required[i]);
+}
+
 /** Render preview when entering the postcard screen */
 async function renderPostcardPreview() {
   const canvas = document.getElementById('postcard-canvas');
@@ -626,17 +638,15 @@ async function renderPostcardPreview() {
   const active = [...state.activeLayers];
   if (!active.length) return;
 
-  // Determine title based on mode
-  const isRecipeMode = state.mode === MODES.RECIPE && state.selectedRecipeId;
+  // Determine title: use recipe name ONLY if ingredients still exactly match
+  const recipeMatches = ingredientsExactlyMatchRecipe();
   const nameSection = document.getElementById('postcard-name-section');
 
   let title;
-  if (isRecipeMode) {
-    // Hide name input, use recipe name
+  if (recipeMatches) {
     if (nameSection) nameSection.style.display = 'none';
     title = t(recipeById.get(state.selectedRecipeId)?.nameKey || '');
   } else {
-    // Show name input for free composition
     if (nameSection) nameSection.style.display = '';
     title = document.querySelector('.postcard-name-input')?.value || t('postcard.namePlaceholder');
   }
@@ -659,9 +669,9 @@ async function handleDownload() {
   exportCanvas.width = 1600;
   exportCanvas.height = 1200;
 
-  const isRecipeMode = state.mode === MODES.RECIPE && state.selectedRecipeId;
+  const recipeMatches = ingredientsExactlyMatchRecipe();
   let title;
-  if (isRecipeMode) {
+  if (recipeMatches) {
     title = t(recipeById.get(state.selectedRecipeId)?.nameKey || '');
   } else {
     title = document.querySelector('.postcard-name-input')?.value || t('postcard.namePlaceholder');

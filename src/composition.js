@@ -34,8 +34,6 @@ const ROTATIONS = {
   honey: 2, mint: 5, sandwich: -2,
 };
 
-const SCALE_BY_COUNT = { 1: 0.52, 2: 0.4, 3: 0.34, 4: 0.29, 5: 0.26, 6: 0.23 };
-
 // ─── Image loading ────────────────────────────────────────────────────────────
 
 export async function loadImage(src) {
@@ -51,83 +49,49 @@ export async function loadImage(src) {
 
 // ─── Basket-relative layout ───────────────────────────────────────────────────
 
+// Normalized positions within basket interior [x%, y%] — center of each item
+const LAYOUT_POSITIONS = {
+  1: [[0.50, 0.50]],
+  2: [[0.34, 0.50], [0.66, 0.50]],
+  3: [[0.34, 0.36], [0.66, 0.36], [0.50, 0.68]],
+  4: [[0.32, 0.34], [0.68, 0.34], [0.32, 0.68], [0.68, 0.68]],
+  5: [[0.25, 0.34], [0.50, 0.30], [0.75, 0.34], [0.36, 0.70], [0.64, 0.70]],
+  6: [[0.24, 0.33], [0.50, 0.29], [0.76, 0.33], [0.24, 0.69], [0.50, 0.73], [0.76, 0.69]],
+};
+
+// Size as fraction of interior width — much larger than before
+const SIZE_RATIO = { 1: 0.44, 2: 0.34, 3: 0.30, 4: 0.28, 5: 0.24, 6: 0.22 };
+
 /**
  * Compute ingredient positions relative to a basket bounding box.
- * Basket interior is roughly the central 70% width and 50% height of the image.
+ * Items fill 55-70% of the usable basket interior.
  */
 export function getBasketIngredientLayout(ids, basketBounds) {
   const count = ids.length;
   if (count === 0) return [];
 
-  // Interior of basket (centered, upper portion)
+  // Basket interior — the usable area inside the basket
   const interior = {
-    x: basketBounds.x + basketBounds.w * 0.15,
-    y: basketBounds.y + basketBounds.h * 0.12,
-    w: basketBounds.w * 0.7,
-    h: basketBounds.h * 0.52,
+    x: basketBounds.x + basketBounds.w * 0.16,
+    y: basketBounds.y + basketBounds.h * 0.25,
+    w: basketBounds.w * 0.68,
+    h: basketBounds.h * 0.48,
   };
 
-  const scale = SCALE_BY_COUNT[count] || 0.23;
-  const size = Math.min(interior.w, interior.h) * scale;
-  const cx = interior.x + interior.w / 2;
-  const cy = interior.y + interior.h / 2;
+  const ratio = SIZE_RATIO[Math.min(count, 6)] || 0.22;
+  const size = interior.w * ratio;
+  const positions = LAYOUT_POSITIONS[Math.min(count, 6)] || LAYOUT_POSITIONS[6];
 
-  const layouts = [];
-
-  if (count === 1) {
-    layouts.push({ x: cx - size / 2, y: cy - size / 2, width: size, height: size, rotation: ROTATIONS[ids[0]] || 0 });
-  } else if (count === 2) {
-    const gap = size * 0.6;
-    layouts.push(
-      { x: cx - size - gap / 2 + size / 2, y: cy - size / 2, width: size, height: size, rotation: ROTATIONS[ids[0]] || 0 },
-      { x: cx + gap / 2 - size / 2 + size / 2, y: cy - size / 2 + size * 0.08, width: size, height: size, rotation: ROTATIONS[ids[1]] || 0 },
-    );
-  } else if (count === 3) {
-    layouts.push(
-      { x: cx - size / 2, y: cy - size * 0.7, width: size, height: size, rotation: ROTATIONS[ids[0]] || 0 },
-      { x: cx - size * 1.0, y: cy + size * 0.05, width: size, height: size, rotation: ROTATIONS[ids[1]] || 0 },
-      { x: cx + size * 0.1, y: cy + size * 0.1, width: size, height: size, rotation: ROTATIONS[ids[2]] || 0 },
-    );
-  } else if (count === 4) {
-    const gapX = size * 0.35;
-    const gapY = size * 0.3;
-    layouts.push(
-      { x: cx - size - gapX / 2, y: cy - size / 2 - gapY / 2, width: size, height: size, rotation: ROTATIONS[ids[0]] || 0 },
-      { x: cx + gapX / 2, y: cy - size / 2 - gapY / 2 + size * 0.06, width: size, height: size, rotation: ROTATIONS[ids[1]] || 0 },
-      { x: cx - size - gapX / 2 + size * 0.08, y: cy + gapY / 2, width: size, height: size, rotation: ROTATIONS[ids[2]] || 0 },
-      { x: cx + gapX / 2 - size * 0.05, y: cy + gapY / 2 + size * 0.06, width: size, height: size, rotation: ROTATIONS[ids[3]] || 0 },
-    );
-  } else if (count === 5) {
-    const row1Y = cy - size * 0.6;
-    const row2Y = cy + size * 0.25;
-    const spread = size * 1.1;
-    layouts.push(
-      { x: cx - spread, y: row1Y, width: size, height: size, rotation: ROTATIONS[ids[0]] || 0 },
-      { x: cx - size / 2, y: row1Y - size * 0.1, width: size, height: size, rotation: ROTATIONS[ids[1]] || 0 },
-      { x: cx + spread - size, y: row1Y + size * 0.05, width: size, height: size, rotation: ROTATIONS[ids[2]] || 0 },
-      { x: cx - size * 0.8, y: row2Y, width: size, height: size, rotation: ROTATIONS[ids[3]] || 0 },
-      { x: cx + size * 0.0, y: row2Y + size * 0.05, width: size, height: size, rotation: ROTATIONS[ids[4]] || 0 },
-    );
-  } else {
-    // 6: 3×2
-    const gapX = size * 0.25;
-    const gapY = size * 0.2;
-    const totalW = size * 3 + gapX * 2;
-    const startX = cx - totalW / 2;
-    const startY = cy - size - gapY / 2;
-    for (let i = 0; i < Math.min(count, 6); i++) {
-      const col = i % 3;
-      const row = Math.floor(i / 3);
-      layouts.push({
-        x: startX + col * (size + gapX),
-        y: startY + row * (size + gapY) + (col === 1 ? size * 0.06 : 0),
-        width: size, height: size,
-        rotation: ROTATIONS[ids[i]] || 0,
-      });
-    }
-  }
-
-  return layouts;
+  return ids.slice(0, 6).map((id, i) => {
+    const [px, py] = positions[i] || [0.5, 0.5];
+    return {
+      x: interior.x + interior.w * px - size / 2,
+      y: interior.y + interior.h * py - size / 2,
+      width: size,
+      height: size,
+      rotation: ROTATIONS[id] || 0,
+    };
+  });
 }
 
 // ─── Canvas drawing ───────────────────────────────────────────────────────────
@@ -243,8 +207,8 @@ export async function renderFullComposition(canvas, ingredientIds, options = {})
 
   // Ingredient names at bottom
   ctx.textAlign = 'center';
-  ctx.font = '500 16px Nunito, sans-serif';
-  ctx.fillStyle = isNight ? '#a8b4a8' : '#5f6d5f';
+  ctx.font = '600 22px Nunito, Noto Sans, sans-serif';
+  ctx.fillStyle = isNight ? '#b8c4b8' : '#4a5e4a';
   const nameStr = ingredientIds.map(id => {
     const cap = id.charAt(0).toUpperCase() + id.slice(1);
     return cap === 'Grape' ? 'Grapes' : cap;
