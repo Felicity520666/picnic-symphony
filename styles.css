@@ -475,7 +475,7 @@ body.scroll-locked { overflow: hidden; }
 .postcard-title { margin: 0 0 12px; font-family: var(--font-display); font-size: 1.8rem; color: var(--ink); }
 .postcard-name-label { display: block; margin-bottom: 12px; text-align: left; font-size: 0.82rem; color: var(--ink-soft); }
 .postcard-name-input { display: block; width: 100%; margin-top: 4px; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--card-border); background: var(--card-bg); color: var(--ink); }
-.postcard-canvas { width: 100%; max-width: 700px; border-radius: var(--radius-md); border: 1px solid var(--card-border); margin: 0 auto 16px; }
+.postcard-canvas { width: 100%; max-width: 640px; aspect-ratio: 4 / 3; border-radius: var(--radius-lg); border: 1px solid var(--card-border); margin: 0 auto 16px; display: block; }
 .postcard-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 
 /* ─── How It Works Modal ────────────────────────── */

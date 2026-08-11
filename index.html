@@ -43,8 +43,11 @@
       <ul class="lang-dropdown__menu" id="lang-menu" role="listbox" aria-label="Select language" hidden>
         <li class="lang-dropdown__item" role="option" data-lang="en" aria-selected="true">English</li>
         <li class="lang-dropdown__item" role="option" data-lang="zh" aria-selected="false">简体中文</li>
-        <li class="lang-dropdown__item" role="option" data-lang="fr" aria-selected="false">Français</li>
         <li class="lang-dropdown__item" role="option" data-lang="es" aria-selected="false">Español</li>
+        <li class="lang-dropdown__item" role="option" data-lang="fr" aria-selected="false">Français</li>
+        <li class="lang-dropdown__item" role="option" data-lang="de" aria-selected="false">Deutsch</li>
+        <li class="lang-dropdown__item" role="option" data-lang="ja" aria-selected="false">日本語</li>
+        <li class="lang-dropdown__item" role="option" data-lang="hi" aria-selected="false">हिन्दी</li>
       </ul>
     </div>
     <div class="theme-toggle" role="group" aria-label="Theme">
@@ -251,11 +254,11 @@
   <section data-screen="postcard" class="screen postcard-screen" hidden aria-labelledby="postcard-title">
     <div class="postcard-card">
       <h2 id="postcard-title" class="postcard-title" data-i18n="postcard.title">Your Composition</h2>
-      <label class="postcard-name-label">
+      <label class="postcard-name-label" id="postcard-name-section">
         <span data-i18n="postcard.nameLabel">Name this piece</span>
-        <input type="text" class="postcard-name-input" data-i18n="postcard.namePlaceholder" data-i18n-attr="placeholder" placeholder="Afternoon in the grass">
+        <input type="text" class="postcard-name-input" maxlength="45" data-i18n="postcard.namePlaceholder" data-i18n-attr="placeholder" placeholder="Afternoon in the grass">
       </label>
-      <canvas id="postcard-canvas" class="postcard-canvas" width="800" height="600"></canvas>
+      <canvas id="postcard-canvas" class="postcard-canvas" width="1600" height="1200"></canvas>
       <div class="postcard-actions">
         <button class="btn btn--primary" type="button" data-action="download-postcard" data-i18n="postcard.download">Download</button>
         <button class="btn btn--ghost" type="button" data-action="back-to-studio-from-postcard" data-i18n="postcard.backToStudio">Return</button>
@@ -267,6 +270,6 @@
   <!-- Guide spirit floating layer (above all screens) -->
   <div id="guide-spirit-layer" class="guide-spirit-layer" aria-hidden="true"></div>
 
-  <script type="module" src="src/main.js?v=3"></script>
+  <script type="module" src="src/main.js?v=4"></script>
 </body>
 </html>

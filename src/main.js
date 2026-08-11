@@ -214,7 +214,7 @@ function bindLangDropdown() {
 
 function updateLangDisplay() {
   const codeEl = document.getElementById('lang-code');
-  const codes = { en: 'EN', zh: '中文', fr: 'FR', es: 'ES' };
+  const codes = { en: 'EN', zh: '中文', fr: 'FR', es: 'ES', de: 'DE', ja: '日本', hi: 'हिं' };
   if (codeEl) codeEl.textContent = codes[state.lang] || 'EN';
 }
 
@@ -626,16 +626,28 @@ async function renderPostcardPreview() {
   const active = [...state.activeLayers];
   if (!active.length) return;
 
-  canvas.width = 800; canvas.height = 600;
-  const title = document.querySelector('.postcard-name-input')?.value || '';
-  const spiritName = state.spirit ? t(spiritDefinitions[state.spirit].nameKey) : '';
-  const recipeName = state.selectedRecipeId ? t(recipeById.get(state.selectedRecipeId)?.nameKey || '') : '';
+  // Determine title based on mode
+  const isRecipeMode = state.mode === MODES.RECIPE && state.selectedRecipeId;
+  const nameSection = document.getElementById('postcard-name-section');
 
+  let title;
+  if (isRecipeMode) {
+    // Hide name input, use recipe name
+    if (nameSection) nameSection.style.display = 'none';
+    title = t(recipeById.get(state.selectedRecipeId)?.nameKey || '');
+  } else {
+    // Show name input for free composition
+    if (nameSection) nameSection.style.display = '';
+    title = document.querySelector('.postcard-name-input')?.value || t('postcard.namePlaceholder');
+  }
+
+  const spiritName = state.spirit ? t(spiritDefinitions[state.spirit].nameKey) : '';
+
+  canvas.width = 1600; canvas.height = 1200;
   await renderFullComposition(canvas, active, {
     isNight: getEffectiveTheme() === 'night',
     title,
     spiritName,
-    recipeName,
   });
 }
 
@@ -643,20 +655,23 @@ async function handleDownload() {
   const active = [...state.activeLayers];
   if (!active.length) return;
 
-  // High-res export canvas
   const exportCanvas = document.createElement('canvas');
-  exportCanvas.width = 1800;
-  exportCanvas.height = 1350;
+  exportCanvas.width = 1600;
+  exportCanvas.height = 1200;
 
-  const title = document.querySelector('.postcard-name-input')?.value || '';
+  const isRecipeMode = state.mode === MODES.RECIPE && state.selectedRecipeId;
+  let title;
+  if (isRecipeMode) {
+    title = t(recipeById.get(state.selectedRecipeId)?.nameKey || '');
+  } else {
+    title = document.querySelector('.postcard-name-input')?.value || t('postcard.namePlaceholder');
+  }
   const spiritName = state.spirit ? t(spiritDefinitions[state.spirit].nameKey) : '';
-  const recipeName = state.selectedRecipeId ? t(recipeById.get(state.selectedRecipeId)?.nameKey || '') : '';
 
   await renderFullComposition(exportCanvas, active, {
     isNight: getEffectiveTheme() === 'night',
     title,
     spiritName,
-    recipeName,
   });
 
   exportCanvas.toBlob(blob => {

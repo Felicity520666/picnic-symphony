@@ -7,7 +7,7 @@
 import { state, setState } from './state.js';
 import { recipeTranslations } from './i18n-recipes.js';
 
-const SUPPORTED_LANGS = ['en', 'zh', 'fr', 'es'];
+const SUPPORTED_LANGS = ['en', 'zh', 'fr', 'es', 'de', 'ja', 'hi'];
 
 const translations = {
   en: {
@@ -659,6 +659,132 @@ const translations = {
     'spirit.butterfly.recipeStep': 'Siguiente: {name}',
     'spirit.butterfly.recipeDone': 'Terminado. Escucha el conjunto.',
   },
+
+  de: {
+    'welcome.title': 'Picnic Symphony',
+    'welcome.body': 'Breite die Picknickdecke aus und verwandle Obst, Gebäck und Gläser in Rhythmus und Melodie. Wähle deine Lieblingsklänge und forme daraus deinen eigenen Sommersong.',
+    'welcome.enter': 'Jetzt komponieren',
+    'spirits.title': 'Ein musikalischer Begleiter',
+    'spirits.subtitle': 'Jeder Begleiter hört ein wenig anders. Wähle den, mit dem du deine Melodie gestalten möchtest.',
+    'spirits.continue': 'Weiter',
+    'spirit.bee.name': 'Aurelia', 'spirit.bee.type': 'Honigbiene · Warm', 'spirit.bee.alt': 'Aurelia, eine Honigbiene',
+    'spirit.bird.name': 'Lark', 'spirit.bird.type': 'Singvogel · Sanft', 'spirit.bird.alt': 'Lark, ein Singvogel',
+    'spirit.dragonfly.name': 'Rill', 'spirit.dragonfly.type': 'Libelle · Neugierig', 'spirit.dragonfly.alt': 'Rill, eine Libelle',
+    'spirit.butterfly.name': 'Iris', 'spirit.butterfly.type': 'Schmetterling · Verträumt', 'spirit.butterfly.alt': 'Iris, ein Schmetterling',
+    'mode.title': 'Wie möchtest du komponieren?',
+    'mode.free.title': 'Freies Komponieren', 'mode.free.desc': 'Kombiniere Klänge ganz nach deinem Gefühl.',
+    'mode.recipe.title': 'Geführte Rezepte', 'mode.recipe.desc': 'Beginne mit einer Klangmischung und passe sie an.',
+    'studio.play': 'Abspielen', 'studio.pause': 'Pause', 'studio.clear': 'Löschen', 'studio.surprise': 'Überraschung',
+    'studio.tempo': 'Tempo', 'studio.volume': 'Klänge', 'studio.ambience': 'Atmosphäre',
+    'studio.layerCount': '{n} von 6', 'studio.layerFull': 'Maximal sechs Klänge. Entferne einen, um einen neuen hinzuzufügen.',
+    'studio.pickRecipe': 'Wähle eine Zutat, um zu beginnen.', 'studio.finish': 'Fertig', 'studio.recipeBook': 'Rezepte',
+    'recipes.title': 'Rezepte', 'recipes.subtitle': 'Jedes Arrangement erzählt eine andere Geschichte.',
+    'recipes.back': 'Zurück', 'recipes.steps': '{n} Klänge', 'recipes.complete': 'Fertig',
+    'postcard.title': 'Deine Komposition', 'postcard.download': 'Herunterladen', 'postcard.newPicnic': 'Neues Picknick',
+    'postcard.backToStudio': 'Zurück', 'postcard.nameLabel': 'Gib deinem Stück einen Namen', 'postcard.namePlaceholder': 'Ein Nachmittag im Grünen',
+    'theme.auto': 'Auto', 'theme.day': 'Tag', 'theme.night': 'Nacht', 'nav.back': 'Zurück',
+    'ingredient.watermelon.name': 'Wassermelone', 'ingredient.watermelon.role': 'Kick',
+    'ingredient.strawberry.name': 'Erdbeere', 'ingredient.strawberry.role': 'Klatscher',
+    'ingredient.cherry.name': 'Kirsche', 'ingredient.cherry.role': 'Holzblock',
+    'ingredient.grape.name': 'Trauben', 'ingredient.grape.role': 'Zupfbass',
+    'ingredient.blueberry.name': 'Heidelbeere', 'ingredient.blueberry.role': 'Tiefe Trommel',
+    'ingredient.lemonade.name': 'Limonade', 'ingredient.lemonade.role': 'Glasmelodie',
+    'ingredient.peach.name': 'Pfirsich', 'ingredient.peach.role': 'Zupfmelodie',
+    'ingredient.cupcake.name': 'Cupcake', 'ingredient.cupcake.role': 'Glocke',
+    'ingredient.cheese.name': 'Käse', 'ingredient.cheese.role': 'Akkordteppich',
+    'ingredient.honey.name': 'Honig', 'ingredient.honey.role': 'Gehaltene Harmonie',
+    'ingredient.mint.name': 'Minze', 'ingredient.mint.role': 'Shaker',
+    'ingredient.sandwich.name': 'Sandwich', 'ingredient.sandwich.role': 'Gebürstete Textur',
+    'tutorial.next': 'Weiter', 'tutorial.back': 'Zurück', 'tutorial.skip': 'Überspringen', 'tutorial.finish': 'Los geht\'s',
+    'tutorial.step': 'Schritt {current} von {total}',
+    'spirit.bee.idle': 'Wähle deinen ersten Klang.',
+    'spirit.bee.recipeStep': 'Nächstes: {name}', 'spirit.bee.recipeDone': 'Fertig.',
+    'howModal.title': 'So funktioniert\'s', 'howModal.close': 'Verstanden',
+  },
+
+  ja: {
+    'welcome.title': 'Picnic Symphony',
+    'welcome.body': 'ピクニックシートを広げて、果物やお菓子、グラスの音をリズムとメロディーに変えてみましょう。好きな音を重ねて、自分だけの夏の曲を作れます。',
+    'welcome.enter': '曲を作る',
+    'spirits.title': '草原を旅する音の案内役',
+    'spirits.subtitle': 'それぞれのガイドは、音の聴き方が少しずつ違います。一緒に曲を作りたい相棒を選びましょう。',
+    'spirits.continue': '次へ',
+    'spirit.bee.name': 'Aurelia', 'spirit.bee.type': 'ミツバチ · 明るい', 'spirit.bee.alt': 'Aurelia、ミツバチのガイド',
+    'spirit.bird.name': 'Lark', 'spirit.bird.type': '小鳥 · やさしい', 'spirit.bird.alt': 'Lark、小鳥のガイド',
+    'spirit.dragonfly.name': 'Rill', 'spirit.dragonfly.type': 'トンボ · 好奇心', 'spirit.dragonfly.alt': 'Rill、トンボのガイド',
+    'spirit.butterfly.name': 'Iris', 'spirit.butterfly.type': 'チョウ · 夢見がち', 'spirit.butterfly.alt': 'Iris、チョウのガイド',
+    'mode.title': 'どんなふうに曲を作りますか？',
+    'mode.free.title': '自由に作る', 'mode.free.desc': '好きな音を、感じるままに重ねてみましょう。',
+    'mode.recipe.title': 'レシピから作る', 'mode.recipe.desc': 'おすすめの組み合わせから始めて、自由に変えられます。',
+    'studio.play': '再生', 'studio.pause': '一時停止', 'studio.clear': 'すべて消す', 'studio.surprise': 'おまかせ',
+    'studio.tempo': 'テンポ', 'studio.volume': 'サウンド', 'studio.ambience': '環境音',
+    'studio.layerCount': '{n} / 6', 'studio.layerFull': '最大6つです。新しく追加するには1つ外してください。',
+    'studio.pickRecipe': '音をひとつ選んで始めましょう。', 'studio.finish': '完成', 'studio.recipeBook': 'レシピ',
+    'recipes.title': 'レシピ', 'recipes.subtitle': 'それぞれの組み合わせが異なる物語を語ります。',
+    'recipes.back': '戻る', 'recipes.steps': '{n} 音', 'recipes.complete': '完成',
+    'postcard.title': 'あなたの作品', 'postcard.download': 'ダウンロード', 'postcard.newPicnic': '新しいピクニック',
+    'postcard.backToStudio': '戻る', 'postcard.nameLabel': '曲に名前をつける', 'postcard.namePlaceholder': '草原の午後',
+    'theme.auto': '自動', 'theme.day': '昼', 'theme.night': '夜', 'nav.back': '戻る',
+    'ingredient.watermelon.name': 'スイカ', 'ingredient.watermelon.role': 'キック',
+    'ingredient.strawberry.name': 'イチゴ', 'ingredient.strawberry.role': 'クラップ',
+    'ingredient.cherry.name': 'サクランボ', 'ingredient.cherry.role': 'ウッドブロック',
+    'ingredient.grape.name': 'ブドウ', 'ingredient.grape.role': 'ピチカートベース',
+    'ingredient.blueberry.name': 'ブルーベリー', 'ingredient.blueberry.role': 'ロータム',
+    'ingredient.lemonade.name': 'レモネード', 'ingredient.lemonade.role': 'ガラスメロディー',
+    'ingredient.peach.name': 'モモ', 'ingredient.peach.role': 'ピチカートメロディー',
+    'ingredient.cupcake.name': 'カップケーキ', 'ingredient.cupcake.role': 'ベル',
+    'ingredient.cheese.name': 'チーズ', 'ingredient.cheese.role': 'コードパッド',
+    'ingredient.honey.name': 'ハチミツ', 'ingredient.honey.role': '持続ハーモニー',
+    'ingredient.mint.name': 'ミント', 'ingredient.mint.role': 'シェイカー',
+    'ingredient.sandwich.name': 'サンドイッチ', 'ingredient.sandwich.role': 'ブラシテクスチャ',
+    'tutorial.next': '次へ', 'tutorial.back': '戻る', 'tutorial.skip': 'スキップ', 'tutorial.finish': '始める',
+    'tutorial.step': 'ステップ {current}/{total}',
+    'spirit.bee.idle': '最初の音を選んでください。',
+    'spirit.bee.recipeStep': '次：{name}', 'spirit.bee.recipeDone': '完成しました。',
+    'howModal.title': '遊び方', 'howModal.close': 'わかりました',
+  },
+
+  hi: {
+    'welcome.title': 'Picnic Symphony',
+    'welcome.body': 'पिकनिक की चादर बिछाइए और फलों, मिठाइयों व गिलासों की आवाज़ों को ताल और धुन में बदलिए। अपनी पसंद की आवाज़ें मिलाकर गर्मियों की अपनी खास धुन बनाइए।',
+    'welcome.enter': 'धुन बनाना शुरू करें',
+    'spirits.title': 'घास के मैदान का संगीत साथी',
+    'spirits.subtitle': 'हर साथी संगीत को अलग तरह से सुनता है। वह साथी चुनिए जिसके साथ आप अपनी धुन बनाना चाहें।',
+    'spirits.continue': 'आगे बढ़ें',
+    'spirit.bee.name': 'Aurelia', 'spirit.bee.type': 'मधुमक्खी · ऊर्जावान', 'spirit.bee.alt': 'Aurelia, एक मधुमक्खी गाइड',
+    'spirit.bird.name': 'Lark', 'spirit.bird.type': 'चिड़िया · कोमल', 'spirit.bird.alt': 'Lark, एक चिड़िया गाइड',
+    'spirit.dragonfly.name': 'Rill', 'spirit.dragonfly.type': 'तितलपंखी · जिज्ञासु', 'spirit.dragonfly.alt': 'Rill, एक तितलपंखी गाइड',
+    'spirit.butterfly.name': 'Iris', 'spirit.butterfly.type': 'तितली · स्वप्निल', 'spirit.butterfly.alt': 'Iris, एक तितली गाइड',
+    'mode.title': 'आप किस तरह संगीत बनाना चाहेंगे?',
+    'mode.free.title': 'स्वतंत्र रचना', 'mode.free.desc': 'अपनी पसंद की आवाज़ें मनचाहे ढंग से मिलाइए।',
+    'mode.recipe.title': 'निर्देशित रेसिपी', 'mode.recipe.desc': 'सुझाए गए मिश्रण से शुरुआत करें।',
+    'studio.play': 'चलाएँ', 'studio.pause': 'रोकें', 'studio.clear': 'सब हटाएँ', 'studio.surprise': 'नया मिश्रण',
+    'studio.tempo': 'गति', 'studio.volume': 'ध्वनियाँ', 'studio.ambience': 'परिवेश',
+    'studio.layerCount': '{n} / 6', 'studio.layerFull': 'अधिकतम छह ध्वनियाँ। एक हटाकर नई जोड़ें।',
+    'studio.pickRecipe': 'शुरू करने के लिए एक सामग्री चुनें।', 'studio.finish': 'पूरा करें', 'studio.recipeBook': 'रेसिपी',
+    'recipes.title': 'रेसिपी', 'recipes.subtitle': 'हर रेसिपी एक अलग कहानी कहती है।',
+    'recipes.back': 'वापस', 'recipes.steps': '{n} ध्वनियाँ', 'recipes.complete': 'पूरा',
+    'postcard.title': 'आपकी रचना', 'postcard.download': 'डाउनलोड करें', 'postcard.newPicnic': 'नई पिकनिक',
+    'postcard.backToStudio': 'वापस जाएँ', 'postcard.nameLabel': 'अपनी धुन को नाम दें', 'postcard.namePlaceholder': 'घास पर एक दोपहर',
+    'theme.auto': 'स्वचालित', 'theme.day': 'दिन', 'theme.night': 'रात', 'nav.back': 'वापस',
+    'ingredient.watermelon.name': 'तरबूज़', 'ingredient.watermelon.role': 'किक',
+    'ingredient.strawberry.name': 'स्ट्रॉबेरी', 'ingredient.strawberry.role': 'ताली',
+    'ingredient.cherry.name': 'चेरी', 'ingredient.cherry.role': 'वुडब्लॉक',
+    'ingredient.grape.name': 'अंगूर', 'ingredient.grape.role': 'बेस',
+    'ingredient.blueberry.name': 'ब्लूबेरी', 'ingredient.blueberry.role': 'लो टॉम',
+    'ingredient.lemonade.name': 'नींबू पानी', 'ingredient.lemonade.role': 'काँच की धुन',
+    'ingredient.peach.name': 'आड़ू', 'ingredient.peach.role': 'तार धुन',
+    'ingredient.cupcake.name': 'कपकेक', 'ingredient.cupcake.role': 'घंटी',
+    'ingredient.cheese.name': 'चीज़', 'ingredient.cheese.role': 'कॉर्ड पैड',
+    'ingredient.honey.name': 'शहद', 'ingredient.honey.role': 'निरंतर सुर',
+    'ingredient.mint.name': 'पुदीना', 'ingredient.mint.role': 'शेकर',
+    'ingredient.sandwich.name': 'सैंडविच', 'ingredient.sandwich.role': 'ब्रश बनावट',
+    'tutorial.next': 'आगे', 'tutorial.back': 'पीछे', 'tutorial.skip': 'छोड़ें', 'tutorial.finish': 'शुरू करें',
+    'tutorial.step': 'चरण {current} / {total}',
+    'spirit.bee.idle': 'अपना पहला स्वर चुनें।',
+    'spirit.bee.recipeStep': 'अगला: {name}', 'spirit.bee.recipeDone': 'पूरा हो गया।',
+    'howModal.title': 'कैसे खेलें', 'howModal.close': 'समझ गया',
+  },
 };
 
 
@@ -667,6 +793,9 @@ Object.assign(translations.en, recipeTranslations.en || {});
 Object.assign(translations.zh, recipeTranslations.zh || {});
 Object.assign(translations.fr, recipeTranslations.fr || {});
 Object.assign(translations.es, recipeTranslations.es || {});
+Object.assign(translations.de, recipeTranslations.de || {});
+Object.assign(translations.ja, recipeTranslations.ja || {});
+Object.assign(translations.hi, recipeTranslations.hi || {});
 
 /**
  * Get translated string with {key} interpolation.
@@ -699,6 +828,9 @@ function setLanguage(lang) {
   if (lang && lang.startsWith('zh')) lang = 'zh';
   else if (lang && lang.startsWith('es')) lang = 'es';
   else if (lang && lang.startsWith('fr')) lang = 'fr';
+  else if (lang && lang.startsWith('de')) lang = 'de';
+  else if (lang && lang.startsWith('ja')) lang = 'ja';
+  else if (lang && lang.startsWith('hi')) lang = 'hi';
   else if (!SUPPORTED_LANGS.includes(lang)) lang = 'en';
   setState({ lang }, true);
   document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
@@ -722,6 +854,9 @@ function detectLanguage() {
   if (nav.startsWith('zh')) return 'zh';
   if (nav.startsWith('fr')) return 'fr';
   if (nav.startsWith('es')) return 'es';
+  if (nav.startsWith('de')) return 'de';
+  if (nav.startsWith('ja')) return 'ja';
+  if (nav.startsWith('hi')) return 'hi';
   return 'en';
 }
 
