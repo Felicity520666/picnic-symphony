@@ -1,5 +1,7 @@
 # Picnic Symphony
 
+## About the Game
+
 Picnic Symphony is a whimsical interactive music-making website set at a magical summer picnic. Click the illustrated picnic treats to turn synchronized layers on and off while Mimi the fairy guides the scene.
 
 ## Features
@@ -12,7 +14,7 @@ Picnic Symphony is a whimsical interactive music-making website set at a magical
 - Keyboard-operable ingredient buttons with visible focus states
 - Prefers-reduced-motion fallback
 
-## How the sound works
+## How the Sound Works
 
 The music runs from one shared 110 BPM sequencer clock. Each ingredient owns a repeating 16-step pattern, and clicking a button only toggles that layer on or off without resetting the other layers. All audio is generated live in the browser with oscillators, filtered noise, and short envelopes, then routed through a shared master gain stage to keep the mix gentle and prevent clipping.
 
