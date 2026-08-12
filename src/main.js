@@ -616,13 +616,86 @@ function startRecipe(recipeId) {
 function bindPostcard() {
   document.querySelector('[data-action="download-postcard"]')?.addEventListener('click', handleDownload);
   document.querySelector('[data-action="new-picnic"]')?.addEventListener('click', () => {
-    clearAllLayers();
-    setState({ selectedRecipeId: null, recipeStepIndex: 0 });
-    navigateTo(SCREENS.WELCOME);
+    if (hasExistingCreation()) {
+      showClearConfirmDialog();
+    } else {
+      clearAndStartFresh();
+    }
   });
   document.querySelector('[data-action="back-to-studio-from-postcard"]')?.addEventListener('click', () => {
     navigateTo(SCREENS.STUDIO);
   });
+
+  // Name input: update preview on Enter and blur
+  const nameInput = document.querySelector('.postcard-name-input');
+  if (nameInput) {
+    nameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        nameInput.blur();
+        renderPostcardPreview();
+      }
+    });
+    nameInput.addEventListener('blur', () => {
+      renderPostcardPreview();
+    });
+  }
+}
+
+// ─── Clear confirmation ──────────────────────────────────────────────────────
+
+function hasExistingCreation() {
+  return state.activeLayers.size > 0 || state.selectedRecipeId;
+}
+
+function clearAndStartFresh() {
+  clearAllLayers();
+  setState({ selectedRecipeId: null, recipeStepIndex: 0, mode: null });
+  const nameInput = document.querySelector('.postcard-name-input');
+  if (nameInput) nameInput.value = '';
+  document.querySelectorAll('.ingredient-btn').forEach(btn => {
+    btn.classList.remove('is-active');
+    btn.setAttribute('aria-pressed', 'false');
+  });
+  navigateTo(SCREENS.WELCOME);
+}
+
+function showClearConfirmDialog() {
+  // Create dialog if not already present
+  let dialog = document.getElementById('clear-confirm-dialog');
+  if (!dialog) {
+    dialog = document.createElement('dialog');
+    dialog.id = 'clear-confirm-dialog';
+    dialog.className = 'confirm-dialog';
+    dialog.innerHTML = `
+      <p class="confirm-dialog__message"></p>
+      <div class="confirm-dialog__actions">
+        <button class="btn btn--primary" type="button" data-action="confirm-clear"></button>
+        <button class="btn btn--ghost" type="button" data-action="confirm-keep"></button>
+      </div>
+    `;
+    document.body.appendChild(dialog);
+
+    dialog.querySelector('[data-action="confirm-clear"]').addEventListener('click', () => {
+      dialog.close();
+      clearAndStartFresh();
+    });
+    dialog.querySelector('[data-action="confirm-keep"]').addEventListener('click', () => {
+      dialog.close();
+    });
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); dialog.close(); }
+    });
+  }
+
+  // Set translated text
+  dialog.querySelector('.confirm-dialog__message').textContent = t('confirm.clearMessage');
+  dialog.querySelector('[data-action="confirm-clear"]').textContent = t('confirm.clearButton');
+  dialog.querySelector('[data-action="confirm-keep"]').textContent = t('confirm.keepButton');
+  dialog.showModal();
 }
 
 // ─── Recipe match helper ─────────────────────────────────────────────────────
@@ -644,9 +717,8 @@ function showRecipeMismatchFeedback() {
   const active = new Set(state.activeLayers);
   const required = new Set(recipe.ingredients);
 
-  // Find missing ingredients (in recipe but not active)
+  // Find missing and extra ingredients
   const missing = [...required].filter(id => !active.has(id));
-  // Find extra ingredients (active but not in recipe)
   const extra = [...active].filter(id => !required.has(id));
 
   // Highlight missing ingredients with soft red shake
@@ -654,46 +726,92 @@ function showRecipeMismatchFeedback() {
     const btn = document.querySelector(`[data-ingredient="${id}"]`);
     if (btn) {
       btn.classList.add('is-recipe-missing');
-      setTimeout(() => btn.classList.remove('is-recipe-missing'), 2000);
+      setTimeout(() => btn.classList.remove('is-recipe-missing'), 3500);
     }
   });
 
-  // Highlight extra ingredients with soft amber
+  // Highlight extra ingredients with soft amber shake
   extra.forEach(id => {
     const btn = document.querySelector(`[data-ingredient="${id}"]`);
     if (btn) {
       btn.classList.add('is-recipe-extra');
-      setTimeout(() => btn.classList.remove('is-recipe-extra'), 2000);
+      setTimeout(() => btn.classList.remove('is-recipe-extra'), 3500);
     }
   });
 
-  // Show spirit speech bubble
+  // Show spirit speech bubble with friendly message
   const speechEl = document.querySelector('[data-display="spirit-speech"]');
   if (speechEl) {
-    const missingNames = missing.map(id => t(ingredientById.get(id)?.nameKey || id)).join(', ');
-    let msg = t('recipe.mismatch.message');
-    if (missing.length > 0) {
-      msg += ' ' + t('recipe.mismatch.missing', { names: missingNames });
-    }
-    speechEl.textContent = msg;
+    speechEl.textContent = t('recipe.mismatch.message');
     speechEl.closest('.spirit-speech')?.classList.add('is-warning');
-    setTimeout(() => {
-      speechEl.closest('.spirit-speech')?.classList.remove('is-warning');
+  }
+
+  // Show the mismatch dialog with Fix / Make-it-my-own buttons
+  showMismatchDialog(missing, extra);
+}
+
+function showMismatchDialog(missing, extra) {
+  let dialog = document.getElementById('recipe-mismatch-dialog');
+  if (!dialog) {
+    dialog = document.createElement('dialog');
+    dialog.id = 'recipe-mismatch-dialog';
+    dialog.className = 'mismatch-dialog';
+    dialog.innerHTML = `
+      <div class="mismatch-dialog__spirit" aria-hidden="true"></div>
+      <p class="mismatch-dialog__message"></p>
+      <div class="mismatch-dialog__details"></div>
+      <div class="mismatch-dialog__actions">
+        <button class="btn btn--ghost" type="button" data-action="mismatch-fix"></button>
+        <button class="btn btn--primary" type="button" data-action="mismatch-own"></button>
+      </div>
+    `;
+    document.body.appendChild(dialog);
+
+    dialog.querySelector('[data-action="mismatch-fix"]').addEventListener('click', () => {
+      dialog.close();
+      // Restore warning state on spirit
+      const speechEl = document.querySelector('[data-display="spirit-speech"]');
+      speechEl?.closest('.spirit-speech')?.classList.remove('is-warning');
       updateSpiritMessage();
-    }, 4000);
+    });
+
+    dialog.querySelector('[data-action="mismatch-own"]').addEventListener('click', () => {
+      dialog.close();
+      // Clear recipe, treat as free composition, proceed to postcard
+      setState({ selectedRecipeId: null, mode: MODES.FREE });
+      const speechEl = document.querySelector('[data-display="spirit-speech"]');
+      speechEl?.closest('.spirit-speech')?.classList.remove('is-warning');
+      updateSpiritMessage();
+      navigateTo(SCREENS.POSTCARD);
+      setTimeout(() => renderPostcardPreview(), 200);
+    });
+
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
   }
 
-  // User can still finish as free composition — offer that option
-  // Show a brief message that they can tap Finish again to save as original
-  const msgEl = document.querySelector('[data-display="layer-message"]');
-  if (msgEl) {
-    msgEl.textContent = t('recipe.mismatch.hint');
-    msgEl.hidden = false;
-    setTimeout(() => { msgEl.hidden = true; }, 4000);
-  }
+  // Populate content
+  dialog.querySelector('.mismatch-dialog__message').textContent = t('recipe.mismatch.message');
 
-  // Clear selectedRecipeId so next Finish attempt treats it as free composition
-  setState({ selectedRecipeId: null, mode: MODES.FREE });
+  // Build details: show missing and extra
+  const detailsEl = dialog.querySelector('.mismatch-dialog__details');
+  let detailsHTML = '';
+  if (missing.length > 0) {
+    const names = missing.map(id => t(ingredientById.get(id)?.nameKey || id)).join(', ');
+    detailsHTML += `<p class="mismatch-detail mismatch-detail--missing">${t('recipe.mismatch.missing', { names })}</p>`;
+  }
+  if (extra.length > 0) {
+    const names = extra.map(id => t(ingredientById.get(id)?.nameKey || id)).join(', ');
+    detailsHTML += `<p class="mismatch-detail mismatch-detail--extra">${t('recipe.mismatch.extra', { names })}</p>`;
+  }
+  detailsEl.innerHTML = detailsHTML;
+
+  // Set button labels
+  dialog.querySelector('[data-action="mismatch-fix"]').textContent = t('recipe.mismatch.fixButton');
+  dialog.querySelector('[data-action="mismatch-own"]').textContent = t('recipe.mismatch.ownButton');
+
+  dialog.showModal();
 }
 
 /** Generate a creative name based on ingredient combination */
@@ -709,6 +827,18 @@ function generateCreativeName(ingredientIds) {
   return t('creative.feast', { name: firstName });
 }
 
+/** Get the user's actual custom title (never the placeholder) */
+function getPostcardTitle() {
+  const recipeMatches = ingredientsExactlyMatchRecipe();
+  if (recipeMatches) {
+    return t(recipeById.get(state.selectedRecipeId)?.nameKey || '');
+  }
+  const input = document.querySelector('.postcard-name-input');
+  const raw = (input?.value || '').trim();
+  // Return the user's typed name, or empty string — never the placeholder
+  return raw;
+}
+
 /** Render preview when entering the postcard screen */
 async function renderPostcardPreview() {
   const canvas = document.getElementById('postcard-canvas');
@@ -716,24 +846,21 @@ async function renderPostcardPreview() {
   const active = [...state.activeLayers];
   if (!active.length) return;
 
-  // Determine title: use recipe name ONLY if ingredients still exactly match
+  // Show/hide name section based on recipe match
   const recipeMatches = ingredientsExactlyMatchRecipe();
   const nameSection = document.getElementById('postcard-name-section');
-
-  let title;
   if (recipeMatches) {
     if (nameSection) nameSection.style.display = 'none';
-    title = t(recipeById.get(state.selectedRecipeId)?.nameKey || '');
   } else {
     if (nameSection) nameSection.style.display = '';
-    title = document.querySelector('.postcard-name-input')?.value || t('postcard.namePlaceholder');
   }
 
+  const title = getPostcardTitle();
   const spiritName = state.spirit ? t(spiritDefinitions[state.spirit].nameKey) : '';
 
   canvas.width = 1600; canvas.height = 1200;
   await renderFullComposition(canvas, active, {
-    isNight: getEffectiveTheme() === 'night',
+    isNight: getEffectiveTheme() === 'night' || getEffectiveTheme() === 'dusk',
     title,
     spiritName,
     ingredientNames: active.map(id => t(ingredientById.get(id)?.nameKey || id)).join(' · '),
@@ -748,17 +875,11 @@ async function handleDownload() {
   exportCanvas.width = 1600;
   exportCanvas.height = 1200;
 
-  const recipeMatches = ingredientsExactlyMatchRecipe();
-  let title;
-  if (recipeMatches) {
-    title = t(recipeById.get(state.selectedRecipeId)?.nameKey || '');
-  } else {
-    title = document.querySelector('.postcard-name-input')?.value || t('postcard.namePlaceholder');
-  }
+  const title = getPostcardTitle();
   const spiritName = state.spirit ? t(spiritDefinitions[state.spirit].nameKey) : '';
 
   await renderFullComposition(exportCanvas, active, {
-    isNight: getEffectiveTheme() === 'night',
+    isNight: getEffectiveTheme() === 'night' || getEffectiveTheme() === 'dusk',
     title,
     spiritName,
     ingredientNames: active.map(id => t(ingredientById.get(id)?.nameKey || id)).join(' · '),

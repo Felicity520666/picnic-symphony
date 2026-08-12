@@ -1,23 +1,34 @@
 /**
- * theme.js — Dawn/Day/Dusk/Night mode logic.
- * Auto mode uses local time. Manual override persisted.
+ * theme.js — Theme logic with Auto/Day/Night user options.
+ * Auto mode uses local time to select dawn/day/dusk/night internally.
+ * Manual Day and Night always use those specific themes.
+ * Dawn and Dusk are internal auto-only scenes, not user-selectable.
  */
 
-import { state, setState, THEMES } from './state.js';
+import { state, setState } from './state.js';
 
-/** Determine effective theme (resolves 'auto') */
-function getEffectiveTheme() {
-  if (state.theme === 'dawn') return 'dawn';
-  if (state.theme === 'day' || state.theme === THEMES.DAY) return 'day';
-  if (state.theme === 'dusk') return 'dusk';
-  if (state.theme === 'night' || state.theme === THEMES.NIGHT) return 'night';
+// ─── Auto time ranges (configurable in one place) ────────────────────────────
+const TIME_RANGES = [
+  { start: 5,  end: 8,  theme: 'dawn' },
+  { start: 8,  end: 17, theme: 'day' },
+  { start: 17, end: 20, theme: 'dusk' },
+  // 20–5 = night (default fallback)
+];
 
-  // Auto: dawn 5:00–7:59, day 8:00–16:59, dusk 17:00–19:59, night 20:00–4:59
+function getAutoTheme() {
   const hour = new Date().getHours();
-  if (hour >= 5 && hour < 8) return 'dawn';
-  if (hour >= 8 && hour < 17) return 'day';
-  if (hour >= 17 && hour < 20) return 'dusk';
+  for (const range of TIME_RANGES) {
+    if (hour >= range.start && hour < range.end) return range.theme;
+  }
   return 'night';
+}
+
+/** Determine effective theme (resolves 'auto' to an internal theme) */
+function getEffectiveTheme() {
+  if (state.theme === 'day') return 'day';
+  if (state.theme === 'night') return 'night';
+  // Auto mode — use time-based selection
+  return getAutoTheme();
 }
 
 /** Apply theme to document */
@@ -36,7 +47,7 @@ function setTheme(theme) {
 function initTheme() {
   applyTheme();
   setInterval(() => {
-    if (state.theme === THEMES.AUTO || state.theme === 'auto') applyTheme();
+    if (state.theme === 'auto') applyTheme();
   }, 60000);
 }
 
