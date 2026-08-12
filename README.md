@@ -1,8 +1,8 @@
-# Picnic Symphony
+# Picnic Symphony 🧺
 
 ## About the Game
 
-Picnic Symphony is a whimsical interactive music-making website set at a magical summer picnic. Click the illustrated picnic treats to turn synchronized layers on and off while Mimi the fairy guides the scene.
+Picnic Symphony is a whimsical interactive music-making website set at a cozy summer picnic. Click on the picnic items to turn synchronized layers on and off while your chosen fairy guides the scene.
 
 ## Features
 
