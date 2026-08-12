@@ -137,20 +137,50 @@ const spiritDefinitions = {
   },
 };
 
-/** Preload hover and guide assets for the selected spirit */
+/** Central helper: get the correct asset path for a spirit state + direction */
+function getSpiritAsset(spiritId, visualState, direction = 'right') {
+  const def = spiritDefinitions[spiritId];
+  if (!def) return '';
+  const a = def.assets;
+  const map = {
+    'idle-left': a.idleLeft, 'idle-right': a.idleRight,
+    'flying-left': a.hoverLeft, 'flying-right': a.hoverRight,
+    'hover-left': a.hoverLeft, 'hover-right': a.hoverRight,
+    'guiding-left': a.guideLeft, 'guiding-right': a.guideRight,
+    'guide-left': a.guideLeft, 'guide-right': a.guideRight,
+    'celebrating-left': a.flutterLeft, 'celebrating-right': a.flutterRight,
+    'flutter-left': a.flutterLeft, 'flutter-right': a.flutterRight,
+  };
+  return map[`${visualState}-${direction}`] || a.idleRight;
+}
+
+/** Preload ALL 8 assets for a spirit (with deduplication) */
+const _preloadedSpirits = new Set();
 function preloadSpiritAssets(spiritId) {
+  if (_preloadedSpirits.has(spiritId)) return;
+  _preloadedSpirits.add(spiritId);
   const def = spiritDefinitions[spiritId];
   if (!def) return;
-  const urls = [
-    def.assets.hoverLeft, def.assets.hoverRight,
-    def.assets.guideLeft, def.assets.guideRight,
-  ];
-  urls.forEach(url => {
+  Object.values(def.assets).forEach(url => {
     const link = document.createElement('link');
     link.rel = 'preload';
     link.as = 'image';
     link.href = url;
     document.head.appendChild(link);
+  });
+}
+
+/** Preload idle + flutter for all four spirits (for selection screen) */
+function preloadAllSpiritsSelection() {
+  Object.keys(spiritDefinitions).forEach(id => {
+    const a = spiritDefinitions[id].assets;
+    [a.idleRight, a.flutterRight].forEach(url => {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = url;
+      document.head.appendChild(link);
+    });
   });
 }
 
@@ -437,14 +467,23 @@ class GuideSpiritLayer {
 
   /** Celebrate: small upward arc + trail, then return to idle */
   celebrate() {
-    if (!this.el || prefersReducedMotion()) return;
+    if (!this.el) return;
 
     this.currentState = STATES.CELEBRATING;
     this.el.className = 'guide-spirit guide-spirit--celebrating';
     this.el.dataset.spiritId = this.spiritId;
 
-    // Spawn trail particles
-    this._spawnTrail();
+    // Switch to flutter artwork
+    const def = spiritDefinitions[this.spiritId];
+    if (def && this.imgEl) {
+      const dir = this._direction || 'right';
+      this.imgEl.src = dir === 'left' ? def.assets.flutterLeft : def.assets.flutterRight;
+    }
+
+    // Spawn trail particles (skip for reduced motion)
+    if (!prefersReducedMotion()) {
+      this._spawnTrail();
+    }
 
     // Return to idle after animation
     if (this._celebrateTimeout) clearTimeout(this._celebrateTimeout);
@@ -569,7 +608,21 @@ function initSpiritSelectionAnimations() {
   const continueBtn = document.querySelector('[data-action="spirit-continue"]');
   if (!grid) return;
 
-  // The idle floating is handled purely by CSS (spiritFloat on .spirit-portrait__img)
+  // Hover: switch to flutter image; leave: switch back to idle
+  grid.querySelectorAll('.spirit-option').forEach(card => {
+    const spiritId = card.dataset.spirit;
+    const img = card.querySelector('.spirit-portrait__img');
+    if (!img || !spiritId) return;
+    const def = spiritDefinitions[spiritId];
+    if (!def) return;
+
+    card.addEventListener('mouseenter', () => {
+      img.src = def.assets.flutterRight;
+    });
+    card.addEventListener('mouseleave', () => {
+      img.src = def.assets.idleRight;
+    });
+  });
 
   // On selection: fly the spirit out of its card to beside Continue button
   function onSpiritSelected(spiritId) {
@@ -608,6 +661,8 @@ export {
   GuideSpiritLayer,
   initSpiritSelectionAnimations,
   preloadSpiritAssets,
+  preloadAllSpiritsSelection,
+  getSpiritAsset,
   SPIRIT_FOLDERS,
   STATES as SPIRIT_STATES,
 };

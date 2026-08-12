@@ -7,7 +7,7 @@ import { state, loadPersistedState, setState, SCREENS, MODES } from './state.js'
 import { initRouter, navigateTo } from './router.js';
 import { applyTranslations, setLanguage, t, detectLanguage, SUPPORTED_LANGS } from './i18n.js';
 import { initTheme, setTheme, getEffectiveTheme } from './theme.js';
-import { spiritDefinitions, getSpiritPlaceholder, guideSpiritLayer, initSpiritSelectionAnimations, preloadSpiritAssets } from './spirits.js';
+import { spiritDefinitions, getSpiritPlaceholder, guideSpiritLayer, initSpiritSelectionAnimations, preloadSpiritAssets, preloadAllSpiritsSelection, getSpiritAsset } from './spirits.js';
 import { ingredientDefinitions, ingredientById, MAX_LAYERS } from './ingredients.js';
 import { recipeDefinitions, recipeById, isRecipeUnlocked } from './recipes.js';
 import { assetUrl, renderFullComposition, renderIngredientComposition } from './composition.js';
@@ -248,6 +248,9 @@ function bindSpirits() {
   const grid = document.querySelector('.spirit-grid');
   const continueBtn = document.querySelector('[data-action="spirit-continue"]');
 
+  // Preload idle + flutter for all four spirits on selection screen
+  preloadAllSpiritsSelection();
+
   grid?.addEventListener('click', (e) => {
     const card = e.target.closest('[data-spirit]');
     if (!card) return;
@@ -362,13 +365,16 @@ function enterStudio() {
   if (!state.context) createAudioGraph();
   hideLayerMessage();
 
-  // Render spirit portrait in sidebar
+  // Render spirit portrait in sidebar — use state-aware asset
   const artEl = document.getElementById('studio-spirit-art');
   if (artEl && state.spirit) {
     const spirit = spiritDefinitions[state.spirit];
     if (spirit) {
+      // Use guide asset if recipe is active, otherwise idle
+      const visualState = state.selectedRecipeId ? 'guide' : 'idle';
+      const imgSrc = getSpiritAsset(state.spirit, visualState, 'right');
       const img = document.createElement('img');
-      img.src = spirit.image;
+      img.src = imgSrc;
       img.alt = t(spirit.nameKey);
       img.className = 'spirit-panel__img';
       img.onerror = () => {
@@ -439,6 +445,21 @@ function advanceRecipeStep() {
   const recipe = recipeById.get(state.selectedRecipeId);
   if (!recipe) return;
   state.recipeStepIndex++;
+
+  // Brief flutter celebration on correct ingredient
+  const artEl = document.getElementById('studio-spirit-art');
+  if (artEl && state.spirit) {
+    const flutterSrc = getSpiritAsset(state.spirit, 'flutter', 'right');
+    const img = artEl.querySelector('img');
+    if (img) {
+      img.src = flutterSrc;
+      setTimeout(() => {
+        const nextState = state.recipeStepIndex < recipe.steps.length ? 'guide' : 'idle';
+        img.src = getSpiritAsset(state.spirit, nextState, 'right');
+      }, 600);
+    }
+  }
+
   if (state.recipeStepIndex >= recipe.steps.length) {
     if (!state.completedRecipes.includes(state.selectedRecipeId)) {
       state.completedRecipes.push(state.selectedRecipeId);
