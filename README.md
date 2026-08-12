@@ -60,3 +60,6 @@ Then open [http://localhost:8000](http://localhost:8000/).
 All artwork and sounds are generated or included in this project. No API key or installation is required.
 
 ## Game Screenshots
+![Picnic Symphony Screenshot](assets/screenshots/1.png)
+![Picnic Symphony Screenshot](assets/screenshots/2.png)
+![Picnic Symphony Screenshot](assets/screenshots/3.png)
