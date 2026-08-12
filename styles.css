@@ -196,6 +196,21 @@ body.scroll-locked { overflow: hidden; }
   padding: 24px; overflow-y: auto;
   z-index: 10; opacity: 1;
   transition: opacity 400ms ease, transform 400ms ease;
+  direction: ltr;
+}
+/* Arabic text content flows RTL inside LTR layout containers */
+:root[dir="rtl"] .welcome-body,
+:root[dir="rtl"] .spirit-subtitle,
+:root[dir="rtl"] .spirit-speech p,
+:root[dir="rtl"] .studio-status,
+:root[dir="rtl"] .mode-option__desc,
+:root[dir="rtl"] .recipe-grid-card__desc,
+:root[dir="rtl"] .postcard-name-label,
+:root[dir="rtl"] .mismatch-dialog__message,
+:root[dir="rtl"] .mismatch-detail,
+:root[dir="rtl"] .confirm-dialog__message {
+  direction: rtl;
+  text-align: right;
 }
 .screen--leaving { opacity: 0; transform: translateY(-6px); pointer-events: none; }
 .screen--entering { animation: fadeIn 400ms ease-out both; }
@@ -368,6 +383,7 @@ body.scroll-locked { overflow: hidden; }
   border: 1px solid rgba(96, 122, 78, 0.2);
   box-shadow: 0 18px 50px rgba(39, 56, 38, 0.14);
   backdrop-filter: blur(10px);
+  direction: ltr; /* Studio layout always LTR — it's a musical interface */
 }
 :root[data-theme="night"] .studio-shell {
   background: rgba(19, 35, 50, 0.82);

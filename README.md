@@ -58,3 +58,5 @@ python3 -m http.server 8000
 Then open [http://localhost:8000](http://localhost:8000/).
 
 All artwork and sounds are generated or included in this project. No API key or installation is required.
+
+## Game Screenshots
