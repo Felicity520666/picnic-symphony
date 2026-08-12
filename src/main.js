@@ -360,6 +360,7 @@ function bindStudio() {
 
 function enterStudio() {
   if (!state.context) createAudioGraph();
+  hideLayerMessage();
 
   // Render spirit portrait in sidebar
   const artEl = document.getElementById('studio-spirit-art');
@@ -480,6 +481,9 @@ function updateTempoDisplay() {
 }
 
 function updateStudioUI() {
+  // Hide layer-full message if we're below the limit
+  if (state.activeLayers.size < 6) hideLayerMessage();
+
   const countEl = document.querySelector('[data-display="layer-count"]');
   if (countEl) countEl.textContent = t('studio.layerCount', { n: state.activeLayers.size });
 

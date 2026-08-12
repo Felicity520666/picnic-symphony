@@ -82,12 +82,12 @@ function getAlphaBounds(image) {
 // ─── Layout positions (normalized within basket interior) ─────────────────────
 
 const POSITIONS = {
-  1: [[0.50, 0.50]],
-  2: [[0.33, 0.50], [0.67, 0.50]],
-  3: [[0.30, 0.36], [0.70, 0.36], [0.50, 0.72]],
-  4: [[0.30, 0.33], [0.70, 0.33], [0.30, 0.72], [0.70, 0.72]],
-  5: [[0.22, 0.34], [0.50, 0.28], [0.78, 0.34], [0.35, 0.73], [0.65, 0.73]],
-  6: [[0.20, 0.32], [0.50, 0.27], [0.80, 0.32], [0.20, 0.72], [0.50, 0.77], [0.80, 0.72]],
+  1: [[0.50, 0.48]],
+  2: [[0.33, 0.48], [0.67, 0.48]],
+  3: [[0.30, 0.35], [0.70, 0.35], [0.50, 0.65]],
+  4: [[0.30, 0.32], [0.70, 0.32], [0.30, 0.65], [0.70, 0.65]],
+  5: [[0.22, 0.32], [0.50, 0.27], [0.78, 0.32], [0.35, 0.64], [0.65, 0.64]],
+  6: [[0.20, 0.30], [0.50, 0.26], [0.80, 0.30], [0.20, 0.63], [0.50, 0.67], [0.80, 0.63]],
 };
 
 // Visible size as fraction of basket interior width
@@ -217,11 +217,11 @@ export async function renderFullComposition(canvas, ingredientIds, options = {})
     });
   }
 
-  // Front basket rim (bottom 34%)
+  // Front basket rim (only the very bottom 22% — gentle overlap, not cutting ingredients)
   if (basketImg) {
     ctx.save();
     ctx.beginPath();
-    ctx.rect(basketX, basketY + basketH * 0.66, basketW, basketH * 0.34);
+    ctx.rect(basketX, basketY + basketH * 0.78, basketW, basketH * 0.22);
     ctx.clip();
     ctx.drawImage(basketImg, basketX, basketY, basketW, basketH);
     ctx.restore();
