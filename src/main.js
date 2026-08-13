@@ -542,7 +542,12 @@ function updateStudioUI() {
         highlightRecommended(null);
       }
     } else {
-      beatEl.textContent = t('studio.pickRecipe');
+      // Free mode — show contextual message based on ingredient count
+      if (state.activeLayers.size === 0) {
+        beatEl.textContent = t('studio.pickRecipe');
+      } else {
+        beatEl.textContent = t('studio.keepBuilding');
+      }
       highlightRecommended(null);
     }
   }

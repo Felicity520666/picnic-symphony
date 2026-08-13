@@ -63,6 +63,78 @@
   --env-grass-color: #3a5a4a;
 }
 
+/* ─── Theme Transition System ───────────────────── */
+/* Match the 1.8s background crossfade. Only transition visual theme properties. */
+:root {
+  --theme-duration: 1.8s;
+  --theme-ease: ease;
+}
+
+body.theme-ready .studio-shell,
+body.theme-ready .ingredient-btn,
+body.theme-ready .spirit-panel,
+body.theme-ready .spirit-speech,
+body.theme-ready .studio-status,
+body.theme-ready .btn,
+body.theme-ready .toolbar-btn,
+body.theme-ready .theme-btn,
+body.theme-ready .welcome-card,
+body.theme-ready .spirit-card,
+body.theme-ready .mode-card,
+body.theme-ready .recipe-card,
+body.theme-ready .postcard-card,
+body.theme-ready .recipe-grid-card,
+body.theme-ready .mode-option,
+body.theme-ready .spirit-option,
+body.theme-ready .lang-dropdown__menu,
+body.theme-ready .confirm-dialog,
+body.theme-ready .mismatch-dialog {
+  transition:
+    background-color var(--theme-duration) var(--theme-ease),
+    border-color var(--theme-duration) var(--theme-ease),
+    color var(--theme-duration) var(--theme-ease),
+    box-shadow var(--theme-duration) var(--theme-ease);
+}
+
+/* Text elements */
+body.theme-ready .ingredient-btn__name,
+body.theme-ready .ingredient-btn__role,
+body.theme-ready .spirit-speech p,
+body.theme-ready .studio-status,
+body.theme-ready .welcome-title,
+body.theme-ready .welcome-body,
+body.theme-ready .spirit-title,
+body.theme-ready .spirit-subtitle,
+body.theme-ready .postcard-title,
+body.theme-ready .recipe-title,
+body.theme-ready .recipe-subtitle {
+  transition: color var(--theme-duration) var(--theme-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.theme-ready .studio-shell,
+  body.theme-ready .ingredient-btn,
+  body.theme-ready .spirit-panel,
+  body.theme-ready .spirit-speech,
+  body.theme-ready .studio-status,
+  body.theme-ready .btn,
+  body.theme-ready .toolbar-btn,
+  body.theme-ready .theme-btn,
+  body.theme-ready .welcome-card,
+  body.theme-ready .spirit-card,
+  body.theme-ready .mode-card,
+  body.theme-ready .recipe-card,
+  body.theme-ready .postcard-card,
+  body.theme-ready .recipe-grid-card,
+  body.theme-ready .mode-option,
+  body.theme-ready .spirit-option,
+  body.theme-ready .ingredient-btn__name,
+  body.theme-ready .ingredient-btn__role,
+  body.theme-ready .spirit-speech p {
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ─── Reset ─────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; min-height: 100%; }
@@ -73,7 +145,7 @@ body {
   background: var(--paper);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  transition: background-color var(--transition-slow), color var(--transition-slow);
+  transition: background-color var(--theme-duration, 1.8s) var(--theme-ease, ease), color var(--theme-duration, 1.8s) var(--theme-ease, ease);
 }
 button, input, select, textarea { font-family: var(--font-ui); font: inherit; }
 img { max-width: 100%; display: block; }
@@ -368,18 +440,18 @@ body.scroll-locked { overflow: hidden; }
   gap: 16px;
   padding: 24px;
   border-radius: 28px;
-  background: rgba(255, 252, 239, 0.82);
+  background-color: rgba(255, 252, 239, 0.82);
   border: 1px solid rgba(96, 122, 78, 0.2);
   box-shadow: 0 18px 50px rgba(39, 56, 38, 0.14);
   backdrop-filter: blur(10px);
 }
 :root[data-theme="night"] .studio-shell {
-  background: rgba(19, 35, 50, 0.82);
+  background-color: rgba(19, 35, 50, 0.82);
   border-color: rgba(197, 218, 178, 0.18);
   box-shadow: 0 18px 55px rgba(0, 0, 0, 0.3);
 }
 :root[data-theme="dusk"] .studio-shell {
-  background: rgba(35, 30, 48, 0.78);
+  background-color: rgba(35, 30, 48, 0.78);
   border-color: rgba(197, 180, 210, 0.18);
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
 }

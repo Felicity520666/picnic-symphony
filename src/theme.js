@@ -43,9 +43,15 @@ function setTheme(theme) {
   applyTheme();
 }
 
-/** Initialize: apply on load, recheck every minute for auto */
+/** Initialize: apply on load, enable transitions after first paint, recheck every minute for auto */
 function initTheme() {
   applyTheme();
+  // Enable transitions only after initial theme is painted (prevents flash)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.body.classList.add('theme-ready');
+    });
+  });
   setInterval(() => {
     if (state.theme === 'auto') applyTheme();
   }, 60000);
