@@ -126,6 +126,8 @@ function bindGlobalControls() {
       homeBtn.hidden = s.screen === SCREENS.WELCOME;
     }
   });
+  // Initial state
+  if (homeBtn) homeBtn.hidden = state.screen === SCREENS.WELCOME;
 
   // Theme buttons
   document.querySelectorAll('[data-action="set-theme"]').forEach(btn => {
