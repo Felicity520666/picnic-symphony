@@ -216,6 +216,11 @@ body.scroll-locked { overflow: hidden; }
 }
 .toolbar-btn:hover { transform: scale(1.05); }
 
+/* Home button */
+.home-btn { display: flex; align-items: center; gap: 4px; }
+.home-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+.home-btn[hidden] { display: none !important; }
+
 .theme-toggle { display: flex; gap: 1px; padding: 2px; border-radius: 999px; background: var(--card-bg); border: 1px solid var(--card-border); }
 .theme-btn { padding: 4px 9px; border: 0; border-radius: 999px; background: transparent; color: var(--ink-soft); font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: background 200ms, color 200ms; }
 .theme-btn.is-active { background: var(--meadow); color: #fff; }
@@ -446,7 +451,27 @@ body.scroll-locked { overflow: hidden; }
 .ingredient-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(52,66,62,0.1); }
 .ingredient-btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .ingredient-btn.is-active { border-color: var(--meadow); box-shadow: 0 0 0 3px rgba(127,163,107,0.18); }
-.ingredient-btn.is-recommended { border-color: var(--butter); box-shadow: 0 0 0 3px rgba(244,215,125,0.2); animation: softPulse 2s ease-in-out infinite; }
+.ingredient-btn.is-recommended {
+  position: relative; z-index: 2;
+  border: 3px solid #f2c94c;
+  box-shadow: 0 0 0 3px rgba(242,201,76,0.22), 0 0 20px 6px rgba(242,201,76,0.45);
+  animation: recommendedPulse 1.6s ease-in-out infinite;
+  filter: brightness(1.06);
+}
+.ingredient-btn.is-recommended::after {
+  content: attr(data-next-badge);
+  position: absolute; top: 6px; right: 6px;
+  padding: 2px 7px; border-radius: 8px;
+  background: rgba(242,201,76,0.9); color: #4a3a00;
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.02em;
+  pointer-events: none;
+}
+@keyframes recommendedPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 3px rgba(242,201,76,0.22), 0 0 18px 6px rgba(242,201,76,0.4); }
+  50% { transform: scale(1.025); box-shadow: 0 0 0 4px rgba(242,201,76,0.3), 0 0 26px 10px rgba(242,201,76,0.6); }
+}
+:root[data-theme="night"] .ingredient-btn.is-recommended { box-shadow: 0 0 0 3px rgba(242,201,76,0.3), 0 0 22px 8px rgba(242,201,76,0.5); }
+:root[data-theme="dusk"] .ingredient-btn.is-recommended { box-shadow: 0 0 0 3px rgba(242,201,76,0.25), 0 0 20px 7px rgba(242,201,76,0.45); }
 .ingredient-btn.is-playing { animation: ingredientHit 200ms ease-out; }
 
 .ingredient-btn__img { width: 58px; height: 58px; object-fit: contain; }
@@ -851,4 +876,5 @@ body.scroll-locked { overflow: hidden; }
     transition: opacity 1ms !important;
   }
   .spirit-trail { display: none !important; }
+  .ingredient-btn.is-recommended { animation: none !important; transform: none !important; }
 }

@@ -59,6 +59,9 @@ Then open [http://localhost:8000](http://localhost:8000/).
 
 All artwork and sounds are generated or included in this project. No API key or installation is required.
 
+## Play Online
+This project is hosted on GitHub Pages: [https://felicity520666.github.io/picnic-symphony/](https://felicity520666.github.io/picnic-symphony/)
+
 ## Game Screenshots
 ![Picnic Symphony Screenshot](assets/screenshots/1.png)
 ![Picnic Symphony Screenshot](assets/screenshots/2.png)

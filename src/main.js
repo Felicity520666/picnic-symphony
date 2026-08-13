@@ -3,7 +3,7 @@
  * Wires all modules together: router, i18n, theme, audio, studio, recipes, particles.
  */
 
-import { state, loadPersistedState, setState, SCREENS, MODES } from './state.js';
+import { state, loadPersistedState, setState, subscribe, SCREENS, MODES } from './state.js';
 import { initRouter, navigateTo } from './router.js';
 import { applyTranslations, setLanguage, t, detectLanguage, SUPPORTED_LANGS } from './i18n.js';
 import { initTheme, setTheme, getEffectiveTheme } from './theme.js';
@@ -109,6 +109,23 @@ document.addEventListener('pointerdown', (e) => {
 function bindGlobalControls() {
   // Language dropdown
   bindLangDropdown();
+
+  // Home button
+  const homeBtn = document.getElementById('home-btn');
+  if (homeBtn) {
+    homeBtn.addEventListener('click', () => {
+      overlayManager.close();
+      // Stop audio cleanly so music doesn't continue on welcome screen
+      if (state.playing) stopTransport();
+      navigateTo(SCREENS.WELCOME);
+    });
+  }
+  // Show/hide Home based on screen
+  subscribe((s, key) => {
+    if (key === 'screen' && homeBtn) {
+      homeBtn.hidden = s.screen === SCREENS.WELCOME;
+    }
+  });
 
   // Theme buttons
   document.querySelectorAll('[data-action="set-theme"]').forEach(btn => {
@@ -535,7 +552,15 @@ function updateStudioUI() {
 
 function highlightRecommended(id) {
   document.querySelectorAll('.ingredient-btn').forEach(btn => {
-    btn.classList.toggle('is-recommended', btn.dataset.ingredient === id);
+    const isNext = btn.dataset.ingredient === id;
+    btn.classList.toggle('is-recommended', isNext);
+    if (isNext) {
+      btn.dataset.nextBadge = t('studio.nextBadge');
+      btn.setAttribute('aria-description', t('studio.nextBadge') + ': ' + t(ingredientById.get(id)?.nameKey || id));
+    } else {
+      btn.dataset.nextBadge = '';
+      btn.removeAttribute('aria-description');
+    }
   });
   state.recommendedIngredientId = id;
 }
