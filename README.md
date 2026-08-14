@@ -67,4 +67,5 @@ This project is hosted on GitHub Pages: [https://felicity520666.github.io/picnic
 ![Picnic Symphony Screenshot](assets/screenshots/2.png)
 ![Picnic Symphony Screenshot](assets/screenshots/3.png)
 
-## 
+## Creator
+- Felicity Yan [https://github.com/Felicity520666]
