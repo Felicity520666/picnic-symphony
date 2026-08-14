@@ -1012,7 +1012,6 @@ async function handleAudioExport() {
   const active = [...state.activeLayers];
   if (!active.length) return;
 
-  // Show export modal
   let dialog = document.getElementById('audio-export-dialog');
   if (!dialog) {
     dialog = document.createElement('dialog');
@@ -1031,15 +1030,43 @@ async function handleAudioExport() {
           <input type="range" min="0" max="100" value="80" class="export-setting__input" id="export-volume">
           <span class="export-setting__value" id="export-volume-val"></span>
         </label>
-        <label class="export-setting">
+        <div class="export-setting">
+          <span class="export-setting__label" data-export-label="lengthMode"></span>
+          <div class="export-mode-toggle">
+            <label><input type="radio" name="export-length-mode" value="loops" checked> <span data-export-label="modeLoops"></span></label>
+            <label><input type="radio" name="export-length-mode" value="duration"> <span data-export-label="modeDuration"></span></label>
+          </div>
+        </div>
+        <div id="export-loops-section" class="export-setting">
           <span class="export-setting__label" data-export-label="loops"></span>
-          <select id="export-loops" class="export-setting__select">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="4" selected>4</option>
-            <option value="8">8</option>
-          </select>
-        </label>
+          <div class="export-loop-controls">
+            <input type="range" min="1" max="100" value="4" step="1" id="export-loops-slider" class="export-setting__input">
+            <input type="number" min="1" max="100" value="4" step="1" id="export-loops-num" class="export-num-input">
+          </div>
+          <div class="export-quick-loops">
+            <button type="button" class="export-quick" data-loops="1">1</button>
+            <button type="button" class="export-quick" data-loops="5">5</button>
+            <button type="button" class="export-quick" data-loops="10">10</button>
+            <button type="button" class="export-quick" data-loops="25">25</button>
+            <button type="button" class="export-quick" data-loops="50">50</button>
+            <button type="button" class="export-quick" data-loops="100">100</button>
+          </div>
+        </div>
+        <div id="export-duration-section" class="export-setting" hidden>
+          <span class="export-setting__label" data-export-label="duration"></span>
+          <div class="export-duration-presets">
+            <button type="button" class="export-quick" data-seconds="15">15s</button>
+            <button type="button" class="export-quick" data-seconds="30">30s</button>
+            <button type="button" class="export-quick" data-seconds="60">1m</button>
+            <button type="button" class="export-quick" data-seconds="120">2m</button>
+            <button type="button" class="export-quick" data-seconds="300">5m</button>
+            <button type="button" class="export-quick" data-seconds="600">10m</button>
+          </div>
+          <div class="export-custom-dur">
+            <input type="number" min="0" max="10" value="1" id="export-dur-min" class="export-num-input"> <span>:</span>
+            <input type="number" min="0" max="59" value="00" id="export-dur-sec" class="export-num-input">
+          </div>
+        </div>
       </div>
       <div class="export-dialog__summary" id="export-summary"></div>
       <div class="export-dialog__actions">
@@ -1055,7 +1082,52 @@ async function handleAudioExport() {
     dialog.querySelector('[data-action="export-start"]').addEventListener('click', doExport);
     dialog.querySelector('#export-tempo').addEventListener('input', updateExportSummary);
     dialog.querySelector('#export-volume').addEventListener('input', updateExportSummary);
-    dialog.querySelector('#export-loops').addEventListener('change', updateExportSummary);
+
+    // Loop slider ↔ number sync
+    const loopSlider = dialog.querySelector('#export-loops-slider');
+    const loopNum = dialog.querySelector('#export-loops-num');
+    loopSlider.addEventListener('input', () => { loopNum.value = loopSlider.value; updateExportSummary(); });
+    loopNum.addEventListener('input', () => {
+      let v = Math.max(1, Math.min(100, Math.round(Number(loopNum.value) || 1)));
+      loopSlider.value = v;
+      updateExportSummary();
+    });
+    loopNum.addEventListener('blur', () => {
+      let v = Math.max(1, Math.min(100, Math.round(Number(loopNum.value) || 1)));
+      loopNum.value = v; loopSlider.value = v; updateExportSummary();
+    });
+
+    // Quick loop buttons
+    dialog.querySelectorAll('[data-loops]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        loopSlider.value = btn.dataset.loops;
+        loopNum.value = btn.dataset.loops;
+        updateExportSummary();
+      });
+    });
+
+    // Duration presets
+    dialog.querySelectorAll('[data-seconds]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const secs = Number(btn.dataset.seconds);
+        dialog.querySelector('#export-dur-min').value = Math.floor(secs / 60);
+        dialog.querySelector('#export-dur-sec').value = secs % 60;
+        updateExportSummary();
+      });
+    });
+    dialog.querySelector('#export-dur-min').addEventListener('input', updateExportSummary);
+    dialog.querySelector('#export-dur-sec').addEventListener('input', updateExportSummary);
+
+    // Mode toggle
+    dialog.querySelectorAll('[name="export-length-mode"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const isLoops = radio.value === 'loops';
+        dialog.querySelector('#export-loops-section').hidden = !isLoops;
+        dialog.querySelector('#export-duration-section').hidden = isLoops;
+        updateExportSummary();
+      });
+    });
+
     dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
   }
 
@@ -1063,16 +1135,36 @@ async function handleAudioExport() {
   dialog.querySelector('.export-dialog__title').textContent = t('export.title');
   dialog.querySelector('[data-export-label="tempo"]').textContent = t('studio.tempo');
   dialog.querySelector('[data-export-label="volume"]').textContent = t('export.volume');
+  dialog.querySelector('[data-export-label="lengthMode"]').textContent = t('export.lengthMode');
+  dialog.querySelector('[data-export-label="modeLoops"]').textContent = t('export.modeLoops');
+  dialog.querySelector('[data-export-label="modeDuration"]').textContent = t('export.modeDuration');
   dialog.querySelector('[data-export-label="loops"]').textContent = t('export.loops');
+  dialog.querySelector('[data-export-label="duration"]')&& (dialog.querySelector('[data-export-label="duration"]').textContent = t('export.duration'));
   dialog.querySelector('[data-action="export-cancel"]').textContent = t('nav.back');
   dialog.querySelector('[data-action="export-start"]').textContent = t('export.startButton');
 
-  // Set defaults from current state
-  const tempoInput = dialog.querySelector('#export-tempo');
-  tempoInput.value = state.bpm || 96;
-
+  // Set defaults
+  dialog.querySelector('#export-tempo').value = state.bpm || 96;
   updateExportSummary();
   dialog.showModal();
+}
+
+function getExportLoopCount() {
+  const dialog = document.getElementById('audio-export-dialog');
+  if (!dialog) return 4;
+  const mode = dialog.querySelector('[name="export-length-mode"]:checked')?.value || 'loops';
+  const tempo = Number(dialog.querySelector('#export-tempo').value) || 96;
+  const stepDur = 60 / tempo / 4;
+  const loopDur = 16 * stepDur;
+
+  if (mode === 'loops') {
+    return Math.max(1, Math.min(100, Math.round(Number(dialog.querySelector('#export-loops-slider').value) || 4)));
+  } else {
+    const mins = Number(dialog.querySelector('#export-dur-min').value) || 0;
+    const secs = Number(dialog.querySelector('#export-dur-sec').value) || 0;
+    const totalSecs = Math.max(5, Math.min(600, mins * 60 + secs));
+    return Math.ceil(totalSecs / loopDur);
+  }
 }
 
 function updateExportSummary() {
@@ -1081,14 +1173,25 @@ function updateExportSummary() {
 
   const tempo = Number(dialog.querySelector('#export-tempo').value);
   const volume = Number(dialog.querySelector('#export-volume').value);
-  const loops = Number(dialog.querySelector('#export-loops').value);
+  const loops = getExportLoopCount();
 
   dialog.querySelector('#export-tempo-val').textContent = `${tempo} BPM`;
   dialog.querySelector('#export-volume-val').textContent = `${volume}%`;
 
   const info = getExportInfo({ tempo, loops, ingredientCount: state.activeLayers.size });
+
+  // Format duration nicely
+  const mins = Math.floor(info.durationSeconds / 60);
+  const secs = Math.round(info.durationSeconds % 60);
+  const durStr = mins > 0 ? `${mins}:${String(secs).padStart(2, '0')}` : `${secs}s`;
+
   const summary = dialog.querySelector('#export-summary');
-  summary.textContent = `${info.durationSeconds}s · WAV · ~${info.estimatedSizeMB} MB`;
+  summary.textContent = `${loops} ${t('export.loops').toLowerCase()} · ${durStr} · WAV · ~${info.estimatedSizeMB} MB`;
+
+  // Warn for large exports
+  if (info.estimatedSizeMB > 50) {
+    summary.textContent += ` ⚠️ ${t('export.largeWarning')}`;
+  }
 }
 
 async function doExport() {
@@ -1100,7 +1203,7 @@ async function doExport() {
 
   const tempo = Number(dialog.querySelector('#export-tempo').value);
   const volume = Number(dialog.querySelector('#export-volume').value) / 100;
-  const loops = Number(dialog.querySelector('#export-loops').value);
+  const loops = getExportLoopCount();
 
   const startBtn = dialog.querySelector('[data-action="export-start"]');
   const statusEl = dialog.querySelector('#export-status');

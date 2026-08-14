@@ -661,6 +661,15 @@ body.scroll-locked { overflow: hidden; }
 .export-dialog__summary { padding: 10px 14px; border-radius: var(--radius-md); background: rgba(169,190,145,0.08); font-size: 0.82rem; color: var(--ink-soft); margin-bottom: 16px; }
 .export-dialog__actions { display: flex; gap: 10px; justify-content: flex-end; }
 .export-dialog__status { margin: 12px 0 0; font-size: 0.82rem; color: var(--meadow); text-align: center; }
+.export-mode-toggle { display: flex; gap: 12px; font-size: 0.85rem; }
+.export-mode-toggle label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+.export-loop-controls { display: flex; gap: 8px; align-items: center; }
+.export-loop-controls input[type="range"] { flex: 1; }
+.export-num-input { width: 56px; padding: 4px 8px; border-radius: var(--radius-sm); border: 1px solid var(--card-border); background: var(--card-bg); color: var(--ink); font-size: 0.85rem; text-align: center; }
+.export-quick-loops, .export-duration-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.export-quick { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--ink); font-size: 0.75rem; cursor: pointer; }
+.export-quick:hover { background: rgba(127,163,107,0.08); }
+.export-custom-dur { display: flex; gap: 4px; align-items: center; margin-top: 8px; font-size: 0.85rem; }
 
 /* ─── Confirm Dialog ─────────────────────────────── */
 .confirm-dialog {
