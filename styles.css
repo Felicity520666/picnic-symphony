@@ -643,6 +643,25 @@ body.scroll-locked { overflow: hidden; }
 :root[data-theme="dusk"] .mismatch-detail--extra { background: rgba(210,170,60,0.1); color: #cb8; }
 .mismatch-dialog__actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 
+/* ─── Audio Export Dialog ─────────────────────────── */
+.export-dialog {
+  border: none; border-radius: 24px;
+  padding: 28px 32px; max-width: min(440px, calc(100vw - 32px));
+  background: var(--card-bg); color: var(--ink);
+  box-shadow: 0 16px 50px rgba(0,0,0,0.18);
+}
+.export-dialog::backdrop { background: rgba(25,30,25,0.4); }
+.export-dialog__title { margin: 0 0 18px; font-family: var(--font-display); font-size: 1.4rem; color: var(--ink); }
+.export-dialog__settings { display: grid; gap: 14px; margin-bottom: 16px; }
+.export-setting { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; font-size: 0.85rem; }
+.export-setting__label { font-weight: 600; color: var(--ink-soft); grid-column: 1 / -1; }
+.export-setting__input { width: 100%; accent-color: var(--meadow); }
+.export-setting__select { padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--card-border); background: var(--card-bg); color: var(--ink); font-size: 0.85rem; }
+.export-setting__value { font-size: 0.78rem; color: var(--ink-soft); min-width: 5ch; text-align: right; }
+.export-dialog__summary { padding: 10px 14px; border-radius: var(--radius-md); background: rgba(169,190,145,0.08); font-size: 0.82rem; color: var(--ink-soft); margin-bottom: 16px; }
+.export-dialog__actions { display: flex; gap: 10px; justify-content: flex-end; }
+.export-dialog__status { margin: 12px 0 0; font-size: 0.82rem; color: var(--meadow); text-align: center; }
+
 /* ─── Confirm Dialog ─────────────────────────────── */
 .confirm-dialog {
   border: none; border-radius: 24px;

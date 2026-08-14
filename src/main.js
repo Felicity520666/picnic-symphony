@@ -11,6 +11,7 @@ import { spiritDefinitions, getSpiritPlaceholder, guideSpiritLayer, initSpiritSe
 import { ingredientDefinitions, ingredientById, MAX_LAYERS } from './ingredients.js';
 import { recipeDefinitions, recipeById, isRecipeUnlocked } from './recipes.js';
 import { assetUrl, renderFullComposition, renderIngredientComposition } from './composition.js';
+import { exportAudio, getExportInfo } from './audio-export.js';
 import {
   createAudioGraph, resumeAudio, startTransport, stopTransport, toggleTransport,
   setMusicVolume, setAmbienceVolume, toggleAmbienceMute, updateAmbienceDucking,
@@ -139,8 +140,9 @@ function bindGlobalControls() {
   });
   updateThemeButtons();
 
-  // Set initial lang display
+  // Set initial lang display and menu checkmark
   updateLangDisplay();
+  updateLangMenuSelection();
 }
 
 // ─── Language Dropdown ───────────────────────────────────────────────────────
@@ -440,13 +442,11 @@ function toggleIngredient(id) {
     btn.classList.add('is-active');
     btn.setAttribute('aria-pressed', 'true');
     previewIngredient(id);
-    // Advance recipe if matched
-    if (state.selectedRecipeId && state.recommendedIngredientId === id) {
-      advanceRecipeStep();
-    }
   }
 
   updateAmbienceDucking();
+  // Derive recipe state reactively after every ingredient change
+  deriveAndRenderRecipeState();
   updateStudioUI();
 }
 
@@ -460,29 +460,73 @@ function hideLayerMessage() {
   if (el) el.hidden = true;
 }
 
-function advanceRecipeStep() {
+// ─── Reactive recipe state ───────────────────────────────────────────────────
+
+let _lastRecipeComplete = false;
+let _celebrationVersion = 0;
+
+/**
+ * Derive recipe completion from current ingredients (not stored step index).
+ * Called after every ingredient add/remove.
+ */
+function deriveAndRenderRecipeState() {
+  if (!state.selectedRecipeId) return;
   const recipe = recipeById.get(state.selectedRecipeId);
   if (!recipe) return;
-  state.recipeStepIndex++;
 
-  // Brief flutter celebration on correct ingredient
-  const artEl = document.getElementById('studio-spirit-art');
-  if (artEl && state.spirit) {
-    const flutterSrc = getSpiritAsset(state.spirit, 'flutter', 'right');
-    const img = artEl.querySelector('img');
-    if (img) {
-      img.src = flutterSrc;
-      setTimeout(() => {
-        const nextState = state.recipeStepIndex < recipe.steps.length ? 'guide' : 'idle';
-        img.src = getSpiritAsset(state.spirit, nextState, 'right');
-      }, 600);
+  const active = new Set(state.activeLayers);
+  const required = recipe.ingredients;
+
+  // Find first missing ingredient in recipe order
+  let firstMissingId = null;
+  let completedCount = 0;
+  for (const id of required) {
+    if (active.has(id)) {
+      completedCount++;
+    } else if (!firstMissingId) {
+      firstMissingId = id;
     }
   }
 
-  if (state.recipeStepIndex >= recipe.steps.length) {
+  const isComplete = completedCount === required.length;
+
+  // Update step index to reflect reality
+  state.recipeStepIndex = completedCount;
+
+  // Handle state transitions
+  if (isComplete && !_lastRecipeComplete) {
+    // Just became complete — celebrate
+    _lastRecipeComplete = true;
+    _celebrationVersion++;
+    const ver = _celebrationVersion;
+
+    const artEl = document.getElementById('studio-spirit-art');
+    if (artEl && state.spirit) {
+      const img = artEl.querySelector('img');
+      if (img) {
+        img.src = getSpiritAsset(state.spirit, 'flutter', 'right');
+        setTimeout(() => {
+          // Only restore if no newer state change invalidated this
+          if (_celebrationVersion === ver && _lastRecipeComplete) {
+            img.src = getSpiritAsset(state.spirit, 'idle', 'right');
+          }
+        }, 700);
+      }
+    }
+
     if (!state.completedRecipes.includes(state.selectedRecipeId)) {
       state.completedRecipes.push(state.selectedRecipeId);
       setState({ completedRecipes: state.completedRecipes }, true);
+    }
+  } else if (!isComplete && _lastRecipeComplete) {
+    // Was complete, now incomplete — cancel celebration
+    _lastRecipeComplete = false;
+    _celebrationVersion++;
+
+    const artEl = document.getElementById('studio-spirit-art');
+    if (artEl && state.spirit) {
+      const img = artEl.querySelector('img');
+      if (img) img.src = getSpiritAsset(state.spirit, 'guide', 'right');
     }
   }
 }
@@ -532,17 +576,27 @@ function updateStudioUI() {
   if (beatEl) {
     if (state.selectedRecipeId) {
       const recipe = recipeById.get(state.selectedRecipeId);
-      if (recipe && state.recipeStepIndex < recipe.steps.length) {
-        const step = recipe.steps[state.recipeStepIndex];
-        const name = t(ingredientById.get(step.ingredientId)?.nameKey || step.ingredientId);
-        beatEl.textContent = `${state.recipeStepIndex + 1}/${recipe.steps.length}: ${name}`;
-        highlightRecommended(step.ingredientId);
-      } else {
-        beatEl.textContent = t('recipes.complete');
-        highlightRecommended(null);
+      if (recipe) {
+        // Derive first missing ingredient
+        const active = new Set(state.activeLayers);
+        let firstMissing = null;
+        let completedCount = 0;
+        for (const id of recipe.ingredients) {
+          if (active.has(id)) completedCount++;
+          else if (!firstMissing) firstMissing = id;
+        }
+
+        if (completedCount === recipe.ingredients.length) {
+          beatEl.textContent = t('recipes.complete');
+          highlightRecommended(null);
+        } else if (firstMissing) {
+          const name = t(ingredientById.get(firstMissing)?.nameKey || firstMissing);
+          beatEl.textContent = `${completedCount}/${recipe.ingredients.length}: ${name}`;
+          highlightRecommended(firstMissing);
+        }
       }
     } else {
-      // Free mode — show contextual message based on ingredient count
+      // Free mode
       if (state.activeLayers.size === 0) {
         beatEl.textContent = t('studio.pickRecipe');
       } else {
@@ -672,6 +726,7 @@ function startRecipe(recipeId) {
 
 function bindPostcard() {
   document.querySelector('[data-action="download-postcard"]')?.addEventListener('click', handleDownload);
+  document.querySelector('[data-action="download-audio"]')?.addEventListener('click', handleAudioExport);
   document.querySelector('[data-action="new-picnic"]')?.addEventListener('click', () => {
     if (hasExistingCreation()) {
       showClearConfirmDialog();
@@ -951,4 +1006,127 @@ async function handleDownload() {
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }, 'image/png');
+}
+
+async function handleAudioExport() {
+  const active = [...state.activeLayers];
+  if (!active.length) return;
+
+  // Show export modal
+  let dialog = document.getElementById('audio-export-dialog');
+  if (!dialog) {
+    dialog = document.createElement('dialog');
+    dialog.id = 'audio-export-dialog';
+    dialog.className = 'export-dialog';
+    dialog.innerHTML = `
+      <h3 class="export-dialog__title"></h3>
+      <div class="export-dialog__settings">
+        <label class="export-setting">
+          <span class="export-setting__label" data-export-label="tempo"></span>
+          <input type="range" min="60" max="140" class="export-setting__input" id="export-tempo">
+          <span class="export-setting__value" id="export-tempo-val"></span>
+        </label>
+        <label class="export-setting">
+          <span class="export-setting__label" data-export-label="volume"></span>
+          <input type="range" min="0" max="100" value="80" class="export-setting__input" id="export-volume">
+          <span class="export-setting__value" id="export-volume-val"></span>
+        </label>
+        <label class="export-setting">
+          <span class="export-setting__label" data-export-label="loops"></span>
+          <select id="export-loops" class="export-setting__select">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="4" selected>4</option>
+            <option value="8">8</option>
+          </select>
+        </label>
+      </div>
+      <div class="export-dialog__summary" id="export-summary"></div>
+      <div class="export-dialog__actions">
+        <button class="btn btn--ghost" type="button" data-action="export-cancel"></button>
+        <button class="btn btn--primary" type="button" data-action="export-start"></button>
+      </div>
+      <p class="export-dialog__status" id="export-status" hidden></p>
+    `;
+    document.body.appendChild(dialog);
+
+    // Event handlers
+    dialog.querySelector('[data-action="export-cancel"]').addEventListener('click', () => dialog.close());
+    dialog.querySelector('[data-action="export-start"]').addEventListener('click', doExport);
+    dialog.querySelector('#export-tempo').addEventListener('input', updateExportSummary);
+    dialog.querySelector('#export-volume').addEventListener('input', updateExportSummary);
+    dialog.querySelector('#export-loops').addEventListener('change', updateExportSummary);
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+  }
+
+  // Set translated labels
+  dialog.querySelector('.export-dialog__title').textContent = t('export.title');
+  dialog.querySelector('[data-export-label="tempo"]').textContent = t('studio.tempo');
+  dialog.querySelector('[data-export-label="volume"]').textContent = t('export.volume');
+  dialog.querySelector('[data-export-label="loops"]').textContent = t('export.loops');
+  dialog.querySelector('[data-action="export-cancel"]').textContent = t('nav.back');
+  dialog.querySelector('[data-action="export-start"]').textContent = t('export.startButton');
+
+  // Set defaults from current state
+  const tempoInput = dialog.querySelector('#export-tempo');
+  tempoInput.value = state.bpm || 96;
+
+  updateExportSummary();
+  dialog.showModal();
+}
+
+function updateExportSummary() {
+  const dialog = document.getElementById('audio-export-dialog');
+  if (!dialog) return;
+
+  const tempo = Number(dialog.querySelector('#export-tempo').value);
+  const volume = Number(dialog.querySelector('#export-volume').value);
+  const loops = Number(dialog.querySelector('#export-loops').value);
+
+  dialog.querySelector('#export-tempo-val').textContent = `${tempo} BPM`;
+  dialog.querySelector('#export-volume-val').textContent = `${volume}%`;
+
+  const info = getExportInfo({ tempo, loops, ingredientCount: state.activeLayers.size });
+  const summary = dialog.querySelector('#export-summary');
+  summary.textContent = `${info.durationSeconds}s · WAV · ~${info.estimatedSizeMB} MB`;
+}
+
+async function doExport() {
+  const dialog = document.getElementById('audio-export-dialog');
+  if (!dialog) return;
+
+  const active = [...state.activeLayers];
+  if (!active.length) return;
+
+  const tempo = Number(dialog.querySelector('#export-tempo').value);
+  const volume = Number(dialog.querySelector('#export-volume').value) / 100;
+  const loops = Number(dialog.querySelector('#export-loops').value);
+
+  const startBtn = dialog.querySelector('[data-action="export-start"]');
+  const statusEl = dialog.querySelector('#export-status');
+
+  startBtn.disabled = true;
+  statusEl.hidden = false;
+  statusEl.textContent = t('export.rendering');
+
+  try {
+    const nameInput = document.querySelector('.postcard-name-input');
+    const customName = (nameInput?.value || '').trim();
+    const filename = customName
+      ? `picnic-symphony-${customName.replace(/[^a-zA-Z0-9\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff -]/g, '').trim()}`
+      : 'picnic-symphony-creation';
+
+    await exportAudio({ ingredientIds: active, tempo, loops, volume, filename });
+
+    statusEl.textContent = t('export.ready');
+    setTimeout(() => {
+      dialog.close();
+      startBtn.disabled = false;
+      statusEl.hidden = true;
+    }, 1500);
+  } catch (e) {
+    console.error('[audio-export]', e);
+    statusEl.textContent = t('export.error');
+    startBtn.disabled = false;
+  }
 }

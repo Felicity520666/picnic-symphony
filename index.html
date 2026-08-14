@@ -165,7 +165,6 @@
         <div class="studio-sliders">
           <label class="range-control"><span data-i18n="studio.tempo">Tempo</span><input type="range" min="60" max="140" value="96" data-action="tempo"><span data-display="tempo">96</span></label>
           <label class="range-control"><span data-i18n="studio.volume">Music</span><input type="range" min="0" max="100" value="70" data-action="music-volume"></label>
-          <label class="range-control"><span data-i18n="studio.ambience">Ambience</span><input type="range" min="0" max="100" value="30" data-action="ambience-volume"></label>
         </div>
       </header>
 
@@ -275,7 +274,8 @@
       </label>
       <canvas id="postcard-canvas" class="postcard-canvas" width="1600" height="1200"></canvas>
       <div class="postcard-actions">
-        <button class="btn btn--primary" type="button" data-action="download-postcard" data-i18n="postcard.download">Download</button>
+        <button class="btn btn--primary" type="button" data-action="download-postcard" data-i18n="postcard.download">Download Postcard</button>
+        <button class="btn btn--primary" type="button" data-action="download-audio" data-i18n="postcard.downloadAudio">Download Audio</button>
         <button class="btn btn--ghost" type="button" data-action="back-to-studio-from-postcard" data-i18n="postcard.backToStudio">Return</button>
         <button class="btn btn--ghost" type="button" data-action="new-picnic" data-i18n="postcard.newPicnic">New Picnic</button>
       </div>
@@ -285,6 +285,6 @@
   <!-- Guide spirit floating layer (above all screens) -->
   <div id="guide-spirit-layer" class="guide-spirit-layer" aria-hidden="true"></div>
 
-  <script type="module" src="src/main.js?v=22"></script>
+  <script type="module" src="src/main.js?v=24"></script>
 </body>
 </html>

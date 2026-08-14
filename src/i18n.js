@@ -127,7 +127,18 @@ const translations = {
     'howModal.close': 'Got it',
 
     // Postcard
-    'postcard.download': 'Download',
+    'postcard.download': 'Download Postcard',
+    'postcard.downloadAudio': 'Download Audio',
+    'postcard.audioExporting': 'Exporting…',
+
+    // Audio export
+    'export.title': 'Export Your Music',
+    'export.volume': 'Export Volume',
+    'export.loops': 'Loops',
+    'export.startButton': 'Export WAV',
+    'export.rendering': 'Rendering audio…',
+    'export.ready': 'Your music is ready!',
+    'export.error': 'Export failed. Please try again.',
     'postcard.newPicnic': 'New Picnic',
     'postcard.backToStudio': 'Return',
     'postcard.nameLabel': 'Name this piece',
@@ -309,7 +320,17 @@ const translations = {
     'howModal.close': '知道了',
 
     'postcard.title': '你的作品',
-    'postcard.download': '下载',
+    'postcard.download': '下载明信片',
+    'postcard.downloadAudio': '下载音频',
+    'postcard.audioExporting': '正在导出……',
+
+    'export.title': '导出你的音乐',
+    'export.volume': '导出音量',
+    'export.loops': '循环次数',
+    'export.startButton': '导出 WAV',
+    'export.rendering': '正在生成音频……',
+    'export.ready': '你的音乐已准备好！',
+    'export.error': '导出失败，请重试。',
     'postcard.newPicnic': '新野餐',
     'postcard.backToStudio': '返回',
     'postcard.nameLabel': '为这首曲子命名',
