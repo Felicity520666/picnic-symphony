@@ -976,6 +976,7 @@ async function renderPostcardPreview() {
     title,
     spiritName,
     ingredientNames: active.map(id => t(ingredientById.get(id)?.nameKey || id)).join(' · '),
+    locale: state.lang || 'en',
   });
 }
 
@@ -983,29 +984,45 @@ async function handleDownload() {
   const active = [...state.activeLayers];
   if (!active.length) return;
 
-  const exportCanvas = document.createElement('canvas');
-  exportCanvas.width = 1600;
-  exportCanvas.height = 1200;
+  const btn = document.querySelector('[data-action="download-postcard"]');
+  try {
+    if (btn) { btn.disabled = true; btn.textContent = '…'; }
 
-  const title = getPostcardTitle();
-  const spiritName = state.spirit ? t(spiritDefinitions[state.spirit].nameKey) : '';
+    const exportCanvas = document.createElement('canvas');
+    exportCanvas.width = 1600;
+    exportCanvas.height = 1200;
 
-  await renderFullComposition(exportCanvas, active, {
-    isNight: getEffectiveTheme() === 'night' || getEffectiveTheme() === 'dusk',
-    title,
-    spiritName,
-    ingredientNames: active.map(id => t(ingredientById.get(id)?.nameKey || id)).join(' · '),
-  });
+    const title = getPostcardTitle();
+    const spiritName = state.spirit ? t(spiritDefinitions[state.spirit].nameKey) : '';
 
-  exportCanvas.toBlob(blob => {
-    if (!blob) { console.error('Failed to create Picnic Symphony PNG.'); return; }
+    await renderFullComposition(exportCanvas, active, {
+      isNight: getEffectiveTheme() === 'night' || getEffectiveTheme() === 'dusk',
+      title,
+      spiritName,
+      ingredientNames: active.map(id => t(ingredientById.get(id)?.nameKey || id)).join(' · '),
+      locale: state.lang || 'en',
+    });
+
+    const blob = await new Promise((resolve, reject) => {
+      exportCanvas.toBlob(result => {
+        if (result) resolve(result);
+        else reject(new Error('PNG encoding returned empty blob'));
+      }, 'image/png');
+    });
+
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `picnic-symphony-${new Date().toISOString().slice(0, 10)}.png`;
+    link.download = `picnic-symphony-postcard-${state.lang || 'en'}.png`;
+    document.body.appendChild(link);
     link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }, 'image/png');
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+  } catch (e) {
+    console.error('[postcard] Download failed:', e);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = t('postcard.download'); }
+  }
 }
 
 async function handleAudioExport() {

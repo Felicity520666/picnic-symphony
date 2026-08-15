@@ -33,13 +33,36 @@ const ROTATIONS = {
   honey: 2, mint: 4, sandwich: -2,
 };
 
-// ─── Image loading ────────────────────────────────────────────────────────────
+// ─── Font helpers ─────────────────────────────────────────────────────────────
+
+const FONT_STACK = 'Nunito, "Noto Sans SC", "Noto Sans JP", "Noto Sans KR", "Noto Sans Devanagari", "Noto Sans Arabic", "Noto Sans", system-ui, sans-serif';
+
+async function ensureFontsReady() {
+  try {
+    await document.fonts.ready;
+    // Try loading key weights — fail silently if unavailable
+    await Promise.race([
+      document.fonts.load(`700 42px ${FONT_STACK}`),
+      new Promise(r => setTimeout(r, 3000)), // 3s timeout
+    ]);
+  } catch (e) {
+    // Font loading failed — continue with available fonts
+    console.warn('[postcard] Font loading issue:', e);
+  }
+}
+
+// ─── Safe image loading ───────────────────────────────────────────────────────
 
 export async function loadImage(src) {
   const img = new Image();
   img.src = src;
-  if (img.decode) await img.decode();
-  else await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+  try {
+    if (img.decode) await img.decode();
+    else await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+  } catch (e) {
+    console.warn('[postcard] Image load failed:', src);
+    return null;
+  }
   return img;
 }
 
@@ -129,10 +152,15 @@ function drawCroppedIngredient(ctx, image, box, rotation = 0) {
 // ─── Full postcard render ─────────────────────────────────────────────────────
 
 export async function renderFullComposition(canvas, ingredientIds, options = {}) {
-  const { isNight = false, title = '', spiritName = '', ingredientNames = '' } = options;
+  const { isNight = false, title = '', spiritName = '', ingredientNames = '', locale = 'en' } = options;
   const W = canvas.width;
   const H = canvas.height;
   const ctx = canvas.getContext('2d');
+
+  // Ensure fonts are loaded before measuring/drawing text
+  await ensureFontsReady();
+
+  const isRTL = locale === 'ar';
 
   // Background
   const bg = ctx.createLinearGradient(0, 0, 0, H);
@@ -150,21 +178,26 @@ export async function renderFullComposition(canvas, ingredientIds, options = {})
 
   // Brand (small top)
   ctx.textAlign = 'center';
-  ctx.font = `700 ${Math.round(W * 0.013)}px Nunito, sans-serif`;
+  ctx.direction = 'ltr'; // Brand always LTR
+  ctx.font = `700 ${Math.round(W * 0.013)}px ${FONT_STACK}`;
   ctx.fillStyle = isNight ? 'rgba(200,195,180,0.45)' : 'rgba(90,110,80,0.45)';
   ctx.fillText('PICNIC SYMPHONY', W / 2, H * 0.055);
 
-  // Main title (large)
+  // Main title (large) — respects text direction
   if (title) {
+    ctx.direction = isRTL ? 'rtl' : 'ltr';
+    ctx.textAlign = 'center';
     ctx.fillStyle = isNight ? '#e8e4dc' : '#2e3d2e';
-    ctx.font = `700 ${Math.round(W * 0.036)}px Nunito, sans-serif`;
+    ctx.font = `700 ${Math.round(W * 0.036)}px ${FONT_STACK}`;
     ctx.fillText(title, W / 2, H * 0.11);
+    ctx.direction = 'ltr';
   }
 
   // Spirit badge
   if (spiritName) {
-    ctx.font = `500 ${Math.round(W * 0.014)}px Nunito, sans-serif`;
+    ctx.font = `500 ${Math.round(W * 0.014)}px ${FONT_STACK}`;
     ctx.fillStyle = isNight ? 'rgba(154,142,184,0.6)' : 'rgba(100,130,90,0.65)';
+    ctx.textAlign = 'center';
     ctx.fillText(spiritName, W / 2, H * 0.145);
   }
 
@@ -234,10 +267,12 @@ export async function renderFullComposition(canvas, ingredientIds, options = {})
   }).join(' · ');
 
   ctx.textAlign = 'center';
-  ctx.font = `600 ${Math.round(W * 0.016)}px Nunito, Noto Sans, sans-serif`;
+  ctx.direction = isRTL ? 'rtl' : 'ltr';
+  ctx.font = `600 ${Math.round(W * 0.016)}px ${FONT_STACK}`;
   ctx.fillStyle = isNight ? '#b0bfb0' : '#4a5e4a';
   const lineY = basketY + basketH + H * 0.04;
   ctx.fillText(namesText, W / 2, Math.min(lineY, H - H * 0.03));
+  ctx.direction = 'ltr';
 }
 
 // ─── Exports ──────────────────────────────────────────────────────────────────
